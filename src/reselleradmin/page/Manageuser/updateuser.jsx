@@ -1,0 +1,210 @@
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Sidebar from '../../components/Sidebar';
+import Swal from 'sweetalert2';
+
+const UpdateUser = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const dataItems = location.state?.newUser || JSON.parse(localStorage.getItem('editDeviceData'));
+    localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
+
+    const [username, setUsername] = useState(dataItems?.username || '');
+    const [email_id] = useState(dataItems?.email_id || ''); // Read-only, so no need for state
+    const [password] = useState(dataItems?.password || ''); // Read-only, so no need for state
+    const [phone_no, setPhoneNo] = useState(dataItems?.phone_no || '');
+    const [role_id] = useState(dataItems?.role_id || ''); // Read-only, so no need for state
+    const [status, setStatus] = useState(dataItems?.status || 'Active'); // Initialize with Active or Inactive
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const updateClientUser = async (e) => {
+        e.preventDefault();
+        // phone number validation
+        const phoneRegex = /^\d{10}$/;
+        if (!phone_no || !phoneRegex.test(phone_no)) {
+            setErrorMessage('Phone number must be a 10-digit number.');
+            return;
+        }
+        try {
+            const formattedUserData = {
+                user_id: userInfo.data.user_id,
+                username: username,
+                phone_no: parseInt(phone_no),
+                modified_by: userInfo.data.reseller_name,
+                password: parseInt(password), // Assuming this is not supposed to be changed
+                status: status === 'Active',
+            };
+
+            await axios.post(`/reselleradmin/UpdateUser`, formattedUserData);
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "User updated successfully",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            navigate('/reselleradmin/ManageUsers');
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
+
+    const goBack = () => {
+        navigate('/reselleradmin/ManageUsers');
+    };
+
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
+    };
+
+    return (
+        <div className='container-scroller'>
+            {/* Header */}
+            <Header userInfo={userInfo} handleLogout={handleLogout} />
+            <div className="container-fluid page-body-wrapper" style={{ paddingTop: '40px' }}>
+                {/* Sidebar */}
+                <Sidebar />
+                <div className="main-panel">
+                    <div className="content-wrapper">
+                        <div className="row">
+                            <div className="col-md-12 grid-margin">
+                                <div className="row">
+                                    <div className="col-12 col-xl-8 mb-4 mb-xl-0">
+                                        <h3 className="font-weight-bold">Edit User</h3>
+                                    </div>
+                                    <div className="col-12 col-xl-4">
+                                        <div className="justify-content-end d-flex">
+                                            <button type="button" className="btn btn-success" onClick={goBack} style={{ marginRight: '10px' }}>Back</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-12 grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="col-12 grid-margin">
+                                            <div className="card">
+                                                <div className="card-body">
+                                                    <h4 className="card-title">Update Users</h4>
+                                                    <form className="form-sample" onSubmit={updateClientUser}>
+                                                        <div className="row">
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">User Name</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={username}
+                                                                            maxLength={25}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                                                setUsername(sanitizedValue.slice(0, 25));
+                                                                            }}
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Phone No</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={phone_no}
+                                                                            maxLength={10}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
+                                                                                setPhoneNo(sanitizedValue.slice(0, 10));
+                                                                            }}
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Email ID</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="email"
+                                                                            className="form-control"
+                                                                            value={email_id}
+                                                                            readOnly
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Password</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={password}
+                                                                            readOnly
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Role ID</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={role_id}
+                                                                            readOnly
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Status</label>
+                                                                    <div className="col-sm-9">
+                                                                        <select
+                                                                            className="form-control"
+                                                                            value={status}
+                                                                            onChange={handleStatusChange}
+                                                                            required
+                                                                            style={{ color: "black" }}
+                                                                        >
+                                                                            <option value="Active">Active</option>
+                                                                            <option value="Inactive">DeActive</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
+                                                        <div style={{ textAlign: 'center' }}>
+                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Footer */}
+                    <Footer />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UpdateUser;
