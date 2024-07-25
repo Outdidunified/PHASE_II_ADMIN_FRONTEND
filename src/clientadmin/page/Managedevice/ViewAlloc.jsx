@@ -9,29 +9,10 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     
     const [newDevice, setNewDevice] = useState({
-        charger_id: '',
-        model: '',
-        type: '',
-        gun_connector: '',
-        max_current: '',
-        create_date: '',
-        status: '',
-        tag_id: '',
-        assigned_association_date: '',
-        assigned_client_date: '',
-        assigned_reseller_date: '',
-        charger_accessibility: '',
-        client_commission: '',
-        created_by: '',
-        current_or_active_user: '',
-        max_power: '',
-        modified_by: '',
-        modified_date: '',
-        reseller_commission: '',
-        short_description: '',
-        socket_count: '',
-        vendor: '',
-        wifi_password: '',
+        charger_id: '', model: '', type: '', gun_connector: '', max_current: '', created_date: '', status: '',
+        tag_id: '', assigned_association_date: '', assigned_client_date: '', assigned_reseller_date: '', charger_accessibility: '',
+        client_commission: '', created_by: '', current_or_active_user: '', max_power: '', modified_by: '', modified_date: '',
+        reseller_commission: '', short_description: '', socket_count: '', vendor: '', wifi_password: '',
     });
 
     useEffect(() => {
@@ -39,41 +20,57 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
         if (charger) {
            
             setNewDevice({
-                charger_id: charger.charger_id || '',
-                model: charger.model || '',
-                type: charger.type || '',
-                gun_connector: charger.gun_connector || '',
-                max_current: charger.max_current || '',
-                create_date: charger.created_date || '',
-                status: charger.status || '',
-                tag_id: charger.tag_id || '',
-                assigned_association_date: charger.assigned_association_date || '',
-                assigned_client_date: charger.assigned_client_date || '',
-                assigned_reseller_date: charger.assigned_reseller_date || '',
-                charger_accessibility: charger.charger_accessibility || '',
-                client_commission: charger.client_commission || '',
-                created_by: charger.created_by || '',
-                current_or_active_user: charger.current_or_active_user || '',
-                max_power: charger.max_power || '',
-                modified_by: charger.modified_by || '',
-                modified_date: charger.modified_date || '',
-                reseller_commission: charger.reseller_commission || '',
-                short_description: charger.short_description || '',
-                socket_count: charger.socket_count || '',
-                vendor: charger.vendor || '',
-                wifi_password: charger.wifi_password || '',
+                charger_id: charger.charger_id || '', model: charger.model || '', type: charger.type || '', gun_connector: charger.gun_connector || '',
+                max_current: charger.max_current || '', created_date: charger.created_date || '', status: charger.status || '',
+                tag_id: charger.tag_id || '', assigned_association_date: charger.assigned_association_date || '',
+                assigned_client_date: charger.assigned_client_date || '', assigned_reseller_date: charger.assigned_reseller_date || '',
+                charger_accessibility: charger.charger_accessibility || '', client_commission: charger.client_commission || '',
+                created_by: charger.created_by || '', current_or_active_user: charger.current_or_active_user || '',
+                max_power: charger.max_power || '', modified_by: charger.modified_by || '',  modified_date: charger.modified_date || '',
+                reseller_commission: charger.reseller_commission || '', short_description: charger.short_description || '',
+                socket_count: charger.socket_count || '', vendor: charger.vendor || '', wifi_password: charger.wifi_password || '',
             });
+            // Save to localStorage
+            localStorage.setItem('userData', JSON.stringify(charger));
+        } else {
+            // Load from localStorage if available
+            const savedData = JSON.parse(localStorage.getItem('userData'));
+            if (savedData) {
+                setNewDevice(savedData);
+            }
         }
     }, [location]);
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
+    // Timestamp data 
+    function formatTimestamp(originalTimestamp) {
+        const date = new Date(originalTimestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = String(hours).padStart(2, '0');
+    
+        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+        return formattedDate;
+    } 
+
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -91,7 +88,7 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                               Back
                                             </button>
                                         </div>
                                     </div>
@@ -102,313 +99,146 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                             <div className="col-lg-12 grid-margin stretch-card">
                                 <div className="card">
                                     <div className="card-body">
-                                        <div className="col-12 grid-margin">
-                                            <div className="card">
-                                                <div className="card-body">
-                                                    <h4 className="card-title">Charger Details</h4>
-                                                    <form className="form-sample">
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Charger Id</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.charger_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Model</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.model}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Charger Type</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.type}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Gun Connector</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.gun_connector}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Max Current</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.max_current}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Create Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.create_date? new Date(newDevice.create_date).toLocaleString() : ''}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Status</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.status}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Tag Id</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.tag_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Assigned Association Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.assigned_association_date? new Date(newDevice.assigned_association_date).toLocaleString() : ''}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Assigned Client Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.assigned_client_date? new Date(newDevice.assigned_client_date).toLocaleString() : ''}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Assigned Reseller Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.assigned_reseller_date? new Date(newDevice.assigned_reseller_date).toLocaleString() : ''}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Charger Accessibility</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.charger_accessibility}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Client Commission</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.client_commission}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Created By</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.created_by}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Current/Active User</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.current_or_active_user}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Max Power</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.max_power}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Modified By</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.modified_by}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Modified Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.modified_date? new Date(newDevice.modified_date).toLocaleString() : ''}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Reseller Commission</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.reseller_commission}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Short Description</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.short_description}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Socket Count</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.socket_count}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Vendor</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.vendor}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">WiFi Password</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newDevice.wifi_password}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
+                                        <div className="row">
+                                            <div className="col-md-12 grid-margin">
+                                                <div className="row">
+                                                    <div className="col-12 col-xl-12">
+                                                        <div style={{textAlign:'center'}}>
+                                                            <h4 className="card-title" style={{paddingTop:'10px'}}>Charger Details</h4>  
+                                                            <hr></hr>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Charger ID: <span style={{fontWeight:'normal'}}>{newDevice.charger_id ? newDevice.charger_id : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </form>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Model: <span style={{fontWeight:'normal'}}>{newDevice.model ? newDevice.model +'KW': '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Charger Type: <span style={{fontWeight:'normal'}}>{newDevice.type ? newDevice.type : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Vendor: <span style={{fontWeight:'normal'}}>{newDevice.vendor ?  newDevice.vendor : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Gun Connector: <span style={{ fontWeight: 'normal' }}>{newDevice.gun_connector === 1 ? 'Single phase' : newDevice.gun_connector === 2 ? 'CSS Type 2' : newDevice.gun_connector === 3 ? '3 phase socket' : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Max Current: <span style={{fontWeight:'normal'}}>{newDevice.max_current ?  newDevice.max_current : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Max Power: <span style={{fontWeight:'normal'}}>{newDevice.max_power ? newDevice.max_power : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Socket Count: <span style={{fontWeight:'normal'}}>{newDevice.socket_count === 1 ? '1 Socket ' : newDevice.socket_count === 2 ? '2 Sockets' : newDevice.socket_count === 3 ? '3 Sockets' : newDevice.socket_count === 4 ? '4 Sockets' : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Tag Id: <span style={{fontWeight:'normal'}}>{newDevice.tag_id ?  newDevice.tag_id : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Reseller Commission: <span style={{fontWeight:'normal'}}>{newDevice.reseller_commission ? newDevice.reseller_commission : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Client Commission: <span style={{fontWeight:'normal'}}>{newDevice.client_commission ? newDevice.client_commission : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Short Description: <span style={{fontWeight:'normal'}}>{newDevice.short_description ? newDevice.short_description : '-'}</span></div>   
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Charger Accessibility: <span style={{ fontWeight: 'normal' }}>{newDevice.charger_accessibility === 1 ? 'Public' : newDevice.charger_accessibility === 2 ? 'Private' : '-'}</span></div> 
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Wifi Password: <span style={{fontWeight:'normal'}}>{newDevice.wifi_password ? newDevice.wifi_password : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Created By: <span style={{fontWeight:'normal'}}>{newDevice.created_by ? newDevice.created_by : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Created Date: <span style={{fontWeight:'normal'}}>{newDevice.created_date ? formatTimestamp(newDevice.created_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Modified By: <span style={{fontWeight:'normal'}}>{newDevice.modified_by ? newDevice.modified_by : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Modified Date: <span style={{fontWeight:'normal'}}>{newDevice.modified_date ? formatTimestamp(newDevice.modified_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Assigned Association Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_association_date ? formatTimestamp(newDevice.assigned_association_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Assigned Client Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_client_date ? formatTimestamp(newDevice.assigned_client_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Assigned Reseller Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_reseller_date ? formatTimestamp(newDevice.assigned_reseller_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Current/Active User: <span style={{fontWeight:'normal'}}>{newDevice.current_or_active_user ? newDevice.current_or_active_user : '-'}</span></div>
+                                                            </div>
+                                                        </div> 
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Status: <span style={{fontWeight:'normal'}}>{newDevice.status === true ? <span className="text-success">Active</span> :  <span className="text-danger">DeActive</span>}</span></div>
+                                                            </div>
+                                                        </div>                                                               
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -417,6 +247,7 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

@@ -71,6 +71,7 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     }, [errorMessage, errorMessages]);
 
+    // update reseller profile
     const addResellerProfileUpdate = async (e) => {
         e.preventDefault();
 
@@ -107,9 +108,10 @@ const Profile = ({ userInfo, handleLogout }) => {
                     icon: "success",
                 });
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update reseller profile",
+                    text: "Failed to update reseller profile, " +responseData.message,
                     icon: "error",
                 });
             }
@@ -132,6 +134,7 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     }, [data]);
 
+    // update user profile
     const addUserProfileUpdate = async (e) => {
         e.preventDefault();
 
@@ -179,9 +182,10 @@ const Profile = ({ userInfo, handleLogout }) => {
                     icon: "success",
                 });
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user profile",
+                    text: "Failed to update user profile, " + responseData.message,
                     icon: "error",
                 });
             }
@@ -222,7 +226,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                         <form className="forms-sample" onSubmit={addResellerProfileUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputUsername1">Username</label>
-                                                <input type="text" className="form-control" placeholder="Username" value={reseller_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue); }} required/>
+                                                <input type="text" className="form-control" placeholder="Username" value={reseller_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue); }} readOnly required/>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Email address</label>

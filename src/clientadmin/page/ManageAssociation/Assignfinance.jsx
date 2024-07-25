@@ -7,12 +7,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Assignfinance = ({ userInfo, handleLogout }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [chargerId, setChargerId] = useState('');
     const [financeOptions, setFinanceOptions] = useState([]);
     const [selectedFinanceId, setSelectedFinanceId] = useState('');
-    const location = useLocation();
-    const navigate = useNavigate();
-
+   
     useEffect(() => {
         const { charger_id } = location.state || {};
         if (charger_id) {
@@ -21,6 +21,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         fetchFinanceId();
     }, [location]);
 
+    // fetch finance details for selected
     const fetchFinanceId = async () => {
         try {
             const response = await axios.get('/clientadmin/FetchFinanceDetailsForSelection');
@@ -42,6 +43,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // submit data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -76,14 +78,17 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -101,7 +106,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                               Back
                                             </button>
                                         </div>
                                     </div>
@@ -161,6 +166,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

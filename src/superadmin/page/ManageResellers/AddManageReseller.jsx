@@ -59,7 +59,7 @@ const AddManageReseller = ({ userInfo, handleLogout }) => {
                 const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to add reseller " + responseData.message,
+                    text: "Failed to add reseller, " + responseData.message,
                     icon: "error"
                 });
             }

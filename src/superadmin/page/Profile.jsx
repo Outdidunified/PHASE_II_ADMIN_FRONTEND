@@ -65,6 +65,7 @@ const Profile = ({ userInfo, handleLogout }) => {
     const addProfileUpdate = async (e) => {
         e.preventDefault();
 
+        // phone no validation
         const phoneRegex = /^\d{10}$/;
         if (!phone_no) {
             setErrorMessage("Phone can't be empty.");
@@ -75,6 +76,7 @@ const Profile = ({ userInfo, handleLogout }) => {
             return;
         }
 
+        // password validation
         const passwordRegex = /^\d{4}$/;
         if (!password) {
             setErrorMessage("Password can't be empty.");
@@ -101,9 +103,10 @@ const Profile = ({ userInfo, handleLogout }) => {
                     icon: "success"
                 });
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update profile",
+                    text: "Failed to update profile, " + responseData.message,
                     icon: "error"
                 });
             }

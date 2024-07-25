@@ -37,7 +37,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 setData(data.data);
                 setLoading(false);
             } else {
-                setError('Failed to fetch profile');
+                setError('Failed to fetch profile, ' + response.statusText);
                 console.error('Failed to fetch profile:', response.statusText);
             }
         } catch (error) {
@@ -95,9 +95,10 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 FetchAllocatedCharger();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to DeActivate",
+                    text: "Failed to DeActivate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -128,9 +129,10 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 FetchAllocatedCharger();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Activate",
+                    text: "Failed to Activate, " + responseData.message,
                     icon: "error"
                 });
             }

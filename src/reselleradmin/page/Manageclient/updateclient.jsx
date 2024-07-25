@@ -9,17 +9,20 @@ import Swal from 'sweetalert2';
 const UpdateClient = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const location = useLocation();
-
     const dataItems = location.state?.newUser || JSON.parse(localStorage.getItem('editDeviceData'));
     localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
-
     const [client_name, setClientName] = useState(dataItems?.client_name || '');
     const [client_phone_no, setClientPhoneNo] = useState(dataItems?.client_phone_no || '');
     const [client_address, setClientAddress] = useState(dataItems?.client_address || '');
-    const [status, setStatus] = useState(dataItems?.status || 'Active');
-
+    const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Select status
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
+    };
+
+    // update client
     const updateClientUser = async (e) => {
         e.preventDefault();
 
@@ -32,7 +35,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
 
         try {
             const formattedUserData = {
-                client_id: dataItems.client_id,
+                client_id: dataItems?.client_id,
                 client_name: client_name,
                 client_phone_no: parseInt(client_phone_no),
                 client_address: client_address,
@@ -40,7 +43,11 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                 status: status // Assuming status is a boolean
             };
 
-            await axios.post(`/reselleradmin/updateClient/`, formattedUserData);
+            // Send POST request to update client
+        const response = await axios.post(`/reselleradmin/updateClient/`, formattedUserData);
+
+        // Check response status and handle accordingly
+        if (response.status === 200) {
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -49,12 +56,28 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                 timer: 1500
             });
             navigate('/reselleradmin/ManageClient');
+        } else {
+            const responseData = await response.json();
+                // Handle other status codes
+                Swal.fire({
+                    position: "center",
+                    icon: "Error",
+                    title: "Failed to update client. Please try again, " + responseData.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         } catch (error) {
             console.error('Error updating client:', error);
-            setErrorMessage('Failed to update client. Please try again.');
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorMessage('Error updating client: ' + error.response.data.message);
+            } else {
+                setErrorMessage('Failed to update client. Please try again.');
+            }
         }
     };
 
+    // back manageclient page 
     const goBack = () => {
         navigate('/reselleradmin/ManageClient');
     };
@@ -160,14 +183,14 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Status</label>
                                                                     <div className="col-sm-9">
-                                                                        <select
+                                                                    <select
                                                                             className="form-control"
                                                                             value={status}
-                                                                            onChange={(e) => setStatus(e.target.value)}
-                                                                            required
-                                                                        >
-                                                                            <option value="Active">Active</option>
-                                                                            <option value="Inactive">DeActive</option>
+                                                                            onChange={handleStatusChange} 
+                                                                            required>
+                                                                         
+                                                                            <option value="true">Active</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>

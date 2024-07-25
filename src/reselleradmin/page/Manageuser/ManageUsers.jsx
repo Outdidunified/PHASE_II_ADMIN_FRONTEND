@@ -11,6 +11,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const fetchUsersCalled = useRef(false); 
 
+    // fetch users
     const fetchUsers = async () => {
         try {
             const response = await axios.get('/reselleradmin/FetchUsers');
@@ -28,14 +29,17 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
         }
     }, []);
     
+    // back create users
     const navigateToCreateUser = () => {
         navigate('/reselleradmin/Createusers');
     };
 
+    // view user page
     const navigateToViewSession = (user) => {
         navigate('/reselleradmin/Viewuser', { state: { user } });
     };
 
+    // search users
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
@@ -93,10 +97,10 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>User Name</th>
                                                         <th>Phone Number</th>
@@ -108,13 +112,13 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 <tbody style={{ textAlign: 'center' }}>
                                                     {filteredUsers.length > 0 ? (
                                                         filteredUsers.map((user, index) => (
-                                                            <tr key={user.user_id}>
+                                                            <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{user.username ? user.username : '-'}</td>
                                                                 <td>{user.phone_no ? user.phone_no : '-'}</td>
                                                                 <td>{user.email_id ? user.email_id : '-'}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
-                                                                    {user.status ? 'Active' : 'DeActive'}
+                                                                    {user.status===true ? 'Active' : 'DeActive'}
                                                                 </td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewSession(user)} style={{ marginBottom: '10px', marginRight: '10px' }}>
@@ -125,7 +129,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="7">No Record Found</td>
+                                                            <td colSpan="6">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

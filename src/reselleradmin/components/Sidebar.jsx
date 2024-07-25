@@ -15,22 +15,22 @@ const Sidebar = () => {
                 </li>
 
                 <li className={location.pathname === '/reselleradmin/Allocateddevice' || location.pathname === '/reselleradmin/Unallocateddevice' || location.pathname === '/reselleradmin/Assigntoclients' || location.pathname === '/reselleradmin/ViewAlloc' || location.pathname === '/reselleradmin/ViewUnalloc' ? 'nav-item active' : 'nav-item'} key="ManageDevice">
-                    <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                    <a className="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                     <i className="icon-head menu-icon mdi mdi-cellphone-link"></i>
                     <span className="menu-title">Manage Device</span>
-                    <i class="menu-arrow"></i>
+                    <i className="menu-arrow"></i>
                     </a>
-                    <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <Link class="nav-link" to={{ pathname: "/reselleradmin/Allocateddevice" }}>Allocated Chargers</Link></li>
-                        <li class="nav-item"> <Link class="nav-link" to={{ pathname: "/reselleradmin/Unallocateddevice" }}>Unallocated Chargers</Link></li>
+                    <div className="collapse" id="ui-basic">
+                    <ul className="nav flex-column sub-menu">
+                        <li className="nav-item"> <Link className="nav-link" to={{ pathname: "/reselleradmin/Allocateddevice" }}>Allocated Chargers</Link></li>
+                        <li className="nav-item"> <Link className="nav-link" to={{ pathname: "/reselleradmin/Unallocateddevice" }}>Unallocated Chargers</Link></li>
                     </ul>
                     </div>
                 </li>
 
                 <li className={location.pathname === '/reselleradmin/ManageClient' || location.pathname === '/reselleradmin/CreateClients' || location.pathname === '/reselleradmin/viewclient' || location.pathname === '/reselleradmin/updateclient' || location.pathname === '/reselleradmin/Asssigntoass' || location.pathname === '/reselleradmin/Assigneddevicesclient'|| location.pathname === '/reselleradmin/Sessionhistoryclient'? 'nav-item active' : 'nav-item'} key="ManageClient">
                     <Link className="nav-link" to={{ pathname: "/reselleradmin/ManageClient" }}>
-                        <i className="icon-head menu-icon mdi mdi-account-multiple"></i>
+                        <i className="icon-head menu-icon mdi mdi-account-group"></i>
                         <span className="menu-title">Manage Client</span>
                     </Link>
                 </li>
@@ -43,7 +43,7 @@ const Sidebar = () => {
                 
                 <li className={location.pathname === '/reselleradmin/Wallet' ? 'nav-item active' : 'nav-item'} key="Wallet">
                     <Link className="nav-link" to={{ pathname: "/reselleradmin/Wallet" }}>
-                        <i className="icon-head menu-icon mdi mdi-cash-multiple"></i>
+                        <i className="icon-head menu-icon mdi mdi-wallet"></i>
                         <span className="menu-title">Wallet</span>
                     </Link>
                 </li>

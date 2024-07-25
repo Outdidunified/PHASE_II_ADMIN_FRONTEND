@@ -8,14 +8,7 @@ import Swal from 'sweetalert2';
 
 const CreateUsers = ({ userInfo, handleLogout }) => {
     const [newUser, setNewUser] = useState({
-        username: '',
-        phone_no: '',
-        email_id: '',
-        role_id: '',
-        
-        password: '',
-        role_name: '', // New field for Role name
-        client_name: '', // New field for Client name
+        username: '', phone_no: '', email_id: '', role_id: '', password: '', role_name: '', client_name: '', 
     });
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -28,6 +21,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
         fetchClientNames();
     }, []);
 
+    // fetch user roles
     const fetchUserRoles = async () => {
         try {
             const response = await axios.get('/reselleradmin/FetchSpecificUserRoleForSelection');
@@ -41,6 +35,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // fetch client names
     const fetchClientNames = async () => {
         try {
             const response = await axios.get('/reselleradmin/FetchClientForSelection');
@@ -54,8 +49,32 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // create users
     const createUser = async (e) => {
         e.preventDefault();
+
+        // Validate phone number
+        const phoneRegex = /^\d{10}$/;
+        if (!newUser.phone_no) {
+            setErrorMessage("Phone can't be empty.");
+            return;
+        }
+        if (!phoneRegex.test(newUser.phone_no)) {
+            setErrorMessage('Oops! Phone must be a 10-digit number.');
+            return;
+        }
+ 
+        // Validate password
+        const passwordRegex = /^\d{4}$/;
+        if (!newUser.password) {
+            setErrorMessage("Password can't be empty.");
+            return;
+        }
+        if (!passwordRegex.test(newUser.password)) {
+            setErrorMessage('Oops! Password must be a 4-digit number.');
+            return;
+        }
+        
         try {
             // Find the role_id based on selected role_name
             const selectedRole = userRoles.find(role => role.role_name === newUser.role_name);
@@ -74,7 +93,11 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                 reseller_id: userInfo.data.reseller_id,
             };
 
-            await axios.post(`/reselleradmin/CreateUser`, formattedUserData);
+            // Perform axios POST request to create user
+        const response = await axios.post(`/reselleradmin/CreateUser`, formattedUserData);
+
+        if (response.status === 200) {
+            // Handle success
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -83,18 +106,31 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                 timer: 1500
             });
             navigate('/reselleradmin/ManageUsers');
-           
+        } else {
+            const responseData = await response.json();
+                // Handle other status codes
+                Swal.fire({
+                    position: "center",
+                    icon: "Error",
+                    title: "Failed to create user. Please try again, " + responseData.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         } catch (error) {
-            console.error('Error creating user:', error);
-            setErrorMessage('Failed to create user. Please try again.');
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorMessage('Failed to create user, ' + error.response.data.message);
+            } else {
+                console.error('Error creating user:', error);
+                setErrorMessage('Failed to create user. Please try again.');
+            }
         }
     };
 
+    // back manage users
     const goBack = () => {
         navigate('/reselleradmin/ManageUsers');
     };
-
-
 
     return (
         <div className='container-scroller'>
@@ -135,7 +171,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="User Name"
                                                                             value={newUser.username}
                                                                             maxLength={25}
                                                                             onChange={(e) => {
@@ -153,7 +189,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Phone No"
                                                                             value={newUser.phone_no}
                                                                             maxLength={10}
                                                                             onChange={(e) => {
@@ -171,7 +207,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="email"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Email ID"
                                                                             value={newUser.email_id}
                                                                             onChange={(e) => {
                                                                                 const inputValue = e.target.value;
@@ -192,7 +228,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Password"
                                                                             value={newUser.password}
                                                                             maxLength={4}
                                                                             onChange={(e) => {

@@ -7,22 +7,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const ViewFinance = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    
     const [newfinance, setNewFinance] = useState({
-        association_id: '',
-        client_id: '',
-        eb_charges: '',
-        app_charges: '',
-        other_charges: '',
-        parking_charges: '',
-        rent_charges: '',
-        open_a_eb_charges: '',
-        open_other_charges: '',
-        created_by: '',
-        created_date: '',
-        modified_by: '',
-        modified_date: '',
-        status: '',
+        association_id: '', client_id: '', eb_charges: '', app_charges: '', other_charges: '', parking_charges: '',
+        rent_charges: '', open_a_eb_charges: '', open_other_charges: '', created_by: '', created_date: '',
+        modified_by: '', modified_date: '', finance_id: '', status: '',
     });
 
     useEffect(() => {
@@ -42,8 +30,17 @@ const ViewFinance = ({ userInfo, handleLogout }) => {
                 created_date: formatDate(finance.created_date) || '',
                 modified_by: finance.modified_by || '',
                 modified_date: formatDate(finance.modified_date) || '',
+                finance_id: finance.finance_id || '',
                 status: finance.status || '',
             });
+         // Save to localStorage
+         localStorage.setItem('userData', JSON.stringify(finance));
+        } else {
+            // Load from localStorage if available
+            const savedData = JSON.parse(localStorage.getItem('userData'));
+            if (savedData) {
+                setNewFinance(savedData);
+            }
         }
     }, [location]);
 
@@ -53,14 +50,41 @@ const ViewFinance = ({ userInfo, handleLogout }) => {
         return date.toLocaleString('en-US', options); // Adjust format based on your preference
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
+    // Timestamp data 
+    function formatTimestamp(originalTimestamp) {
+        const date = new Date(originalTimestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = String(hours).padStart(2, '0');
+    
+        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+        return formattedDate;
+    } 
+
+    // view edit page
+    const handleEdit = (newfinance) => {
+        navigate('/clientadmin/EditFinance', { state: { newfinance } });
+    };
+
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+               {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -72,13 +96,15 @@ const ViewFinance = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
+                                            <button type="button" className="btn btn-outline-primary btn-icon-text" onClick={() => handleEdit(newfinance)} style={{ marginRight: '10px' }}><i className="mdi mdi-pencil btn-icon-prepend"></i> Edit</button>
+
                                             <button
                                                 type="button"
                                                 className="btn btn-success"
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                                Back
                                             </button>
                                         </div>
                                     </div>
@@ -89,196 +115,95 @@ const ViewFinance = ({ userInfo, handleLogout }) => {
                             <div className="col-lg-12 grid-margin stretch-card">
                                 <div className="card">
                                     <div className="card-body">
-                                        <div className="col-12 grid-margin">
-                                            <div className="card">
-                                                <div className="card-body">
-                                                    <h4 className="card-title">Finance Details</h4>
-                                                    <form className="form-sample">
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association ID</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.association_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Client ID</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.client_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">EB Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.eb_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">App Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.app_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Other Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.other_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Parking Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.parking_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Rent Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.rent_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Open A EB Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.open_a_eb_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Open Other Charges</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.open_other_charges}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Created By</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.created_by}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Created Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.created_date}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Modified By</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.modified_by}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Modified Date</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.modified_date}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Status</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            value={newfinance.status}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
+                                        <div className="row">
+                                            <div className="col-md-12 grid-margin">
+                                                <div className="row">
+                                                    <div className="col-12 col-xl-12">
+                                                        <div style={{textAlign:'center'}}>
+                                                            <h4 className="card-title" style={{paddingTop:'10px'}}>Finance Details</h4>  
+                                                            <hr></hr>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Association ID: <span style={{fontWeight:'normal'}}>{newfinance.association_id ? newfinance.association_id : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </form>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Client ID: <span style={{fontWeight:'normal'}}>{newfinance.client_id ? newfinance.client_id +'KW': '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">EB Charges: <span style={{fontWeight:'normal'}}>{newfinance.eb_charges ? newfinance.eb_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">App Charges: <span style={{fontWeight:'normal'}}>{newfinance.app_charges ?  newfinance.app_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Other Charges: <span style={{ fontWeight: 'normal' }}>{newfinance.other_charges ?  newfinance.other_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Parking Charges: <span style={{fontWeight:'normal'}}>{newfinance.parking_charges ?  newfinance.parking_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Rent Charges: <span style={{fontWeight:'normal'}}>{newfinance.rent_charges ? newfinance.rent_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Open A EB Charges: <span style={{fontWeight:'normal'}}>{newfinance.open_a_eb_charges ? newfinance.open_a_eb_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Open Other Charges: <span style={{fontWeight:'normal'}}>{newfinance.open_other_charges ?  newfinance.open_other_charges : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Created By: <span style={{fontWeight:'normal'}}>{newfinance.created_by ? newfinance.created_by : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Created Date: <span style={{fontWeight:'normal'}}>{newfinance.created_date ? formatTimestamp(newfinance.created_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Modified By: <span style={{fontWeight:'normal'}}>{newfinance.modified_by ? newfinance.modified_by : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Modified Date: <span style={{fontWeight:'normal'}}>{newfinance.modified_date ? formatTimestamp(newfinance.modified_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Status: <span style={{fontWeight:'normal'}}>{newfinance.status === true ? <span className="text-success">Active</span> :  <span className="text-danger">DeActive</span>}</span></div>
+                                                            </div>
+                                                        </div>   
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -287,6 +212,7 @@ const ViewFinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

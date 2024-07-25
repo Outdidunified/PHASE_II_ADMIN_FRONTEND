@@ -20,6 +20,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
     const fetchClientsCalled = useRef(false); 
     const fetchUnallocatedChargersCalled = useRef(false); 
 
+    // fetch clientuser to assgin charger
     useEffect(() => {
         const fetchClients = async () => {
             try {
@@ -33,6 +34,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
             }
         };
 
+        // fetch unallocated chargers
         const fetchUnallocatedChargers = async () => {
             try {
                 const response = await axios.post('/reselleradmin/FetchUnAllocatedChargerToAssgin', {
@@ -59,6 +61,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     }, [userInfo.data.reseller_id]); // Use userInfo.data.reseller_id as the dependency
 
+    // client changes state
     const handleClientChange = (e) => {
         const selectedClientId = e.target.value;
         setSelectedClientId(selectedClientId);
@@ -72,10 +75,12 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // handle commission
     const handleCommissionChange = (e) => {
         setCommission(e.target.value);
     };
 
+    // submit data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -105,6 +110,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         });
     };
 
+    // assign data submit
     const submitAssign = async () => {
         try {
             const response = await axios.post('/reselleradmin/AssginChargerToClient', {
@@ -153,6 +159,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     }, [reloadPage]);
 
+    // back allocated device 
     const goBack = () => {
         navigate('/reselleradmin/Allocateddevice');
     };
@@ -301,6 +308,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

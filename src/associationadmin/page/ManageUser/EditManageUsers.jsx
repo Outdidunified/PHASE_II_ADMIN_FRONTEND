@@ -67,9 +67,10 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                 });
                 backManageUser();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update user',
+                    text: 'Failed to update user, ' + responseData.message,
                     icon: 'error',
                 });
             }
@@ -159,7 +160,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <select className="form-control" value={selectStatus} onChange={handleStatusChange}  required >
                                                                             <option value="true">Active</option>
-                                                                            <option value="false">Deactive</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>

@@ -64,7 +64,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
         }
     };
 
-    // // Update table data 'data', and 'filteredData' 
+    // Update table data 'data', and 'filteredData' 
     useEffect(() => {
         switch (data) {
             case 'filteredData':
@@ -151,7 +151,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                 <div className="row">
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
                                         <h3 className="font-weight-bold">Welcome to <span style={{color:'#4B49AC'}}>{userInfo.data.association_name}</span>,</h3>
-                                        <h4 className="font-weight-bold">Super Admin Dashboard</h4>
+                                        <h4 className="font-weight-bold">Associationadmin Admin Dashboard</h4>
                                     </div>
                                 </div>
                             </div>

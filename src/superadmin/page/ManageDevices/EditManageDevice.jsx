@@ -109,9 +109,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Update",
+                    text: "Failed to Update, " + responseData.message,
                     icon: "error"
                 });
             }

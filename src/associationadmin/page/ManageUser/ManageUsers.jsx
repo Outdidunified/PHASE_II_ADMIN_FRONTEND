@@ -256,7 +256,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                                 </div>
                                                                 <div className="input-group">
                                                                     <div className="input-group-prepend">
-                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Emial ID</span>
+                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Email ID</span>
                                                                     </div>
                                                                     <input type="email" className="form-control" placeholder="Email ID" value={email_id} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setemailID(sanitizedEmail); }}required/>  
                                                                 </div>

@@ -135,7 +135,7 @@ const ViewUserList = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Wallet Balance: <span style={{fontWeight:'normal'}}>{newUser.wallet_bal ? newUser.wallet_bal : '-'}</span></div>
+                                                                <div className="col-sm-12">Wallet Balance: <span style={{fontWeight:'normal'}}>{newUser.wallet_bal ? newUser.wallet_bal : '0'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">

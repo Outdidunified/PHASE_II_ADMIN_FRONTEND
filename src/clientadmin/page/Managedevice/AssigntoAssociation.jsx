@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
@@ -8,17 +8,18 @@ import Footer from '../../components/Footer';
 
 
 const AssigntoAssociation = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [selectedAssociationId, setSelectedAssociationId] = useState('');
     const [selectedChargers, setSelectedChargers] = useState([]);
     const [commission, setCommission] = useState('');
     const [reloadPage, setReloadPage] = useState(false); // State to trigger page reload
     const [chargersLoading, setChargersLoading] = useState(true); // State to manage loading state
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
-
-    const navigate = useNavigate();
-
     const [clientsList, setClientsList] = useState([]);
+    const fetchClientsCalled = useRef(false); 
+    const fetchUnallocatedChargersCalled = useRef(false); 
 
+    // fetch associated users
     useEffect(() => {
         const fetchClients = async () => {
             try {
@@ -32,11 +33,13 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
             }
         };
 
+        // fetch unallocated charger
         const fetchUnallocatedChargers = async () => {
             try {
                 const response = await axios.post('/clientadmin/FetchUnAllocatedChargerToAssgin', {
                     client_id: userInfo.data.client_id,
                 });
+                console.log(response.data);
                 setUnallocatedChargers(response.data.data || []);
             } catch (error) {
                 console.error('Error fetching unallocated charger details:', error);
@@ -46,10 +49,18 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
             }
         };
 
-        fetchClients();
-        fetchUnallocatedChargers();
-    }, [userInfo, reloadPage]); // Include reloadPage in dependencies to trigger fetch on reload
+        if (!fetchClientsCalled.current) {
+            fetchClients();
+            fetchClientsCalled.current = true;
+        }
 
+        if (!fetchUnallocatedChargersCalled.current) {
+            fetchUnallocatedChargers();
+            fetchUnallocatedChargersCalled.current = true;
+        }
+    }, [userInfo.data.client_id]); // Use userInfo.data.reseller_id as the dependency
+
+    // select associated changes
     const handleAssociationChange = (e) => {
         const selectedAssociationId = e.target.value;
         setSelectedAssociationId(selectedAssociationId);
@@ -63,10 +74,12 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // set commission
     const handleCommissionChange = (e) => {
         setCommission(e.target.value);
     };
 
+    // submit data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -96,6 +109,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
         });
     };
 
+    // submit assigng
     const submitAssign = async () => {
         try {
             const response = await axios.post('/clientadmin/AssginChargerToAssociation', {
@@ -117,9 +131,10 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                 });
                 navigate('/clientadmin/Allocateddevice')
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Charger Not Assigned',
+                    title: 'Charger Not Assigned, ' + responseData.message,
                     text: 'Please try again.',
                     timer: 2000,
                     timerProgressBar: true
@@ -169,7 +184,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                               Back
                                             </button>
                                         </div>
                                     </div>

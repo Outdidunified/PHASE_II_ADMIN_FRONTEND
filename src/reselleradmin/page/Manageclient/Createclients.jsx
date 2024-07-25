@@ -7,14 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const CreateClients = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [newUser, setNewUser] = useState({ "client_name": '', "client_phone_no": '', "client_email_id": '', "client_address": '' });
     const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
-
+   
+    // back manage cllient
     const Goback = () => {
         navigate('/reselleradmin/ManageClient');
     };
 
+    // Add client user
     const addClientUser = async (e) => {
         e.preventDefault();
 
@@ -47,11 +49,16 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                 setNewUser({ "client_name": '', "client_phone_no": '', "client_email_id": '', "client_address": '' });
                 navigate('/reselleradmin/ManageClient');
             } else {
-                setErrorMessage('Failed to add user');
+                const responseData = await response.json();
+                setErrorMessage('Failed to add user, ' + responseData.message);
             }
         } catch (error) {
-            console.error('Error creating user:', error);
-            setErrorMessage('An error occurred while creating the user.');
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorMessage('Failed to create user, ' + error.response.data.message);
+            } else {
+                console.error('Error creating user:', error);
+                setErrorMessage('Failed to create user. Please try again.');
+            }
         }
     };
 
@@ -92,17 +99,10 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Name</label>
                                                                     <div className="col-sm-9">
-                                                                    <input 
-    type="text" 
-    className="form-control" 
-    placeholder="Name" 
-    value={newUser.client_name} 
+                                                                    <input type="text" className="form-control" placeholder="Name" value={newUser.client_name} 
     onChange={(e) => {
         const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
-        setNewUser({ ...newUser, client_name: sanitizedValue });
-    }} 
-    required 
-/>
+        setNewUser({ ...newUser, client_name: sanitizedValue }); }} required />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -110,12 +110,7 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Phone No</label>
                                                                     <div className="col-sm-9">
-                                                                    <input 
-    type="text" 
-    className="form-control" 
-    placeholder="Phone No" 
-    value={newUser.client_phone_no} 
-    maxLength={10}
+                                                                    <input type="text" className="form-control" placeholder="Phone No" value={newUser.client_phone_no} maxLength={10}
     onChange={(e) => {
         const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
         setNewUser({ ...newUser, client_phone_no: sanitizedValue });

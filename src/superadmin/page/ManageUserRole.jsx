@@ -123,7 +123,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to user role " + responseData.message,
+                    text: "Failed to user role, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -203,9 +203,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 setTheadfixed('fixed');
                 setTheadBackgroundColor('white');
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user role",
+                    text: "Failed to update user role, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -236,9 +237,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 });
                 fetchUserRoles();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to DeActivate",
+                    text: "Failed to DeActivate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -269,9 +271,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 });
                 fetchUserRoles();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Activate",
+                    text: "Failed to Activate, " + responseData.message,
                     icon: "error"
                 });
             }

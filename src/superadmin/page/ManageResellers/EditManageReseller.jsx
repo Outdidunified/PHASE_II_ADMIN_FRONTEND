@@ -69,9 +69,10 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
                 });
                 EditBackManageResellers();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update reseller',
+                    text: 'Failed to update reseller, ' + responseData.message,
                     icon: 'error',
                 });
             }

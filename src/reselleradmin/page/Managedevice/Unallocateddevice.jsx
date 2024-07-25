@@ -6,26 +6,28 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 const Unallocateddevice = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
-
+    
+    // search
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
-
     const filterChargers = (chargers) => {
         return chargers.filter((charger) =>
             charger.charger_id.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
     };
 
+    // view unalloc page
     const navigateToViewChargerDetails = (charger) => {
         navigate('/reselleradmin/ViewUnalloc', { state: { charger } });
     };
 
     const fetchUnAllocatedChargerDetailsCalled = useRef(false); 
 
+    // fetch UnAllocated Charger
     const fetchUnAllocatedChargerDetails = useCallback(async () => {
         try {
             const response = await axios.post('/reselleradmin/FetchUnAllocatedCharger', {
@@ -83,10 +85,10 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
                                                         <th>Model</th>

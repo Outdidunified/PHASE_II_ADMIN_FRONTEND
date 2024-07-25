@@ -8,15 +8,8 @@ import Swal from 'sweetalert2';
 
 const CreateUser = ({ userInfo, handleLogout }) => {
     const [newUser, setNewUser] = useState({
-        username: '',
-        phone_no: '',
-        email_id: '',
-        role_id: '',
-        password: '',
-        role_name: '', // New field for Role name
-        client_name: '', // New field for Association name
+        username: '', phone_no: '', email_id: '', role_id: '', password: '', role_name: '', client_name: '',
     });
-
     const [errorMessage, setErrorMessage] = useState('');
     const [userRoles, setUserRoles] = useState([]);
     const [assname, setAssName] = useState([]);
@@ -27,6 +20,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
         fetchAssociationNames();
     }, []);
 
+    // fetch user roles
     const fetchUserRoles = async () => {
         try {
             const response = await axios.get('/clientadmin/FetchSpecificUserRoleForSelection');
@@ -40,6 +34,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // fetch association names
     const fetchAssociationNames = async () => {
         try {
             const response = await axios.get('/clientadmin/FetchAssociationForSelection');
@@ -53,8 +48,32 @@ const CreateUser = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // create users
     const createUser = async (e) => {
         e.preventDefault();
+
+        // Validate phone number
+        const phoneRegex = /^\d{10}$/;
+        if (!newUser.phone_no) {
+            setErrorMessage("Phone can't be empty.");
+            return;
+        }
+        if (!phoneRegex.test(newUser.phone_no)) {
+            setErrorMessage('Oops! Phone must be a 10-digit number.');
+            return;
+        }
+ 
+        // Validate password
+        const passwordRegex = /^\d{4}$/;
+        if (!newUser.password) {
+            setErrorMessage("Password can't be empty.");
+            return;
+        }
+        if (!passwordRegex.test(newUser.password)) {
+            setErrorMessage('Oops! Password must be a 4-digit number.');
+            return;
+        }
+
         try {
             // Find the role_id based on selected role_name
             const selectedRole = userRoles.find(role => role.role_name === newUser.role_name);
@@ -65,7 +84,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                 username: newUser.username,
                 phone_no: parseInt(newUser.phone_no),
                 email_id: newUser.email_id,
-                password: newUser.password,
+                password: parseInt(newUser.password),
                 role_id: selectedRole ? selectedRole.role_id : '',
                 association_id: selectedAssociation ? selectedAssociation.association_id : '',
                 created_by: userInfo.data.client_name,
@@ -73,29 +92,47 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                 reseller_id: userInfo.data.reseller_id
             };
 
-            await axios.post(`/clientadmin/CreateUser`, formattedUserData);
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "User created successfully",
-                showConfirmButton: false,      
-                timer: 1500
-            });
-           
-        } catch (error) {
-            console.error('Error creating user:', error);
-            setErrorMessage('Failed to create user. Please try again.');
+            const response = await axios.post(`/clientadmin/CreateUser`, formattedUserData);
+            
+            if (response.status === 200) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "User created successfully",
+                    showConfirmButton: false,      
+                    timer: 1500
+                });
+                createUserBack();
+            } else {
+                const responseData = await response.json();
+                setErrorMessage('Failed to add user, ' + responseData.message);
+            }
+        }  catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorMessage('Failed to create user, ' + error.response.data.message);
+            } else {
+                console.error('Error creating user:', error);
+                setErrorMessage('Failed to create user. Please try again.');
+            }
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
+    // back manage users 
+    const createUserBack = () => {
+        navigate('/clientadmin/ManageUsers');
+    };
+
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -113,7 +150,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                               Back
                                             </button>
                                         </div>
                                     </div>
@@ -129,16 +166,20 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                 <div className="card-body">
                                                     <h4 className="card-title">Create Users</h4>
                                                     <form className="form-sample" onSubmit={createUser} >
-                                                        <div className="row">
+                                                    <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">User Name</label>
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="User Name"
                                                                             value={newUser.username}
-                                                                            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                                                                            maxLength={25}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                                                setNewUser({ ...newUser, username: sanitizedValue.slice(0, 25) });
+                                                                            }}
                                                                             required
                                                                         />
                                                                     </div>
@@ -149,10 +190,14 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                                     <label className="col-sm-3 col-form-label">Phone No</label>
                                                                     <div className="col-sm-9">
                                                                         <input
-                                                                            type="number"
-                                                                            className="form-control"
+                                                                            type="text"
+                                                                            className="form-control" placeholder="Phone No"
                                                                             value={newUser.phone_no}
-                                                                            onChange={(e) => setNewUser({ ...newUser, phone_no: e.target.value })}
+                                                                            maxLength={10}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                                                                                setNewUser({ ...newUser, phone_no: sanitizedValue.slice(0, 10) }); // Update state with sanitized value limited to 10 characters
+                                                                            }}
                                                                             required
                                                                         />
                                                                     </div>
@@ -164,9 +209,16 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="email"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Email ID"
                                                                             value={newUser.email_id}
-                                                                            onChange={(e) => setNewUser({ ...newUser, email_id: e.target.value })}
+                                                                            onChange={(e) => {
+                                                                                const inputValue = e.target.value;
+                                                                                const sanitizedEmail = inputValue
+                                                                                    .replace(/\s/g, '') // Remove whitespace
+                                                                                    .replace(/[^a-zA-Z0-9@.]/g, '') // Remove non-alphanumeric characters except @ and .
+                                                                                    .replace(/@.*@/, '@'); // Ensure there's at most one @ character
+                                                                                setNewUser({ ...newUser, email_id: sanitizedEmail });
+                                                                            }}
                                                                             required
                                                                         />
                                                                     </div>
@@ -177,10 +229,15 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                                     <label className="col-sm-3 col-form-label">Password</label>
                                                                     <div className="col-sm-9">
                                                                         <input
-                                                                            type="password"
-                                                                            className="form-control"
+                                                                            type="text"
+                                                                            className="form-control" placeholder="Password"
                                                                             value={newUser.password}
-                                                                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                                                                            maxLength={4}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                                                                                setNewUser({ ...newUser, password: sanitizedValue.slice(0, 4) }); // Update state with sanitized value limited to 10 characters
+                                                                            }}
+                                                                            
                                                                             required
                                                                         />
                                                                     </div>
@@ -238,6 +295,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

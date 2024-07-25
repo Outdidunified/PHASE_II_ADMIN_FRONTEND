@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -7,58 +7,50 @@ import Sidebar from '../../components/Sidebar';
 import Swal from 'sweetalert2';
 
 const EditFinance = ({ userInfo, handleLogout }) => {
-    const [newFinance, setNewFinance] = useState({
-        association_id: '',
-        client_id: '',
-        eb_charges: '',
-        app_charges: '',
-        other_charges: '',
-        parking_charges: '',
-        rent_charges: '',
-        open_a_eb_charges: '',
-        open_other_charges: '',
-        finance_id: '',
-        status: '',
-    });
-
     const navigate = useNavigate();
     const location = useLocation();
+    const dataItems = location.state?.newfinance || JSON.parse(localStorage.getItem('editDeviceData'));
+    localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
+    const [eb_charges, setEbCharges] = useState(dataItems?.eb_charges || '');
+    const [app_charges, setAppCharges] = useState(dataItems?.app_charges || '');
+    const [other_charges, setOtherCharges] = useState(dataItems?.other_charges || '');
+    const [parking_charges, setParkingCharges] = useState(dataItems?.parking_charges || '');
+    const [rent_charges, setRentCharges] = useState(dataItems?.rent_charges || '');
+    const [open_a_eb_charges, setOpenAebCharges] = useState(dataItems?.open_a_eb_charges || '');
+    const [open_other_charges, setOpenOtherCharges] = useState(dataItems?.open_other_charges || '');
+    const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
+    const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        const { finance } = location.state || {};
-        if (finance) {
-            setNewFinance({
-                association_id: finance.association_id || '',
-                client_id: finance.client_id || '',
-                eb_charges: finance.eb_charges || '',
-                app_charges: finance.app_charges || '',
-                other_charges: finance.other_charges || '',
-                parking_charges: finance.parking_charges || '',
-                rent_charges: finance.rent_charges || '',
-                open_a_eb_charges: finance.open_a_eb_charges || '',
-                open_other_charges: finance.open_other_charges || '',
-                finance_id: finance.finance_id || '',
-                status: finance.status || '',
-            });
-        }
-    }, [location]);
+    // Select status
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
+    };
 
+    // update finance details
     const updateFinanceDetails = async (e) => {
         e.preventDefault();
+
+        // Eb Charges validation
+        const ebChargesRegex = /^\d{10}$/;
+        if (!eb_charges || !ebChargesRegex.test(eb_charges)) {
+            setErrorMessage('Eb charges must be a number.');
+            return;
+        }
+
         try {
             const formattedFinanceData = {
-                association_id: newFinance.association_id,
-                client_id: newFinance.client_id,
-                eb_charges: newFinance.eb_charges,
-                app_charges: newFinance.app_charges,
-                other_charges: newFinance.other_charges,
-                parking_charges: newFinance.parking_charges,
-                rent_charges: newFinance.rent_charges,
-                open_a_eb_charges: newFinance.open_a_eb_charges,
-                open_other_charges: newFinance.open_other_charges,
-                finance_id: newFinance.finance_id,
+                finance_id: dataItems.finance_id,
+                association_id: dataItems.association_id,
+                client_id: dataItems.client_id,
+                eb_charges: eb_charges,
+                app_charges: app_charges,
+                other_charges: other_charges,
+                parking_charges: parking_charges,
+                rent_charges: rent_charges,
+                open_a_eb_charges: open_a_eb_charges,
+                open_other_charges: open_other_charges,
                 modified_by: userInfo.data.client_name,
-                status: newFinance.status, // Assuming status is a boolean
+                status: status === 'true',
             };
     
             const response = await axios.post(`/clientadmin/UpdateFinanceDetails`, formattedFinanceData);
@@ -72,9 +64,10 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                 });
                 goBack();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error updating finance details',
+                    title: 'Error updating finance details, ' + responseData.message,
                     text: 'Please try again later.',
                     timer: 2000,
                     timerProgressBar: true
@@ -92,20 +85,17 @@ const EditFinance = ({ userInfo, handleLogout }) => {
         }
     };
     
-
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewFinance({ ...newFinance, [name]: value });
-    };
-
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -123,7 +113,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                                Back
                                             </button>
                                         </div>
                                     </div>
@@ -148,8 +138,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="finance_id"
-                                                                            value={newFinance.finance_id}
-                                                                            onChange={handleInputChange}
+                                                                            value={dataItems.finance_id}
                                                                             readOnly
                                                                         />
                                                                     </div>
@@ -163,8 +152,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="association_id"
-                                                                            value={newFinance.association_id}
-                                                                            onChange={handleInputChange}
+                                                                            value={dataItems.association_id}
                                                                             readOnly
                                                                         />
                                                                     </div>
@@ -178,8 +166,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="client_id"
-                                                                            value={newFinance.client_id}
-                                                                            onChange={handleInputChange}
+                                                                            value={dataItems.client_id}
                                                                             readOnly
                                                                         />
                                                                     </div>
@@ -193,8 +180,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="eb_charges"
-                                                                            value={newFinance.eb_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={eb_charges}
+                                                                            onChange={(e) => setEbCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -208,8 +195,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="app_charges"
-                                                                            value={newFinance.app_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={app_charges}
+                                                                            onChange={(e) => setAppCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -223,8 +210,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="other_charges"
-                                                                            value={newFinance.other_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={other_charges}
+                                                                            onChange={(e) => setOtherCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -238,8 +225,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="parking_charges"
-                                                                            value={newFinance.parking_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={parking_charges}
+                                                                            onChange={(e) => setParkingCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -253,8 +240,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="rent_charges"
-                                                                            value={newFinance.rent_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={rent_charges}
+                                                                            onChange={(e) => setRentCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -268,8 +255,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="open_a_eb_charges"
-                                                                            value={newFinance.open_a_eb_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={open_a_eb_charges}
+                                                                            onChange={(e) => setOpenAebCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -283,8 +270,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             name="open_other_charges"
-                                                                            value={newFinance.open_other_charges}
-                                                                            onChange={handleInputChange}
+                                                                            value={open_other_charges}
+                                                                            onChange={(e) => setOpenOtherCharges(e.target.value)}
                                                                             required
                                                                         />
                                                                     </div>
@@ -297,19 +284,17 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <select
                                                                             className="form-control"
-                                                                            name="status"
-                                                                            value={newFinance.status}
-                                                                            onChange={handleInputChange}
-                                                                            required
-                                                                            style={{ color: "black" }}
-                                                                        >
-                                                                            <option value="Active">Active</option>
-                                                                            <option value="Inactive">Inactive</option>
+                                                                            value={status}
+                                                                            onChange={handleStatusChange} 
+                                                                            required>
+                                                                            <option value="true">Active</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>
                                                             <button type="submit" className="btn btn-primary mr-2">Update</button>
                                                         </div>
@@ -322,6 +307,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

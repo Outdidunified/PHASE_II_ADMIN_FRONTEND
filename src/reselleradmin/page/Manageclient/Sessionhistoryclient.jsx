@@ -7,7 +7,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Sessionhistoryclient = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const location = useLocation();
-
     // State to hold session data
     const [sessions, setSessions] = useState([]);
 
@@ -27,13 +26,14 @@ const Sessionhistoryclient = ({ userInfo, handleLogout }) => {
         }
     }, [location.state]);
 
+    // backwards page navigation
     const goBack = () => {
         navigate(-1);
     };
 
 
-     // formatTimestamp 
-     const formatTimestamp = (originalTimestamp) => {
+    // formatTimestamp 
+    const formatTimestamp = (originalTimestamp) => {
         const date = new Date(originalTimestamp);
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');

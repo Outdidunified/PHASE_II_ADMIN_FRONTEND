@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -6,7 +6,9 @@ import Footer from '../components/Footer';
 
 const Wallet = ({ userInfo, handleLogout }) => {
     const [commissionAmount, setCommissionAmount] = useState('');
+    const fetchCommissionAmountCalled = useRef(false); // Ref to track if fetchCommissionAmount has been called
 
+    // fetch the commissiom amount
     useEffect(() => {
         const fetchCommissionAmount = async () => {
             try {
@@ -23,10 +25,11 @@ const Wallet = ({ userInfo, handleLogout }) => {
             }
         };
 
-        fetchCommissionAmount(); // Call the function inside useEffect
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Empty dependency array because fetchCommissionAmount doesn't depend on any external variables
+        if (!fetchCommissionAmountCalled.current && userInfo.data.user_id) {
+            fetchCommissionAmount();
+            fetchCommissionAmountCalled.current = true; // Mark fetchCommissionAmount as called
+        }
+    }, [userInfo.data.user_id]); // Include userInfo.data.user_id in the dependency array
 
     return (
         <div className='container-scroller'>

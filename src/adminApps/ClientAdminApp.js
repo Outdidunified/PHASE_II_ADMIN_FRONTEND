@@ -3,7 +3,6 @@ import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Login from '../clientadmin/page/Login';
 import Dashboard from '../clientadmin/page/Dashboard';
 // managedevice
-import ManageDevice from '../clientadmin/page/Managedevice/ManageDevice';
 import Allocateddevice from '../clientadmin/page/Managedevice/Allocateddevice';
 import Unallocateddevice from '../clientadmin/page/Managedevice/Unallocateddevice';
 import ViewAlloc from '../clientadmin/page/Managedevice/ViewAlloc';
@@ -83,14 +82,6 @@ const ClientAdminApp = () => {
           )}
         />
         {/* manage device */}
-        <Route
-          path="/ManageDevice"
-          element={loggedIn ? (
-            <ManageDevice userInfo={userInfo} handleLogout={handleLogout} />
-          ) : (
-            <Navigate to="/clientadmin" />
-          )}
-        />
         <Route
           path="/Allocateddevice"
           element={loggedIn ? (

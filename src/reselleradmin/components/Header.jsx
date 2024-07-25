@@ -1,68 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import $ from 'jquery';
 
 const Header = ({ handleLogout }) => {
-  const [reloadCount, setReloadCount] = useState(null);
-
+  
   useEffect(() => {
-    // Get the current reload count from localStorage
-    const count = localStorage.getItem('reloadCount');
-    const newCount = count !== null ? parseInt(count) + 0 : 1;
-
-    // Update the reload count in localStorage
-    localStorage.setItem('reloadCount', newCount);
-
-    // Set the reload count state
-    setReloadCount(newCount);
-  }, []);
-
-  useEffect(() => {
-    if (reloadCount === null) {
-      // Event handler for 'minimize' button click and touch
-      const handleToggleSidebar = () => {
-        $('body').toggleClass('sidebar-icon-only');
-      };
-
-      // Attach event listener for the 'minimize' button
-      $('[data-toggle="minimize"]').on("click touchstart", handleToggleSidebar);
-
-      // Clean up event listener when component unmounts
-      return () => {
-        $('[data-toggle="minimize"]').off("click touchstart", handleToggleSidebar);
-      };
-    }
-  }, [reloadCount]);
-
-  useEffect(() => {
-    // Event handler for 'offcanvas' button click and touch
-    const handleToggleOffcanvas = () => {
-      $('.sidebar-offcanvas').toggleClass('active');
+    // Event handler for 'minimize' button click and touch
+    const handleToggleSidebar = () => {
+      $('body').toggleClass('sidebar-icon-only'); // Toggle sidebar class using jQuery
     };
-  
-    // Attach event listener for the 'offcanvas' button
-    $('[data-toggle="offcanvas"]').on("click touchstart", handleToggleOffcanvas);
-  
+
+    // Attach event listener for the 'minimize' button
+    $('[data-toggle="minimize"]').on("click touchstart", handleToggleSidebar);
+
     // Clean up event listener when component unmounts
     return () => {
-      $('[data-toggle="offcanvas"]').off("click touchstart", handleToggleOffcanvas);
+      $('[data-toggle="minimize"]').off("click touchstart", handleToggleSidebar);
     };
-  }, [reloadCount]);
+  }, []);
 
-  const handleMinimizeClick = () => {
-    const handleToggleSidebar = () => {
-      $('body').toggleClass('sidebar-icon-only');
-    };
-  
-    handleToggleSidebar();
-  
-    // Set reloadCount to null for 2 seconds, then set to 1
-    setReloadCount(null);
-    setTimeout(() => {
-      setReloadCount(0); // or any other value to indicate that the sidebar toggle should be hidden
-    }, 1000);
-  };
-  
   return (
     // <!-- Navbar -->
     <nav className="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
@@ -71,7 +27,7 @@ const Header = ({ handleLogout }) => {
        <Link className="navbar-brand brand-logo-mini" href="index.html"><img src="../../images/dashboard/EV_Logo_16-12-2023.png" alt="logo"/></Link>
       </div>
       <div className="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button className="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize" onClick={handleMinimizeClick}>
+        <button className="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span className="icon-menu"></span>
         </button>
         <ul className="navbar-nav navbar-nav-right">

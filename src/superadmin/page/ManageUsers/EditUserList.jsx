@@ -75,9 +75,10 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                 });
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update user',
+                    text: 'Failed to update user, ' + responseData.message,
                     icon: 'error',
                 });
             }
@@ -164,7 +165,7 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Wallet</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" value={wallet_bal} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setWalletBal(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" value={wallet_bal ? wallet_bal : '0' } onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setWalletBal(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>

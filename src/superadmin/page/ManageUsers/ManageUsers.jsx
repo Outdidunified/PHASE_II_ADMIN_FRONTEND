@@ -91,7 +91,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
             return;
         }
         try {
-            const roleID = parseInt(role);
+            const roleID = parseInt(role.role_id);
             const resellerID = parseInt(reseller_id);
             const password = parseInt(Password);
             const phone_no = parseInt(phoneNo);
@@ -122,7 +122,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                 const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to add user " + responseData.message,
+                    text: "Failed to add user, " + responseData.message,
                     icon: "error"
                 });
             }

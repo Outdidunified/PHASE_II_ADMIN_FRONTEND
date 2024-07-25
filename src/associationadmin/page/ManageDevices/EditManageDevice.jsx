@@ -62,9 +62,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                 setWifiPassword('');
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update device",
+                    text: "Failed to update device, " + responseData.message,
                     icon: "error"
                 });
             }

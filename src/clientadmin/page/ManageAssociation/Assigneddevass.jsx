@@ -1,50 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useRef } from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Assigneddevass = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredData, setFilteredData] = useState([]);
     const [originalData, setOriginalData] = useState([]);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const association_id = location.state?.association_id || JSON.parse(localStorage.getItem('client_id'));
+
+    const fetchChargerDetailsCalled = useRef(false);
+
+    // fetch charger details
+    useEffect(() => {
+        const fetchChargerDetails = async () => {
+            try {
+                const response = await fetch('/clientadmin/FetchChargerDetailsWithSession', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ association_id }),
+                });
+                if (response.ok) {
+                    const responseData = await response.json();
+                    setOriginalData(responseData.data);
+                    setFilteredData(responseData.data); // Initialize filtered data with all data
+                } else {
+                    console.error('Failed to fetch assigned chargers');
+                }
+            } catch (error) {
+                console.error('An error occurred while fetching assigned chargers');
+                console.error('Error:', error);
+            }
+        };
+
+        if (!fetchChargerDetailsCalled.current && association_id) {
+            fetchChargerDetails();
+            fetchChargerDetailsCalled.current = true; // Mark fetchChargerDetails as called
+        }
+    }, [association_id]);
 
     useEffect(() => {
-        const { association } = location.state || {};
-        if (association && association.association_id) {
-            const association_id = association.association_id;
-            fetchAssignedDevices(association_id); // Call fetchAssignedDevices with association_id
+        if (association_id) {
+            localStorage.setItem('association_id', association_id);
         }
-    }, [location]);
+    }, [association_id]);
 
-    const fetchAssignedDevices = async (association_id) => {
-        try {
-            const response = await axios.post('/clientadmin/FetchChargerDetailsWithSession', {
-                association_id: association_id,
-            });
-
-            if (response.data.status === 'Success' && response.data.data.length > 0) {
-                const fetchedData = response.data.data.map(item => ({
-                    charger_id: item.charger_id,
-                    finance_id: item.finance_id,
-                    client_commission: item.client_commission,
-                    sessiondata: item.sessiondata // Ensure sessiondata is included
-                }));
-                setFilteredData(fetchedData);
-                setOriginalData(fetchedData); // Keep original data for resetting
-            } else {
-                console.log('No assigned devices found');
-                setFilteredData([]);
-                setOriginalData([]);
-            }
-        } catch (error) {
-            console.error('Error fetching assigned devices:', error);
-        }
-    };
-
+    // search
     const handleSearch = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
@@ -61,25 +67,28 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
+    // view session history page
     const navsessionhistory = (item) => {
         const sessiondata = item.sessiondata[0];
-      
-       
         navigate('/clientadmin/Sessionhistoryass', { state: { sessiondata } });
     };
 
+    // view assign finance page
     const navtoassignfinance = (charger_id) => {
         navigate('/clientadmin/assignfinance', { state: { charger_id } }); // Navigate to assignfinance page with charger_id
     };
 
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -96,7 +105,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                 className="btn btn-success"
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
-                                            >Go back
+                                            >Back
                                             </button>
                                         </div>
                                     </div>
@@ -123,7 +132,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                         <input
                                                             type="text"
                                                             className="form-control"
-                                                            placeholder="Search by Charger Id"
+                                                            placeholder="Search now"
                                                             value={searchQuery}
                                                             onChange={handleSearch}
                                                         />
@@ -131,10 +140,10 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
                                                         <th>Finance_Id</th>
@@ -154,7 +163,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                                 <td>
                                                                     <button
                                                                         type="button"
-                                                                        className={`btn btn-outline-success btn-icon-text ${item.finance_id ? 'disabled' : ''}`}
+                                                                        className={`btn btn-outline-warning btn-icon-text ${item.finance_id ? 'disabled' : ''}`}
                                                                         onClick={() => navtoassignfinance(item.charger_id)}
                                                                         style={{ marginBottom: '10px', marginRight: '10px' }}
                                                                         disabled={item.finance_id}
@@ -165,7 +174,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                                 <td>
                                                                     <button
                                                                         type="button"
-                                                                        className="btn btn-outline-dark btn-icon-text"
+                                                                        className="btn btn-outline-success btn-icon-text"
                                                                         onClick={() => navsessionhistory(item)}
                                                                         style={{ marginBottom: '10px', marginLeft: '10px' }}
                                                                     >
@@ -176,7 +185,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr>
-                                                            <td colSpan="8" className="text-center">No associations found.</td>
+                                                            <td colSpan="6" className="text-center">No associations found.</td>
                                                         </tr>
                                                     )}
                                                 </tbody>
@@ -187,6 +196,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

@@ -39,8 +39,8 @@ const Profile = ({ userInfo, handleLogout }) => {
                     const associationDetails = data.data.association_details[0] || {};
                     setPostsAss(associationDetails);
                 } else {
-                    setErrorMessage('Failed to fetch profile');
-                    console.error('Failed to fetch profile:', response.statusText);
+                    setErrorMessage('Failed to fetch profile, ' + response.statusText); 
+                    console.error('Failed to fetch profile:', response.statusText); 
                 }
             } catch (error) {
                 setErrorMessage('An error occurred while fetching the profile');
@@ -107,11 +107,11 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "Association profile updated successfully",
                     icon: "success"
                 });       
-                        
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update association profile",
+                    text: "Failed to update association profile, " +responseData.message,
                     icon: "error"
                 });
             }
@@ -174,9 +174,10 @@ const Profile = ({ userInfo, handleLogout }) => {
                     icon: "success"
                 });               
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user profile",
+                    text: "Failed to update user profile, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -217,7 +218,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                         <form className="forms-sample" onSubmit={addAssProfileUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputUsername1">Username</label>
-                                                <input type="text" className="form-control" placeholder="Username" value={association_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue);}} required/>
+                                                <input type="text" className="form-control" placeholder="Username" value={association_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue);}} readOnly required/>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Email address</label>

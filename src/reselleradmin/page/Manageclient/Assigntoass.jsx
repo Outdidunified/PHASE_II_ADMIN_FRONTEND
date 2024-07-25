@@ -5,16 +5,15 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 
-const Asssigntoass = ({ userInfo, handleLogout }) => {
+const Assigntoass = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const fetchAsssigntoassDataCalled = useRef(false);
 
+    // Data localstorage
     useEffect(() => {
         const client_id = getClientIdFromLocalStorage();
         if (client_id && !fetchAsssigntoassDataCalled.current) {
@@ -24,6 +23,7 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
         }
     }, [location]);
 
+    // Fetch assigned association
     const fetchAsssigntoassData = async (client_id) => {
         try {
             const response = await axios.post('/reselleradmin/FetchAssignedAssociation', {
@@ -37,7 +37,6 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
                     charger_id: item.charger_id
                     // Add other fields you want to fetch from the response
                 }));
-
                 setData(fetchedData);
                 setFilteredData(fetchedData);
             } else {
@@ -56,6 +55,7 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
         return client_id;
     };
 
+    // search
     const handleSearch = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
@@ -66,6 +66,7 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
         setFilteredData(filtered);
     };
 
+    // back manage client
     const goBack = () => {
         navigate('/reselleradmin/ManageClient');
     };
@@ -120,10 +121,10 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Association name</th>
                                                     </tr>
@@ -157,4 +158,4 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
     );
 };
 
-export default Asssigntoass;
+export default Assigntoass;

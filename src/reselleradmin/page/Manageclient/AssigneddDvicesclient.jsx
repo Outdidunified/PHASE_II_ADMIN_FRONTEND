@@ -8,11 +8,11 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const client_id = location.state?.client_id || JSON.parse(localStorage.getItem('client_id'));
-
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const fetchChargerDetailsCalled = useRef(false);
 
+    // Fetch charger details
     useEffect(() => {
         const fetchChargerDetails = async () => {
             try {
@@ -42,6 +42,7 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
         }
     }, [client_id]);
 
+    // Data localstorage 
     useEffect(() => {
         if (client_id) {
             localStorage.setItem('client_id', client_id);
@@ -117,10 +118,10 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
                                                         <th>Session History</th>

@@ -15,7 +15,7 @@ import ManageClient from '../reselleradmin/page/Manageclient/ManageClient';
 import CreateClients from '../reselleradmin/page/Manageclient/Createclients';
 import Viewclient from '../reselleradmin/page/Manageclient/viewclient';
 import Updateclient from '../reselleradmin/page/Manageclient/updateclient';
-import Asssigntoass from '../reselleradmin/page/Manageclient/Asssigntoass';
+import Assigntoass from '../reselleradmin/page/Manageclient/Assigntoass';
 import Assigneddevicesclient from "../reselleradmin/page/Manageclient/AssigneddDvicesclient"
 import Sessionhistoryclient from '../reselleradmin/page/Manageclient/Sessionhistoryclient';
 
@@ -196,9 +196,9 @@ const ResellerAdminApp = () => {
           )}
         />
         <Route
-          path="/Asssigntoass"
+          path="/Assigntoass"
           element={loggedIn ? (
-            <Asssigntoass userInfo={userInfo} handleLogout={handleLogout} />
+            <Assigntoass userInfo={userInfo} handleLogout={handleLogout} />
           ) : (
             <Navigate to="/reselleradmin" />
           )}

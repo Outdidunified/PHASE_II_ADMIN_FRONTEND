@@ -6,12 +6,13 @@ const Login = ({ handleLogin }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // login
   const handleLoginFormSubmit = async (e) => {
     e.preventDefault();
     try {
       const passwordAsInteger = parseInt(password, 10);
   
-  // Perform API call for login
+      // Perform API call for login
       const response = await fetch('/reselleradmin/CheckLoginCredentials', {
          method: 'POST',
            headers: {

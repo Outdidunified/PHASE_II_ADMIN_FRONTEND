@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -7,46 +7,39 @@ import Sidebar from '../../components/Sidebar';
 import Swal from 'sweetalert2';
 
 const Editass = ({ userInfo, handleLogout }) => {
-    const [newAss, setNewAss] = useState({
-        association_address: '',
-        association_email_id: '',
-        association_id: '',
-        association_name: '',
-        association_phone_no: '',
-        
-        status: ''
-    });
-
     const navigate = useNavigate();
     const location = useLocation();
+    const dataItems = location.state?.newass || JSON.parse(localStorage.getItem('editDeviceData'));
+    localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
+    const [association_name, setAssociationName] = useState(dataItems?.association_name || '');
+    const [association_phone_no, setAssociationPhoneNo] = useState(dataItems?.association_phone_no || '');
+    const [association_address, setAssociationAddress] = useState(dataItems?.association_address || '');
+    const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
+    const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        const { association } = location.state || {};
-        if (association) {
-            setNewAss({
-                association_address: association.association_address || '',
-                association_email_id: association.association_email_id || '',
-                association_id: association.association_id || '',
-                association_name: association.association_name || '',
-                association_phone_no: association.association_phone_no || '',
-                
-                status: association.status || ''
-            });
-        }
-    }, [location]);
+    // Select status
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
+    };
 
+    // update association details
     const updateAssociationDetails = async (e) => {
         e.preventDefault();
+        // Phone number validation
+        const phoneRegex = /^\d{10}$/;
+        if (!association_phone_no || !phoneRegex.test(association_phone_no)) {
+            setErrorMessage('Phone number must be a 10-digit number.');
+            return;
+        }
         try {
             const formattedAssData = {
-                association_address: newAss.association_address,
-                association_email_id: newAss.association_email_id,
-                association_id: newAss.association_id,
-                association_name: newAss.association_name,
-                association_phone_no: newAss.association_phone_no,
+                association_address: association_address,
+                association_email_id: dataItems.association_email_id,
+                association_id: dataItems.association_id,
+                association_name: association_name,
+                association_phone_no: association_phone_no,
                 modified_by:userInfo.data.client_name,
-                
-                status: newAss.status
+                status: status === 'true',
             };
 
             const response = await axios.post(`/clientadmin/UpdateAssociationUser`, formattedAssData);
@@ -58,12 +51,13 @@ const Editass = ({ userInfo, handleLogout }) => {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                goBack();
+                editBack();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     icon: 'error',
                     title: 'Error updating association details',
-                    text: 'Please try again later.',
+                    text: 'Please try again later. ' +responseData.message,
                     timer: 2000,
                     timerProgressBar: true
                 });
@@ -80,19 +74,22 @@ const Editass = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewAss({ ...newAss, [name]: value });
+    // view manage association details 
+    const editBack = () => {
+        navigate('/clientadmin/ManageAssociation')  
     };
 
-    return (
+      return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -110,7 +107,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                                Back
                                             </button>
                                         </div>
                                     </div>
@@ -129,29 +126,17 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association Address</label>
+                                                                    <label className="col-sm-3 col-form-label">Association  Name</label>
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
                                                                             className="form-control"
-                                                                            name="association_address"
-                                                                            value={newAss.association_address}
-                                                                            onChange={handleInputChange}
-                                                                            required
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association Email</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="email"
-                                                                            className="form-control"
-                                                                            name="association_email_id"
-                                                                            value={newAss.association_email_id}
-                                                                            onChange={handleInputChange}
+                                                                            value={association_name}
+                                                                            maxLength={25}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                                                setAssociationName(sanitizedValue.slice(0, 25));
+                                                                            }}
                                                                             required
                                                                         />
                                                                     </div>
@@ -164,25 +149,8 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                                         <input
                                                                             type="text"
                                                                             className="form-control"
-                                                                            name="association_id"
-                                                                            value={newAss.association_id}
-                                                                            onChange={handleInputChange}
+                                                                            value={dataItems.association_id}
                                                                             readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association Name</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            name="association_name"
-                                                                            value={newAss.association_name}
-                                                                            onChange={handleInputChange}
-                                                                            required
                                                                         />
                                                                     </div>
                                                                 </div>
@@ -194,35 +162,62 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                                         <input
                                                                             type="text"
                                                                             className="form-control"
-                                                                            name="association_phone_no"
-                                                                            value={newAss.association_phone_no}
-                                                                            onChange={handleInputChange}
+                                                                            value={association_phone_no}
+                                                                            maxLength={10}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
+                                                                                setAssociationPhoneNo(sanitizedValue.slice(0, 10));
+                                                                            }}
                                                                             required
                                                                         />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
-                                                            
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Association Email</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="email"
+                                                                            className="form-control"
+                                                                            value={dataItems.association_email_id}
+                                                                            readOnly
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Association  Address</label>
+                                                                    <div className="col-sm-9">
+                                                                        <textarea
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            maxLength={150}
+                                                                            value={association_address}
+                                                                            onChange={(e) => setAssociationAddress(e.target.value)}
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Status</label>
                                                                     <div className="col-sm-9">
                                                                         <select
                                                                             className="form-control"
-                                                                            name="status"
-                                                                            value={newAss.status}
-                                                                            onChange={handleInputChange}
-                                                                            required
-                                                                            style={{ color: "black" }}
-                                                                        >
-                                                                            <option value="Active">Active</option>
-                                                                            <option value="Inactive">Inactive</option>
+                                                                            value={status}
+                                                                            onChange={handleStatusChange} 
+                                                                            required>
+                                                                            <option value="true">Active</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>
                                                             <button type="submit" className="btn btn-primary mr-2">Update</button>
                                                         </div>
@@ -235,6 +230,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>
