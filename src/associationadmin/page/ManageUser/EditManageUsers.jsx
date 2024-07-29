@@ -33,15 +33,25 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
     const editManageUser = async (e) => {
         e.preventDefault();
 
+        // Validate phone number
         const phoneRegex = /^\d{10}$/;
-        if (!dataItem.phone_no || !phoneRegex.test(dataItem.phone_no)) {
-            setErrorMessage('Phone number must be a 10-digit number.');
+        if (!phone_no) {
+            setErrorMessage("Phone can't be empty.");
             return;
         }
-
+        if (!phoneRegex.test(phone_no)) {
+            setErrorMessage('Oops! Phone must be a 10-digit number.');
+            return;
+        }
+ 
+        // Validate password
         const passwordRegex = /^\d{4}$/;
-        if (!dataItem.password || !passwordRegex.test(dataItem.password)) {
-            setErrorMessage('Password must be a 4-digit number.');
+        if (!password) {
+            setErrorMessage("Password can't be empty.");
+            return;
+        }
+        if (!passwordRegex.test(password)) {
+            setErrorMessage('Oops! Password must be a 4-digit number.');
             return;
         }
 

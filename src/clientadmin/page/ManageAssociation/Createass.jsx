@@ -105,6 +105,7 @@ const Createass = ({ userInfo, handleLogout }) => {
     className="form-control" 
     placeholder="Association Name" 
     value={newUser.association_name} 
+    maxLength={25}
     onChange={(e) => {
         const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
         setNewUser({ ...newUser, association_name: sanitizedValue });

@@ -216,7 +216,9 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{dataItem.charger_id ? dataItem.charger_id : '-'}</td>
-                                                                <td>{dataItem.model ? dataItem.model : '-'}</td>
+                                                                <td className="py-1">
+                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
+                                                                </td>
                                                                 <td>{dataItem.type ?  dataItem.type : '-'}</td>
                                                                 <td>
                                                                     {dataItem.gun_connector === 1

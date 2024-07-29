@@ -19,6 +19,11 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
         setShowAddForm(prevState => !prevState);
     };
     const closeAddModal = () => {
+        setRole('');
+        setuserName(''); 
+        setemailID(''); 
+        setPassword(''); 
+        setPhone(''); 
         setShowAddForm(false);
         setTheadsticky('sticky');
         setTheadfixed('fixed');
@@ -85,6 +90,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                     title: "User added successfully",
                     icon: "success"
                 });
+                setRole('');
                 setuserName(''); 
                 setemailID(''); 
                 setPassword(''); 

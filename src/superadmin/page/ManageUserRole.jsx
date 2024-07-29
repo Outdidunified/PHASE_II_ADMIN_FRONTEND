@@ -84,6 +84,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
         setShowAddForm(prevState => !prevState); // Toggles the form visibility
     };
     const closeAddModal = () => {
+        setuserRole(''); 
         setShowAddForm(false); // Close the form
         setTheadsticky('sticky');
         setTheadfixed('fixed');

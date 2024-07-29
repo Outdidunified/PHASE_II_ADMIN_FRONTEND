@@ -99,7 +99,7 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Name</label>
                                                                     <div className="col-sm-9">
-                                                                    <input type="text" className="form-control" placeholder="Name" value={newUser.client_name} 
+                                                                    <input type="text" className="form-control" placeholder="Name" value={newUser.client_name} maxLength={25}
     onChange={(e) => {
         const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
         setNewUser({ ...newUser, client_name: sanitizedValue }); }} required />

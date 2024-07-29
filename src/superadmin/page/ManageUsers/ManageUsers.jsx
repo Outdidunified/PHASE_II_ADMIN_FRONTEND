@@ -90,48 +90,94 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
             setErrorMessage('Oops! Password must be a 4-digit number.');
             return;
         }
-        try {
-            const roleID = parseInt(role.role_id);
-            const resellerID = parseInt(reseller_id);
-            const password = parseInt(Password);
-            const phone_no = parseInt(phoneNo);
-            // const wallet_bal = parseInt(walletBal);
-            const response = await fetch('/superadmin/CreateUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
-            });
-            if (response.ok) {
-                Swal.fire({
-                    title: "User added successfully",
-                    icon: "success"
+
+        // resellerID
+        if(reseller_id){
+            try {
+                const roleID = parseInt(role.role_id);
+                const resellerID = parseInt(reseller_id);
+                const password = parseInt(Password);
+                const phone_no = parseInt(phoneNo);
+                const response = await fetch('/superadmin/CreateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
                 });
-                setuserName(''); 
-                setemailID(''); 
-                setPassword(''); 
-                setPhone(''); 
-                // setWallet(''); 
-                setShowAddForm(false);
-                setTheadsticky('sticky');
-                setTheadfixed('fixed');
-                setTheadBackgroundColor('white');
-                fetchUsers();
-            } else {
-                const responseData = await response.json();
+                if (response.ok) {
+                    Swal.fire({
+                        title: "User added successfully",
+                        icon: "success"
+                    });
+                    setRole('');
+                    setSelectedReseller('');
+                    setuserName(''); 
+                    setemailID(''); 
+                    setPassword(''); 
+                    setPhone(''); 
+                    setShowAddForm(false);
+                    setTheadsticky('sticky');
+                    setTheadfixed('fixed');
+                    setTheadBackgroundColor('white');
+                    fetchUsers();
+                } else {
+                    const responseData = await response.json();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to add user, " + responseData.message,
+                        icon: "error"
+                    });
+                }
+            }catch (error) {
                 Swal.fire({
-                    title: "Error",
-                    text: "Failed to add user, " + responseData.message,
+                    title: "Error:", error,
+                    text: "An error occurred while adding the user",
                     icon: "error"
                 });
             }
-        }catch (error) {
-            Swal.fire({
-                title: "Error:", error,
-                text: "An error occurred while adding the user",
-                icon: "error"
-            });
+        }else{
+            try {
+                const roleID = parseInt(role.role_id);
+                const password = parseInt(Password);
+                const phone_no = parseInt(phoneNo);
+                const response = await fetch('/superadmin/CreateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role_id:roleID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
+                });
+                if (response.ok) {
+                    Swal.fire({
+                        title: "User added successfully",
+                        icon: "success"
+                    });
+                    setRole('');
+                    setuserName(''); 
+                    setemailID(''); 
+                    setPassword(''); 
+                    setPhone(''); 
+                    setShowAddForm(false);
+                    setTheadsticky('sticky');
+                    setTheadfixed('fixed');
+                    setTheadBackgroundColor('white');
+                    fetchUsers();
+                } else {
+                    const responseData = await response.json();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to add user, " + responseData.message,
+                        icon: "error"
+                    });
+                }
+            }catch (error) {
+                Swal.fire({
+                    title: "Error:", error,
+                    text: "An error occurred while adding the user",
+                    icon: "error"
+                });
+            }
         }
     };
     // Add Manage User end

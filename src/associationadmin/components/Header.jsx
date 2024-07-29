@@ -1,21 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
 
 const Header = ({ handleLogout }) => {
+  const toggleButtonRef = useRef(null);
 
   useEffect(() => {
-    // Event handler for 'minimize' button click and touch
     const handleToggleSidebar = () => {
-      $('body').toggleClass('sidebar-icon-only'); // Toggle sidebar class using jQuery
+     document.body.classList.toggle('sidebar-icon-only');
     };
 
-    // Attach event listener for the 'minimize' button
-    $('[data-toggle="minimize"]').on("click touchstart", handleToggleSidebar);
+    const button = toggleButtonRef.current;
+    
+    // Ensure the button exixts
+    if(button) {
+      button.addEventListener('click', handleToggleSidebar);
+    }
 
-    // Clean up event listener when component unmounts
+    // Clean up event listener 
     return () => {
-      $('[data-toggle="minimize"]').off("click touchstart", handleToggleSidebar);
+      if(button) {
+        button.removeEventListener('click', handleToggleSidebar);
+      }
     };
   }, []);
 
@@ -27,7 +32,7 @@ const Header = ({ handleLogout }) => {
         <Link className="navbar-brand brand-logo-mini" href="index.html"><img src="../../images/dashboard/EV_Logo_16-12-2023.png" alt="logo"/></Link>
       </div>
       <div className="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button className="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+        <button className="navbar-toggler navbar-toggler align-self-center" type="button" ref={toggleButtonRef}>
           <span className="icon-menu"></span>
         </button>
         <ul className="navbar-nav navbar-nav-right">
