@@ -230,6 +230,8 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
         try {
             const url = `/superadmin/FetchUsers`;
             const res = await axios.get(url);
+            // const activeUsers = res.data.data.filter(user => user.status === true);
+            // setData(activeUsers);
             setData(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -389,6 +391,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 <thead style={{ textAlign: 'center', position: theadsticky, tableLayout: theadfixed, top: 0, backgroundColor: theadBackgroundColor, zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
+                                                        <th>Role Name</th>
                                                         <th>User Name</th>
                                                         <th>Email ID</th>
                                                         <th>Status</th>
@@ -409,6 +412,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             posts.map((dataItem, index) => (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
+                                                                <td>{dataItem.role_name ? dataItem.role_name : '-'}</td>
                                                                 <td>{dataItem.username ? dataItem.username : '-'}</td>
                                                                 <td>{dataItem.email_id ? dataItem.email_id : '-'}</td>                                                              
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
@@ -419,7 +423,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                             <tr>
-                                                                <td colSpan="5" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                                <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
                                                             </tr>
                                                         )
                                                     )}

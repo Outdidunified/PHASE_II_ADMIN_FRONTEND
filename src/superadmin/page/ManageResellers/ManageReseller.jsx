@@ -132,8 +132,8 @@ const ManageReseller = ({ userInfo, handleLogout }) => {
                                                         <th>Email ID</th>
                                                         <th>Status</th>
                                                         <th>Option</th>
-                                                        <th>Assign Client</th>
-                                                        <th>Assign Charger</th>
+                                                        <th>Assigned Client</th>
+                                                        <th>Assigned Charger</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody style={{textAlign:'center'}}>

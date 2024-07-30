@@ -11,7 +11,7 @@ const Viewuser = ({ userInfo, handleLogout }) => {
         autostop_time_is_checked: false, autostop_unit: '', autostop_unit_is_checked: false,
         client_id: '', created_by: '', created_date: '', email_id: '', modified_by: '', modified_date: '',
         password: '',  phone_no: '', reseller_id: '', role_id: '', status: '', user_id: '', username: '',
-        wallet_bal: '', _id: '',
+        wallet_bal: '',   role_name: '', client_name: '', association_name: '', _id: '',
     });
 
     const location = useLocation();
@@ -27,7 +27,9 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                 created_by: user.created_by || '', created_date: user.created_date ? new Date(user.created_date).toLocaleString() : '',
                 email_id: user.email_id || '', modified_by: user.modified_by || '', modified_date: user.modified_date ? new Date(user.modified_date).toLocaleString() : '',
                 password: user.password || '', phone_no: user.phone_no || '', reseller_id: user.reseller_id || '',
-                role_id: user.role_id || '', status: user.status || '', user_id: user.user_id || '', username: user.username || '', wallet_bal: user.wallet_bal || '', _id: user._id || '',
+                role_id: user.role_id || '', status: user.status || '', user_id: user.user_id || '', username: user.username || '', wallet_bal: user.wallet_bal || '', 
+                role_name: user.role_name || '', client_name: user.client_name || '',
+                association_name: user.association_name || '', _id: user._id || '',
             });
         // Save to localStorage
         localStorage.setItem('userData', JSON.stringify(user));
@@ -116,12 +118,12 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Client Id: <span style={{fontWeight:'normal'}}>{newUser.client_id ? newUser.client_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Client Name: <span style={{fontWeight:'normal'}}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Name: <span style={{fontWeight:'normal'}}>{newUser.username ? newUser.username : '-'}</span></div>  
+                                                                <div className="col-sm-12">User Name: <span style={{fontWeight:'normal'}}>{newUser.username ? newUser.username : '-'}</span></div>  
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
@@ -143,14 +145,14 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Association ID: <span style={{fontWeight:'normal'}}>{newUser.association_id ? newUser.association_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Association Name: <span style={{fontWeight:'normal'}}>{newUser.association_name ? newUser.association_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Role ID: <span style={{fontWeight:'normal'}}>{newUser.role_id ? newUser.role_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Role Name: <span style={{fontWeight:'normal'}}>{newUser.role_name ? newUser.role_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">

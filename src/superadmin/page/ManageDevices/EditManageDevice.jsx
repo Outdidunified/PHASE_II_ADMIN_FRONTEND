@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
@@ -54,6 +54,25 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
         setType(e.target.value);
     };
 
+    const [errorMessageCurrent, setErrorMessageCurrent] = useState('');
+    const [errorMessagePower, setErrorMessagePower] = useState('');
+
+    // Set timeout
+    useEffect(() => {
+        if (errorMessageCurrent) {
+            const timeout = setTimeout(() => setErrorMessageCurrent(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessagePower) {
+            const timeout = setTimeout(() => setErrorMessagePower(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessage) {
+            const timeout = setTimeout(() => setErrorMessage(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+    }, [errorMessageCurrent, errorMessagePower, errorMessage]); 
+    
     // Update manage device
     const editManageDevice = async (e) => {
         e.preventDefault();
@@ -244,8 +263,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             
             // Ensure the value is within the specified range
             if (value < 1) {
-                value = '1';
+                value = '';
             } else if (value > 32) {
+                setErrorMessageCurrent('Max Current limit is 1 to 32');
+
                 value = '32';
             }
             
@@ -254,6 +275,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
         }} 
         required 
     />
+    {errorMessageCurrent && <div className="text-danger">{errorMessageCurrent}</div>}
 </div>
 
                                                                 </div>
@@ -271,8 +293,9 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                             
                                                                             // Ensure the value is within the specified range
                                                                             if (value < 1) {
-                                                                                value = '1';
-                                                                            } else if (value > 32) {
+                                                                                value = '';
+                                                                            } else if (value > 200) {
+                                                                                setErrorMessagePower('Max Power limit is 1 to 200');
                                                                                 value = '200';
                                                                             }
                                                                             
@@ -280,6 +303,8 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                             setMaxPower(value);
                                                                         }} 
                                                                          required/> 
+                                                                                                                                                  {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
+
                                                                     </div>
                                                                 </div>
                                                             </div>

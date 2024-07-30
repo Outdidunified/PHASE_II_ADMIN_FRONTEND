@@ -103,6 +103,7 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                 <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
+                                                        <th>Role Name</th>
                                                         <th>User Name</th>
                                                         <th>Email ID</th>
                                                         <th>Status</th>
@@ -114,8 +115,9 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                         filteredUsers.map((user, index) => (
                                                             <tr key={user.user_id}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{user.username}</td>
-                                                                <td>{user.email_id}</td>
+                                                                <td>{user.role_name ? user.role_name : '-'}</td>
+                                                                <td>{user.username ? user.username : '-'}</td>
+                                                                <td>{user.email_id ? user.email_id : '-'}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
                                                                     {user.status ? 'Active' : 'DeActive'}
                                                                 </td>
@@ -126,7 +128,7 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="5">No Record Found</td>
+                                                            <td colSpan="6">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

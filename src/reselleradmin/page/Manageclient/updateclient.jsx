@@ -40,7 +40,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                 client_phone_no: parseInt(client_phone_no),
                 client_address: client_address,
                 modified_by: userInfo.data.email_id,
-                status: status // Assuming status is a boolean
+                status: status === 'true',
             };
 
             // Send POST request to update client
@@ -183,14 +183,9 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Status</label>
                                                                     <div className="col-sm-9">
-                                                                    <select
-                                                                            className="form-control"
-                                                                            value={status}
-                                                                            onChange={handleStatusChange} 
-                                                                            required>
-                                                                         
+                                                                        <select className="form-control" value={status} onChange={handleStatusChange} required>
                                                                             <option value="true">Active</option>
-                                                                            <option value="false">DeActive</option>
+                                                                            <option value="false">Deactive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>

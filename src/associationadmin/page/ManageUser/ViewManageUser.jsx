@@ -10,29 +10,21 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const [newUser, setNewUser] = useState({
         username: '', email_id: '', password: '', phone_no: '', wallet_bal: '', role_id: '', user_id: '', status: '',
-        client_id: '', reseller_id: '', association_id:'', created_by:'', created_date:'', modified_by:'', modified_date:'', _id: '',
+        client_id: '', reseller_id: '', association_id:'', created_by:'', created_date:'', modified_by:'', modified_date:'', 
+        role_name: '', client_name: '', reseller_name: '', association_name: '', _id: '',
     });
 
     useEffect(() => {
         const { dataItem } = location.state || {};
         if (dataItem) {
             setNewUser({
-                username: dataItem.username || '',
-                email_id: dataItem.email_id || '',
-                password: dataItem.password || '',
-                phone_no: dataItem.phone_no || '',
-                wallet_bal: dataItem.wallet_bal || '',
-                role_id: dataItem.role_id || '',
-                user_id: dataItem.user_id || '',
-                status: dataItem.status || '',
-                client_id: dataItem.client_id || '',
-                reseller_id: dataItem.reseller_id || '',
-                association_id: dataItem.association_id || '',
-                created_by: dataItem.created_by || '',
-                created_date: dataItem.created_date || '',
-                modified_by: dataItem.modified_by || '',
-                modified_date: dataItem.modified_date || '',
-                _id: dataItem._id || '',
+                username: dataItem.username || '', email_id: dataItem.email_id || '', password: dataItem.password || '',
+                phone_no: dataItem.phone_no || '', wallet_bal: dataItem.wallet_bal || '', role_id: dataItem.role_id || '',
+                user_id: dataItem.user_id || '', status: dataItem.status || '', client_id: dataItem.client_id || '',
+                reseller_id: dataItem.reseller_id || '', association_id: dataItem.association_id || '', created_by: dataItem.created_by || '',
+                created_date: dataItem.created_date || '', modified_by: dataItem.modified_by || '', modified_date: dataItem.modified_date || '',
+                role_name: dataItem.role_name || '', client_name: dataItem.client_name || '', reseller_name: dataItem.reseller_name || '',
+                association_name: dataItem.association_name || '', _id: dataItem._id || '',
             });
         // Save to localStorage
         localStorage.setItem('userData', JSON.stringify(dataItem));
@@ -141,24 +133,24 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Role: <span style={{fontWeight:'normal'}}>{newUser.role_id ? newUser.role_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Role Name: <span style={{fontWeight:'normal'}}>{newUser.role_name ? newUser.role_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Assigned Reseller: <span style={{fontWeight:'normal'}}>{newUser.reseller_id ? newUser.reseller_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Assigned Reseller Name: <span style={{fontWeight:'normal'}}>{newUser.reseller_name ? newUser.reseller_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Assigned Client: <span style={{fontWeight:'normal'}}>{newUser.client_id ? newUser.client_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Assigned Client Name: <span style={{fontWeight:'normal'}}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Assigned Association: <span style={{fontWeight:'normal'}}>{newUser.association_id ? newUser.association_id :'-'}</span></div>
+                                                                <div className="col-sm-12">Assigned Association Name: <span style={{fontWeight:'normal'}}>{newUser.association_name ? newUser.association_name :'-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>

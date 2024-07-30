@@ -131,9 +131,7 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                                 <td>{user.client_name}</td>
                                                                 <td>{user.client_phone_no}</td>
                                                                 <td>{user.client_email_id}</td>
-                                                                <td style={{ color: user.status ? 'green' : 'red' }}>
-                                                                    {user.status ? 'Active' : 'DeActive'}
-                                                                </td>
+                                                                <td>{user.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewClient(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>

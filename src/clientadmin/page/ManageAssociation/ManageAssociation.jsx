@@ -131,9 +131,9 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
                                                         filterAssociations(associations).map((association, index) => (
                                                             <tr key={association._id || index}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{association.association_name}</td>
-                                                                <td>{association.association_email_id}</td>
-                                                                <td>{association.association_phone_no}</td>
+                                                                <td>{association.association_name ? association.association_name : '-'}</td>
+                                                                <td>{association.association_email_id ? association.association_email_id: '-'}</td>
+                                                                <td>{association.association_phone_no ? association.association_phone_no: '-'}</td>
                                                                 <td style={{ color: association.status ? 'green' : 'red' }}>{association.status ? 'Active' : 'DeActive'}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewAssociationDetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>

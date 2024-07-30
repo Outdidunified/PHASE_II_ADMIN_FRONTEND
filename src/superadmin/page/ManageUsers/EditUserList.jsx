@@ -16,10 +16,9 @@ const EditUserList = ({ userInfo, handleLogout }) => {
     const [email_id, setEmailId] = useState(dataItem?.email_id || '');
     const [passwords, setPassword] = useState(dataItem?.password || '');
     const [phone_no, setPhoneNo] = useState(dataItem?.phone_no || '');
-    const [wallet_bal, setWalletBal] = useState(dataItem?.wallet_bal || '');
+    const [wallet_bal, setWalletBal] = useState(dataItem?.wallet_bal || '0');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectStatus, setSelectStatus] = useState(dataItem?.status ? 'true' : 'false');
-
     // Select status
     const handleStatusChange = (e) => {
         setSelectStatus(e.target.value);
@@ -165,8 +164,11 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Wallet</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" value={wallet_bal !== null && wallet_bal !== '' ? parseInt(wallet_bal, 10).toString() : '0'} 
-                                                                            onChange={(e) => { const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setWalletBal(sanitizedValue); }}required/>
+                                                                        <input type="text" className="form-control" value={wallet_bal}
+                                                                            onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            const sanitizedValue = value.replace(/[^0-9]/g, '');
+                                                                            setWalletBal(sanitizedValue);}} required  />
                                                                     </div>
                                                                 </div>
                                                             </div>

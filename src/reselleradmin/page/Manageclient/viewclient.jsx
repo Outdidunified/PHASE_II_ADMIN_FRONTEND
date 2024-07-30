@@ -106,7 +106,7 @@ const ViewClient = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Name: <span style={{ fontWeight: 'normal' }}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
+                                                                <div className="col-sm-12">Client Name: <span style={{ fontWeight: 'normal' }}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
