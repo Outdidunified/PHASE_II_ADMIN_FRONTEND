@@ -51,21 +51,34 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
             const formattedData = {
                 charger_id: chargerId,
                 finance_id: parseInt(selectedFinanceId),
-                modified_by: userInfo.data.client_name,
+                modified_by: userInfo.data.email_id,
                 // Add other fields as needed for submission
             };
-            await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
+            // await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
+            const response = await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
 
-            // Show success alert using SweetAlert
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Finance has been assigned successfully.',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                // Redirect to previous page or handle navigation as needed
-                navigate(-1); // Navigate back one step
-            });
+            // Check the response data or status
+            if (response.status === 200 && response.data.success) {
+                // Show success alert using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Finance has been assigned successfully.',
+                    confirmButtonText: 'OK',
+                }).then((result) => {
+                    // Redirect to previous page or handle navigation as needed
+                    navigate(-1); // Navigate back one step
+                });
+            } else {
+                // Handle unexpected response or non-success status
+                const responseData = await response.json();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Unexpected Response!',
+                    text: 'Please check the details and try again,' + responseData.message,
+                    confirmButtonText: 'OK',
+                });
+            }
         } catch (error) {
             console.error('Error assigning finance details:', error);
             // Handle error state or show error message

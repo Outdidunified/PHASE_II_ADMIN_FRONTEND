@@ -46,7 +46,7 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
                 user_id: dataItems?.user_id,
                 username: username,
                 phone_no: parseInt(phone_no),
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
                 password: parseInt(password), // Assuming this is not supposed to be changed
                 status: status === 'true',
             };

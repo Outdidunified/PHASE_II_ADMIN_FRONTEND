@@ -164,6 +164,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                                     <button
                                                                         type="button"
                                                                         className={`btn btn-outline-warning btn-icon-text ${item.finance_id ? 'disabled' : ''}`}
+                                                                        // className='btn btn-outline-warning btn-icon-text'
                                                                         onClick={() => navtoassignfinance(item.charger_id)}
                                                                         style={{ marginBottom: '10px', marginRight: '10px' }}
                                                                         disabled={item.finance_id}

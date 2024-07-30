@@ -87,7 +87,7 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                 password: parseInt(newUser.password),
                 role_id: selectedRole ? selectedRole.role_id : '',
                 association_id: selectedAssociation ? selectedAssociation.association_id : '',
-                created_by: userInfo.data.client_name,
+                created_by: userInfo.data.email_id,
                 client_id: userInfo.data.client_id,
                 reseller_id: userInfo.data.reseller_id
             };

@@ -17,7 +17,7 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
     };
     const filterAssociations = (associations) => {
         return associations.filter((association) =>
-            association.association_id.toString().toLowerCase().includes(searchQuery.toLowerCase())
+            association.association_name.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
     };
 
@@ -47,51 +47,6 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
     const navigateToViewAssociationDetails = (association) => {
         navigate('/clientadmin/ViewAss', { state: { association } });
     };
-
-    // Active and deactive
-    // const deactivateAssociation = async (associationId, status) => {
-    //     try {
-    //         const response = await axios.post('/clientadmin/DeActivateOrActivateAssociationUser', {
-    //             association_id: associationId,
-    //             modified_by: userInfo.data.client_name,
-    //             status: !status // Toggle status
-    //         });
-
-    //         if (response.status === 200) {
-    //             // Update the association status in the state
-    //             setAssociations(prevAssociations =>
-    //                 prevAssociations.map(association =>
-    //                     association.association_id === associationId ? { ...association, status: !status } : association
-    //                 )
-    //             );
-
-    //             Swal.fire({
-    //                 title: status ? "Deactivated!" : "Activated!",
-    //                 icon: "success"
-    //             });
-
-    //             // Example: Perform an action after 10 seconds
-    //             setTimeout(() => {
-    //                 console.log('Timer finished after 10 seconds');
-    //                 // Your action after 10 seconds, e.g., navigate, update state, or perform another action
-    //             }, 10000); // 10000 milliseconds = 10 seconds
-    //         } else {
-    //             const responseData = await response.json();
-    //             Swal.fire({
-    //                 title: "Error",
-    //                 text: "Failed to update association status, " + responseData.message,
-    //                 icon: "error"
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error in updating association status:', error);
-    //         Swal.fire({
-    //             title: "Error",
-    //             text: "An error occurred while updating association status.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
 
     // view create page
     const navtocreateass = () =>{
@@ -163,13 +118,10 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
                                                 <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
-                                                        <th>Association ID</th>
                                                         <th>Association Name</th>
-                                                        <th>Association Address</th>
                                                         <th>Email ID</th>
                                                         <th>Phone Number</th>
                                                         <th>Status</th>
-                                                        {/* <th>Active/DeActive</th> */}
                                                         <th>Actions</th>
                                                         <th>Assigned Devices</th>
                                                     </tr>
@@ -179,36 +131,21 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
                                                         filterAssociations(associations).map((association, index) => (
                                                             <tr key={association._id || index}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{association.association_id}</td>
                                                                 <td>{association.association_name}</td>
-                                                                <td>{association.association_address}</td>
                                                                 <td>{association.association_email_id}</td>
                                                                 <td>{association.association_phone_no}</td>
                                                                 <td style={{ color: association.status ? 'green' : 'red' }}>{association.status ? 'Active' : 'DeActive'}</td>
-                                                                {/* <td>
-                                                                    <div className='form-group' style={{paddingTop:'13px'}}> 
-                                                                        {association.status===true ?
-                                                                            <div className="form-check form-check-danger">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios2" value={false} onClick={() => deactivateAssociation(association.association_id, association.status)}/>DeActive<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        :
-                                                                            <div className="form-check form-check-success">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios1" value={true} onClick={() => deactivateAssociation(association.association_id, association.status)}/>Active<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                </td> */}
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewAssociationDetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>
                                                                 <td>
-                                                                <button type="button" className="btn btn-outline-warning btn-icon-text" onClick={() => navigatetochargerdetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="ti-file btn-icon-prepend"></i>Device</button>
+                                                                    <button type="button" className="btn btn-outline-warning btn-icon-text" onClick={() => navigatetochargerdetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="ti-file btn-icon-prepend"></i>Device</button>
                                                                 </td>
                                                             </tr>
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="9">No Record Found</td>
+                                                            <td colSpan="7">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

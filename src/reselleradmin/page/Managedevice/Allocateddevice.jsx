@@ -36,7 +36,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
         try {
             const response = await axios.post('/reselleradmin/DeActivateOrActivateCharger', {
                 charger_id: chargerId,
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
                 status: !status // Toggle status
             });
 

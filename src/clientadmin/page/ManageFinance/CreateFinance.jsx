@@ -10,7 +10,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const [newFinance, setNewFinance] = useState({
         eb_charges: '', app_charges: '', other_charges: '', parking_charges: '',
-        rent_charges: '', open_a_eb_charges: '', open_other_charges: '', created_by: userInfo.data.client_name, // Assuming userInfo has necessary client info
+        rent_charges: '', open_a_eb_charges: '', open_other_charges: '', created_by: userInfo.data.email_id, // Assuming userInfo has necessary client info
     });
 
     const [errorMessage, setErrorMessage] = useState('');

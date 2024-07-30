@@ -90,8 +90,8 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
             setErrorMessage('Oops! Password must be a 4-digit number.');
             return;
         }
-
-        // resellerID
+ 
+       // reseller_id
         if(reseller_id){
             try {
                 const roleID = parseInt(role.role_id);
@@ -103,7 +103,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
+                body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
                 });
                 if (response.ok) {
                     Swal.fire({
@@ -136,7 +136,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                     icon: "error"
                 });
             }
-        }else{
+         }else{
             try {
                 const roleID = parseInt(role.role_id);
                 const password = parseInt(Password);
@@ -146,7 +146,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ role_id:roleID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
+                body: JSON.stringify({ role_id:roleID, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
                 });
                 if (response.ok) {
                     Swal.fire({
@@ -178,7 +178,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                     icon: "error"
                 });
             }
-        }
+         }
     };
     // Add Manage User end
 
@@ -419,7 +419,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                             <tr>
-                                                                <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                                <td colSpan="5" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
                                                             </tr>
                                                         )
                                                     )}

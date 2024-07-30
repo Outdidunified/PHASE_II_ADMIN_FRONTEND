@@ -65,7 +65,7 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                     password: passwords,
                     status: selectStatus === 'true',
                     wallet_bal: parseInt(wallet_bal),
-                    modified_by: userInfo.data.username}),
+                    modified_by: userInfo.data.email_id}),
             });
     
             if (response.ok) {

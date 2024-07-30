@@ -83,7 +83,7 @@ const AssignReseller = ({ userInfo, handleLogout }) => {
             const response = await axios.post('/superadmin/AssginChargerToReseller', {
                 reseller_id: resellerID,
                 charger_ids,
-                modified_by: userInfo.data.username
+                modified_by: userInfo.data.email_id
             });
             if (response.status === 200) {
                 Swal.fire({

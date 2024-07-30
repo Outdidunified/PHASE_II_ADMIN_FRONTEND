@@ -100,7 +100,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.username  }),
+            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.email_id  }),
             });
             if (response.ok) {
                 Swal.fire({

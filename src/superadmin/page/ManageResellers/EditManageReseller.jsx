@@ -54,7 +54,7 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
                 reseller_phone_no: parseInt(reseller_phone_no),
                 status: selectStatus === 'true',
                 reseller_address:reseller_address,
-                modified_by: userInfo.data.username,
+                modified_by: userInfo.data.email_id,
             };
             const response = await fetch('/superadmin/UpdateReseller', {
                 method: 'POST',

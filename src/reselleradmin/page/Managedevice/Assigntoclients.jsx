@@ -117,7 +117,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                 client_id: parseInt(selectedClientId),
                 charger_id: selectedChargers,
                 reseller_commission: commission,
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
             });
 
             if (response.data.status === 'Success') {

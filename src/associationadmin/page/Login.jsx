@@ -24,7 +24,7 @@ const Login = ({ handleLogin }) => {
         // console.log('Response data:', data); 
         handleLogin({...data});
       } else {
-        // console.error('Login failed');
+        // const responseData = await response.json();
         setErrorMessage('Login failed. Please check your credentials.');
       }
     } catch (error) {

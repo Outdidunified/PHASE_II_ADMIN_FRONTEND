@@ -98,7 +98,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     reseller_name,
                     reseller_address,
                     reseller_phone_no: phoneNos,
-                    modified_by: userInfo.data.reseller_name,
+                    modified_by: userInfo.data.email_id,
                 }),
             });
 

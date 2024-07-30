@@ -98,7 +98,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     client_name,
                     client_address,
                     client_phone_no: phoneNos,
-                    modified_by: userInfo.data.client_name,
+                    modified_by: userInfo.data.email_id,
                 }),
             });
 

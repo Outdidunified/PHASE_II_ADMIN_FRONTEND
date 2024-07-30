@@ -38,7 +38,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                 association_id: dataItems.association_id,
                 association_name: association_name,
                 association_phone_no: association_phone_no,
-                modified_by:userInfo.data.client_name,
+                modified_by:userInfo.data.email_id,
                 status: status === 'true',
             };
 

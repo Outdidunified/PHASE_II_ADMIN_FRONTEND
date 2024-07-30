@@ -47,7 +47,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                     long: longitude,
                     wifi_username: wifiUsername,
                     wifi_password: wifiPassword,
-                    modified_by: userInfo.data.association_name
+                    modified_by: userInfo.data.email_id
                 }),
             });
 

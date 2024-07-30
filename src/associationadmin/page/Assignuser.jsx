@@ -44,7 +44,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
       await axios.post('/associationadmin/AddUserToAssociation', {
         association_id: userInfo.data.association_id,
         user_id: parseInt(selectedAddUser),
-        modified_by: userInfo.data.association_name
+        modified_by: userInfo.data.email_id
       });
       Swal.fire({
         title: 'Success!',
@@ -70,7 +70,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
       await axios.post('/associationadmin/RemoveUserFromAssociation', {
         association_id: userInfo.data.association_id,
         user_id: parseInt(selectedRemoveUser),
-        modified_by: userInfo.data.association_name
+        modified_by: userInfo.data.email_id
       });
       Swal.fire({
         title: 'Success!',

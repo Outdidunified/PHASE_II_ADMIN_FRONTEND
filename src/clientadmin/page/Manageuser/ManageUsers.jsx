@@ -30,43 +30,7 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
         }
     }, []);
 
-    // Active and deactive users
-    // const handleDeactivateUser = async (user_id, status) => {
-    //     try {
-          
-    //         const response = await axios.post('/clientadmin/DeActivateUser', {
-    //             user_id: user_id,
-    //             modified_by: userInfo.data.client_name,
-    //             status: !status // Toggle status
-    //         });
-
-    //         if (response.status === 200) {
-    //             setUsers(prevUsers =>
-    //                 prevUsers.map(user =>
-    //                     user.user_id === user_id ? { ...user, status: !status } : user
-    //                 )
-    //             );
-    //             Swal.fire({
-    //                 title: status ? "Deactivated!" : "Activated!",
-    //                 icon: "success"
-    //             });
-    //         } else {
-    //             Swal.fire({
-    //                 title: "Error",
-    //                 text: "Failed to update user status.",
-    //                 icon: "error"
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error in updating user status:', error);
-    //         Swal.fire({
-    //             title: "Error",
-    //             text: "An error occurred while updating user status.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-    
+  
     // view createuser
     const navigateToCreateUser = () => {
         navigate('/clientadmin/Createuser');
@@ -140,11 +104,8 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>User Name</th>
-                                                        <th>Phone Number</th>
                                                         <th>Email ID</th>
-                                                        <th>Role Id</th>
                                                         <th>Status</th>
-                                                        {/* <th>Active/DeActive</th> */}
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -154,25 +115,10 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                             <tr key={user.user_id}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{user.username}</td>
-                                                                <td>{user.phone_no}</td>
                                                                 <td>{user.email_id}</td>
-                                                                <td>{user.role_id}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
                                                                     {user.status ? 'Active' : 'DeActive'}
                                                                 </td>
-                                                                {/* <td>
-                                                                    <div className='form-group' style={{paddingTop:'13px'}}> 
-                                                                        {user.status===true ?
-                                                                            <div className="form-check form-check-danger">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios2" value={false} onClick={() => handleDeactivateUser(user.user_id, user.status)}/>DeActive<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        :
-                                                                            <div className="form-check form-check-success">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios1" value={true} onClick={() => handleDeactivateUser(user.user_id, user.status)}/>Active<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                </td> */}
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewSession(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>
@@ -180,7 +126,7 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="7">No Record Found</td>
+                                                            <td colSpan="5">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 const EditManageUsers = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const dataItem = location.state?.dataItem || JSON.parse(localStorage.getItem('editDeviceData'));
+    const dataItem = location.state?.newUser || JSON.parse(localStorage.getItem('editDeviceData'));
     localStorage.setItem('editDeviceData', JSON.stringify(dataItem));
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -43,7 +43,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
             setErrorMessage('Oops! Phone must be a 10-digit number.');
             return;
         }
- 
+  
         // Validate password
         const passwordRegex = /^\d{4}$/;
         if (!password) {
@@ -62,7 +62,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                 phone_no: parseInt(phone_no),
                 password: parseInt(password),
                 status: selectStatus === 'true',
-                modified_by: userInfo.data.association_name,
+                modified_by: userInfo.data.email_id,
             };
             const response = await fetch('/associationadmin/UpdateUser', {
                 method: 'POST',

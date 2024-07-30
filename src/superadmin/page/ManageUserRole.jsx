@@ -106,7 +106,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ rolename, created_by: userInfo.data.username }),
+                body: JSON.stringify({ rolename, created_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -189,7 +189,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id: dataItem.role_id, role_name: roleEditname, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id: dataItem.role_id, role_name: roleEditname, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -229,7 +229,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id, status:false, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id, status:false, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -263,7 +263,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id, status:true, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id, status:true, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({

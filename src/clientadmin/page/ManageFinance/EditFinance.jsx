@@ -49,7 +49,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                 rent_charges: rent_charges,
                 open_a_eb_charges: open_a_eb_charges,
                 open_other_charges: open_other_charges,
-                modified_by: userInfo.data.client_name,
+                modified_by: userInfo.data.email_id,
                 status: status === 'true',
             };
     

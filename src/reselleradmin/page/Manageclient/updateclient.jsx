@@ -39,7 +39,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                 client_name: client_name,
                 client_phone_no: parseInt(client_phone_no),
                 client_address: client_address,
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
                 status: status // Assuming status is a boolean
             };
 

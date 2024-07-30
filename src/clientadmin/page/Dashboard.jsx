@@ -148,7 +148,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                             <div className="col-md-12 grid-margin">
                                 <div className="row">
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
-                                        <h3 className="font-weight-bold">Welcome to <span style={{color:'#4B49AC'}}>{userInfo.data.client_name}</span>,</h3>
+                                        <h3 className="font-weight-bold">Welcome to <span style={{color:'#4B49AC'}}>{userInfo.data.email_id}</span>,</h3>
                                         <h4 className="font-weight-bold">Client Admin Dashboard</h4>
                                     </div>
                                 </div>

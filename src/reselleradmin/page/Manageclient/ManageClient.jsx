@@ -31,45 +31,7 @@ const Manageclient = ({ userInfo, handleLogout }) => {
             fetchUsersCalled.current = true;
         }
     }, [userInfo.data.reseller_id]);
-
-
-    // Active and DeActive users
-    // const handleDeactivateUser = async (client_id, status) => {
-    //     try {
-    //         const response = await axios.post('/reselleradmin/DeActivateClient', {
-    //             client_id: client_id,
-    //             modified_by: userInfo.data.reseller_name,
-    //             status: !status // Toggle status
-    //         });
-
-    //         if (response.status === 200) {
-    //             setUsers(prevUsers =>
-    //                 prevUsers.map(user =>
-    //                     user.client_id === client_id ? { ...user, status: !status } : user
-    //                 )
-    //             );
-    //             Swal.fire({
-    //                 title: status ? "Deactivated!" : "Activated!",
-    //                 icon: "success"
-    //             });
-    //         } else {
-    //             const responseData = await response.json();
-    //             Swal.fire({
-    //                 title: "Error",
-    //                 text: "Failed to update user status," + responseData.message,
-    //                 icon: "error"
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error in updating user status:', error);
-    //         Swal.fire({
-    //             title: "Error",
-    //             text: "An error occurred while updating user status.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-
+    
     // back create client page
     const navigateToCreateUser = () => {
         navigate('/reselleradmin/CreateClients');
@@ -155,9 +117,7 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                         <th>Client Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email ID</th>
-                                                        <th>Address</th>
                                                         <th>Status</th>
-                                                        {/* <th>Active/DeActive</th> */}
                                                         <th>Actions</th>
                                                         <th>Assigned Association</th>
                                                         <th>Assigned Devices</th>
@@ -171,23 +131,9 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                                 <td>{user.client_name}</td>
                                                                 <td>{user.client_phone_no}</td>
                                                                 <td>{user.client_email_id}</td>
-                                                                <td>{user.client_address}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
                                                                     {user.status ? 'Active' : 'DeActive'}
                                                                 </td>
-                                                                {/* <td>
-                                                                    <div className='form-group' style={{paddingTop:'13px'}}> 
-                                                                        {user.status===true ?
-                                                                            <div className="form-check form-check-danger">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios2" value={false} onClick={() => handleDeactivateUser(user.client_id, user.status)}/>DeActive<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        :
-                                                                            <div className="form-check form-check-success">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios1" value={true} onClick={() => handleDeactivateUser(user.client_id, user.status)}/>Active<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                </td> */}
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewClient(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>
@@ -201,7 +147,7 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="9">No Record Found</td>
+                                                            <td colSpan="8">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

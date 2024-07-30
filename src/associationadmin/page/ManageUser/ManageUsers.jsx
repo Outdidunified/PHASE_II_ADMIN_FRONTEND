@@ -8,10 +8,11 @@ import Swal from 'sweetalert2';
 
 const ManageUsers = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
-    const handleEditUser = (dataItem) => {
-        navigate('/associationadmin/EditManageUsers', { state: { dataItem } });
+    // View user list
+    const handleViewUser = (dataItem) => {
+        navigate('/associationadmin/ViewManageUser', { state: { dataItem } });
     };
-    
+   
     // Add Chargers start 
     const [showAddForm, setShowAddForm] = useState(false);
 
@@ -82,7 +83,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id:roleID, reseller_id:userInfo.data.reseller_id, client_id:userInfo.data.client_id, association_id:userInfo.data.association_id, username, email_id, password, phone_no, created_by:userInfo.data.association_name }),
+            body: JSON.stringify({ role_id:roleID, reseller_id:userInfo.data.reseller_id, client_id:userInfo.data.client_id, association_id:userInfo.data.association_id, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
             });
             if (response.ok) {
                 setUpdateTrigger((prev) => !prev);
@@ -119,7 +120,6 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     // Add Manage User end
 
     const [selectionRoles, setSelectionRoles] = useState([]);
-  
     const fetchSpecificUserRoleForSelectionCalled = useRef(false);
     const fetchUsersCalled = useRef(false);
 
@@ -186,23 +186,6 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                 break;
         }
     }, [data, filteredData]);
-
-    // Timestamp data 
-    function formatTimestamp(originalTimestamp) {
-        const date = new Date(originalTimestamp);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        let hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        hours = String(hours).padStart(2, '0');
-        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
-        return formattedDate;
-    } 
 
     const [theadsticky, setTheadsticky] = useState('sticky');
     const [theadfixed, setTheadfixed] = useState('fixed');
@@ -323,11 +306,6 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         <th>Sl.No</th>
                                                         <th>User Name</th>
                                                         <th>Email ID</th>
-                                                        <th>Assigned Reseller</th>
-                                                        <th>Assigned Client</th>
-                                                        <th>Assigned Association</th>
-                                                        <th>Created By</th>
-                                                        <th>Created Date</th>
                                                         <th>Status</th>
                                                         <th>Option</th>
                                                     </tr>
@@ -348,20 +326,15 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                                 <td>{index + 1}</td>
                                                                 <td>{dataItem.username ? dataItem.username : '-'}</td>
                                                                 <td>{dataItem.email_id ? dataItem.email_id : '-'}</td>
-                                                                <td>{dataItem.reseller_id ? dataItem.reseller_id : '-'}</td>
-                                                                <td>{dataItem.client_id ? dataItem.client_id : '-'}</td>
-                                                                <td>{dataItem.association_id ? dataItem.association_id : '-'}</td>
-                                                                <td>{dataItem.created_by ? dataItem.created_by : '-'}</td> 
-                                                                <td>{dataItem.created_date ? formatTimestamp(dataItem.created_date) : '-'}</td>
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>
-                                                                    <button type="button" className="btn btn-outline-primary btn-icon-text"  onClick={() => handleEditUser(dataItem)} style={{marginBottom:'10px', marginRight:'10px'}}><i className="mdi mdi-pencil btn-icon-prepend"></i>Edit</button><br/>
+                                                                    <button type="button" className="btn btn-outline-success btn-icon-text"  onClick={() => handleViewUser(dataItem)} style={{marginBottom:'10px', marginRight:'10px'}}><i className="mdi mdi-eye"></i>View</button> 
                                                                 </td>
                                                             </tr>
                                                         ))
                                                         ) : (
                                                             <tr>
-                                                                <td colSpan="10" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                                <td colSpan="5" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
                                                             </tr>
                                                         )
                                                     )}

@@ -6,23 +6,24 @@ const Header = ({ handleLogout }) => {
 
   useEffect(() => {
     const handleToggleSidebar = () => {
-     document.body.classList.toggle('sidebar-icon-only');
+      document.body.classList.toggle('sidebar-icon-only');
     };
 
     const button = toggleButtonRef.current;
-    
-    // Ensure the button exixts
-    if(button) {
+
+    // Ensure the button exists
+    if (button) {
       button.addEventListener('click', handleToggleSidebar);
     }
 
-    // Clean up event listener 
+    // Clean up event listener
     return () => {
-      if(button) {
+      if (button) {
         button.removeEventListener('click', handleToggleSidebar);
       }
     };
   }, []);
+
 
   return (
     // Navbar JSX

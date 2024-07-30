@@ -109,7 +109,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ charger_id, tag_id, model, type: selectChargerType, vendor, gun_connector, max_current, max_power, socket_count, created_by: userInfo.data.username }),
+                body: JSON.stringify({ charger_id, tag_id, model, type: selectChargerType, vendor, gun_connector, max_current, max_power, socket_count, created_by: userInfo.data.email_id }),
             });
 
             if (response.ok) {

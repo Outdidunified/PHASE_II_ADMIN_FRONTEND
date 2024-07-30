@@ -103,7 +103,6 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>User Name</th>
-                                                        <th>Phone Number</th>
                                                         <th>Email ID</th>
                                                         <th>Status</th>
                                                         <th>Actions</th>
@@ -115,7 +114,6 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{user.username ? user.username : '-'}</td>
-                                                                <td>{user.phone_no ? user.phone_no : '-'}</td>
                                                                 <td>{user.email_id ? user.email_id : '-'}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
                                                                     {user.status===true ? 'Active' : 'DeActive'}
@@ -129,7 +127,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="6">No Record Found</td>
+                                                            <td colSpan="5">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

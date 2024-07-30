@@ -43,7 +43,7 @@ const AddManageReseller = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-                body: JSON.stringify({ reseller_name, reseller_phone_no:PhoneNumber, reseller_email_id, reseller_address, created_by:userInfo.data.username }),
+                body: JSON.stringify({ reseller_name, reseller_phone_no:PhoneNumber, reseller_email_id, reseller_address, created_by:userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({

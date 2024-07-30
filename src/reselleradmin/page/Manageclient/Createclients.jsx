@@ -35,7 +35,7 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                 "client_phone_no": newUser["client_phone_no"],
                 "client_email_id": newUser["client_email_id"],
                 "client_address": newUser["client_address"],
-                "created_by": userInfo.data.reseller_name
+                "created_by": userInfo.data.email_id
             };
 
             const response = await axios.post('/reselleradmin/addNewClient', userData);

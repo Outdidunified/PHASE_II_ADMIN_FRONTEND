@@ -101,7 +101,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ association_id: userInfo.data.association_id, association_address, association_phone_no: phoneNos, modified_by: userInfo.data.association_name}),});
+                body: JSON.stringify({ association_id: userInfo.data.association_id, association_address, association_phone_no: phoneNos, modified_by: userInfo.data.email_id}),});
             if (response.ok) {
                 Swal.fire({
                     title: "Association profile updated successfully",

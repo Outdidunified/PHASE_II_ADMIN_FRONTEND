@@ -86,7 +86,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id:dataItem.charger_id, status:false, modified_by: userInfo.data.association_name }),
+            body: JSON.stringify({ charger_id:dataItem.charger_id, status:false, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -120,7 +120,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id:dataItem.charger_id, status:true, modified_by: userInfo.data.association_name }),
+            body: JSON.stringify({ charger_id:dataItem.charger_id, status:true, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({

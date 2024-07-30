@@ -36,7 +36,7 @@ const Createass = ({ userInfo, handleLogout }) => {
                 "association_phone_no": newUser["association_phone_no"],
                 "association_email_id": newUser["association_email_id"],
                 "association_address": newUser["association_address"],
-                "created_by": userInfo.data.client_name,
+                "created_by": userInfo.data.email_id,
             };
 
             const response = await axios.post('/clientadmin/CreateAssociationUser', newAssociation);

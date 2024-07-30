@@ -116,7 +116,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                 association_id: parseInt(selectedAssociationId),
                 charger_id: selectedChargers,
                 client_commission: commission,
-                modified_by: userInfo.data.client_name,
+                modified_by: userInfo.data.email_id,
             });
 
             if (response.data.status === 'Success') {

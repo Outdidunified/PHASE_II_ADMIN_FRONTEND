@@ -95,7 +95,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: userInfo.data.user_id, username, phone_no: phoneNo, password: Password, status: true, modified_by: userInfo.data.username }),
+                body: JSON.stringify({ user_id: userInfo.data.user_id, username, phone_no: phoneNo, password: Password, status: true, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({

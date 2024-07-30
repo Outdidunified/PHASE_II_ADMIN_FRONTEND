@@ -89,7 +89,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                 role_id: selectedRole ? selectedRole.role_id : '',
                 client_id: selectedClient ? selectedClient.client_id : '',
                 
-                created_by: userInfo.data.reseller_name,
+                created_by: userInfo.data.email_id,
                 reseller_id: userInfo.data.reseller_id,
             };
 
