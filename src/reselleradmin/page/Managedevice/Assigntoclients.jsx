@@ -9,12 +9,12 @@ import Footer from '../../components/Footer';
 const Assigntoclients = ({ userInfo, handleLogout }) => {
     const [selectedClientId, setSelectedClientId] = useState('');
     const [selectedChargers, setSelectedChargers] = useState([]);
-    const [commission, setCommission] = useState('');
+    const [commission, setCommission] = useState('0');
     const [reloadPage, setReloadPage] = useState(false); // State to trigger page reload
     const [chargersLoading, setChargersLoading] = useState(true); // State to manage loading state
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
     const [clientsList, setClientsList] = useState([]);
-
+    console.log(commission)
     const navigate = useNavigate();
 
     const fetchClientsCalled = useRef(false); 
@@ -77,7 +77,10 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
 
     // handle commission
     const handleCommissionChange = (e) => {
-        setCommission(e.target.value);
+        const value = e.target.value;
+        // Remove any non-digit characters
+        const cleanedValue = value.replace(/[^0-9]/g, '');
+        setCommission(cleanedValue);
     };
 
     // submit data
@@ -120,7 +123,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                 modified_by: userInfo.data.email_id,
             });
 
-            if (response.data.status === 'Success') {
+            if (response.data.status === 200) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Charger Assigned Successfully',
@@ -132,23 +135,37 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                 });
                 navigate('/reselleradmin/Allocateddevice')
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Charger Not Assigned',
+                    title: 'Charger Not Assigned, ' + responseData.messages,
                     text: 'Please try again.',
                     timer: 2000,
                     timerProgressBar: true
                 });
             }
         } catch (error) {
-            console.error('Error assigning charger:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error assigning charger',
-                text: 'Please try again later.',
-                timer: 2000,
-                timerProgressBar: true
-            });
+            // Handle network errors or unexpected server responses
+            if (error.response && error.response.data) {
+                // Error response from server
+                const errorMessage = error.response.data.message || 'An unknown error occurred.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: errorMessage,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                // Network or unexpected error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: 'Please try again later.',
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }
         }
     };
 
@@ -277,6 +294,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             value={commission}
+                                                                            
                                                                             onChange={handleCommissionChange}
                                                                         />
                                                                     </div>

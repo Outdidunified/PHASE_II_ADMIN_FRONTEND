@@ -238,7 +238,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputConfirmPassword1">Address</label>
-                                                <textarea className="form-control" placeholder="Address" value={reseller_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
+                                                <textarea className="form-control" placeholder="Address" value={reseller_address} maxLength={150} onChange={(e) => setUpdateAddress(e.target.value)} required/>
                                             </div>
                                             {errorMessages && <div className="text-danger">{errorMessages}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
@@ -265,6 +265,20 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputPassword1">Phone Number</label>
+                                                {/* <input type="text" className="form-control" placeholder="Phone Number" value={phone_no}
+                                                    maxLength={10}
+                                                    onChange={(e) => {
+                                                        // Get the input value and remove any non-numeric characters
+                                                        const value = e.target.value;
+                                                        const sanitizedValue = value.replace(/[^0-9]/g, '');
+
+                                                        // Check if the sanitized value is valid
+                                                        if (sanitizedValue.length === 0 || (sanitizedValue.length > 0 && sanitizedValue[0] !== '0' && sanitizedValue.length <= 10)) {
+                                                            setUserPhone(sanitizedValue);
+                                                        }
+                                                    }}
+                                                    required
+                                                    /><br/> */}
                                                 <input type="text" className="form-control" placeholder="Phone Number" value={phone_no} maxLength={10} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setUserPhone(sanitizedValue); }} required/>
                                             </div>
                                             <div className="form-group">

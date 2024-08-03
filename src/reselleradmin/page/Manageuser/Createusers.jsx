@@ -210,11 +210,16 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                             className="form-control" placeholder="Email ID"
                                                                             value={newUser.email_id}
                                                                             onChange={(e) => {
-                                                                                const inputValue = e.target.value;
-                                                                                const sanitizedEmail = inputValue
-                                                                                    .replace(/\s/g, '') // Remove whitespace
-                                                                                    .replace(/[^a-zA-Z0-9@.]/g, '') // Remove non-alphanumeric characters except @ and .
-                                                                                    .replace(/@.*@/, '@'); // Ensure there's at most one @ character
+                                                                                const value = e.target.value;
+                                                                                // Remove spaces and invalid characters
+                                                                                const noSpaces = value.replace(/\s/g, '');
+                                                                                const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, '');
+                                                                                // Convert to lowercase
+                                                                                const lowerCaseEmail = validChars.toLowerCase();
+                                                                                // Handle multiple @ symbols
+                                                                                const atCount = (lowerCaseEmail.match(/@/g) || []).length;
+                                                                                const sanitizedEmail = atCount <= 1 ? lowerCaseEmail : lowerCaseEmail.replace(/@.*@/, '@');
+                                                                                // Set the sanitized and lowercase email
                                                                                 setNewUser({ ...newUser, email_id: sanitizedEmail });
                                                                             }}
                                                                             required

@@ -37,7 +37,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                 association_email_id: dataItems.association_email_id,
                 association_id: dataItems.association_id,
                 association_name: association_name,
-                association_phone_no: association_phone_no,
+                association_phone_no: parseInt(association_phone_no),
                 modified_by:userInfo.data.email_id,
                 status: status === 'true',
             };
@@ -142,7 +142,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="col-md-6">
+                                                            {/* <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Association ID</label>
                                                                     <div className="col-sm-9">
@@ -154,7 +154,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                                         />
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> */}
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Association Phone</label>

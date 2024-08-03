@@ -15,7 +15,7 @@ const Edituser = ({ userInfo, handleLogout }) => {
     const [email_id] = useState(dataItems?.email_id || ''); // Read-only, so no need for state
     const [password, setPassword] = useState(dataItems?.password || ''); // Read-only, so no need for state
     const [phone_no, setPhoneNo] = useState(dataItems?.phone_no || '');
-    const [role_id] = useState(dataItems?.role_id || ''); // Read-only, so no need for state
+    const [role_name] = useState(dataItems?.role_name || ''); // Read-only, so no need for state
     const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false'); // Initialize with Active or Inactive
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -164,7 +164,7 @@ const Edituser = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Phone No</label>
+                                                                    <label className="col-sm-3 col-form-label">Phone Number</label>
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
@@ -213,12 +213,12 @@ const Edituser = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Role ID</label>
+                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
                                                                             className="form-control"
-                                                                            value={role_id}
+                                                                            value={role_name}
                                                                             readOnly
                                                                         />
                                                                     </div>

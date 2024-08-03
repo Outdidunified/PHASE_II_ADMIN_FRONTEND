@@ -345,7 +345,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                                                     <div className="input-group-prepend">
                                                                         <span className="input-group-text" style={{color:'black', width:'125px'}}>Role Name</span>
                                                                     </div>
-                                                                    <input type="text" className="form-control" placeholder="Role Name" id="roleEditname" value={roleEditname} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setEdituserRole(sanitizedValue);}} required/>
+                                                                    <input type="text" className="form-control" placeholder="Role Name" value={roleEditname} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setEdituserRole(sanitizedValue);}} required/>
                                                                 </div>
                                                             </div>
                                                             <div style={{textAlign:'center'}}>

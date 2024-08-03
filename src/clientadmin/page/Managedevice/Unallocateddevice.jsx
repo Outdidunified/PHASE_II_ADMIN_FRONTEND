@@ -129,7 +129,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                 <td>
                                                                     <button
                                                                         type="button"
-                                                                        className="btn btn-outline-dark btn-icon-text"
+                                                                        className="btn btn-outline-success btn-icon-text"
                                                                         onClick={() => navigateToViewChargerDetails(charger)}
                                                                         style={{ marginBottom: '10px', marginRight: '10px' }}
                                                                     >

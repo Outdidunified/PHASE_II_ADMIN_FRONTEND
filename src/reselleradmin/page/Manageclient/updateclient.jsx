@@ -183,9 +183,15 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Status</label>
                                                                     <div className="col-sm-9">
-                                                                        <select className="form-control" value={status} onChange={handleStatusChange} required>
+                                                                    <select
+                                                                            className="form-control"
+                                                                            value={status}
+                                                                            onChange={handleStatusChange}
+                                                                            required
+                                                                            style={{ color: "black" }}
+                                                                        >
                                                                             <option value="true">Active</option>
-                                                                            <option value="false">Deactive</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>

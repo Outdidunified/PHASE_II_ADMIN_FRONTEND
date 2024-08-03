@@ -26,7 +26,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
 
     // Back Manage user page 
     const backManageUser = () => {
-        navigate('/associationadmin/ManageUsers');
+        navigate('/associationadmin/ViewManageUser');
     };
 
     // Update manage user

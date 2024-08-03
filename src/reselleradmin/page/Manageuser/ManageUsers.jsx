@@ -117,9 +117,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                                 <td>{user.role_name ? user.role_name : '-'}</td>
                                                                 <td>{user.username ? user.username : '-'}</td>
                                                                 <td>{user.email_id ? user.email_id : '-'}</td>
-                                                                <td style={{ color: user.status ? 'green' : 'red' }}>
-                                                                    {user.status===true ? 'Active' : 'DeActive'}
-                                                                </td>
+                                                                <td>{user.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewSession(user)} style={{ marginBottom: '10px', marginRight: '10px' }}>
                                                                         <i className="mdi mdi-eye btn-icon-prepend"></i>View

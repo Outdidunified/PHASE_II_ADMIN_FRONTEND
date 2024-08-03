@@ -113,7 +113,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Public/Private</label>
+                                                                    <label className="col-sm-3 col-form-label">Charger Accessibility</label>
                                                                     <div className="col-sm-9">
                                                                         <select className="form-control" value={selectStatus} onChange={handleStatusChange} required>
                                                                             <option value="1">Public</option>

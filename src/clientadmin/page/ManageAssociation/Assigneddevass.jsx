@@ -146,7 +146,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Finance_Id</th>
+                                                        <th>Finance Id</th>
                                                         <th>Client Commission</th>
                                                         <th>Assign Finance</th>
                                                         <th>Session History</th>
@@ -157,9 +157,9 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                         filteredData.map((item, index) => (
                                                             <tr key={index} style={{ textAlign: 'center' }}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{item.charger_id}</td>
+                                                                <td>{item.charger_id ? item.charger_id : '-'}</td>
                                                                 <td>{item.finance_id ? item.finance_id : <span style={{ color: 'red' }}>Not yet Assigned</span>}</td>
-                                                                <td>{item.client_commission}</td>
+                                                                <td>{item.client_commission ? `${item.client_commission}%` : '-'}</td>
                                                                 <td>
                                                                     <button
                                                                         type="button"

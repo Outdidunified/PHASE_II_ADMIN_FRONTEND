@@ -92,18 +92,35 @@ const AssignReseller = ({ userInfo, handleLogout }) => {
                 });
                 backManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to assign charger",
+                    text: "Failed to assign charger, " + responseData.message,
                     icon: "error"
                 });
             }
         } catch (error) {
-            Swal.fire({
-                title: "Error",
-                text: "An error occurred while assign the charger",
-                icon: "error"
-            });
+            // Handle network errors or unexpected server responses
+            if (error.response && error.response.data) {
+                // Error response from server
+                const errorMessage = error.response.data.message || 'An unknown error occurred.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: errorMessage,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                // Network or unexpected error
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while assign the charger",
+                    icon: "error",
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }
         }
     };
    

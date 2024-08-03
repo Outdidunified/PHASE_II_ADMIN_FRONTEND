@@ -238,7 +238,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputConfirmPassword1">Address</label>
-                                                <textarea className="form-control" placeholder="Address" value={client_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
+                                                <textarea className="form-control" placeholder="Address" maxLength={150} value={client_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
                                             </div>
                                             {errorMessages && <div className="text-danger">{errorMessages}</div>}<br/>
                                             <div style={{textAlign:'center'}}>

@@ -88,8 +88,8 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
 
         try {
-            const phoneNo = parseInt(phone_no);
-            const Password = parseInt(password);
+            const phoneNo =  parseInt(phone_no);
+            const Password =  parseInt(password);
             const response = await fetch('/superadmin/UpdateUserProfile', {
                 method: 'POST',
                 headers: {

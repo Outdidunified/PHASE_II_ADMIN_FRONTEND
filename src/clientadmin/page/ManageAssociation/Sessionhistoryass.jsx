@@ -103,9 +103,9 @@ const Sessionhistoryass = ({ userInfo, handleLogout }) => {
                                                                 <td>{session.session_id ?  session.session_id : '-'}</td>
                                                                 <td>{session.created_date ? formatTimestamp(session.created_date) : '-'}</td>
                                                                 <td>{session.price ? session.price :'-'}</td>
+                                                                <td>{session.unit_consummed ? session.unit_consummed : '-'}</td>
                                                                 <td>{session.start_time ? formatTimestamp(session.start_time) : '-'}</td>
                                                                 <td>{session.stop_time ? formatTimestamp(session.stop_time) : '-'}</td>
-                                                                <td>{session.unit_consumed ? session.unit_consumed : '-'}</td>
                                                             </tr>
                                                         ))
                                                     ) : (

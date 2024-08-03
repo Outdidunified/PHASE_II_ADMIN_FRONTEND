@@ -11,7 +11,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const [selectedAssociationId, setSelectedAssociationId] = useState('');
     const [selectedChargers, setSelectedChargers] = useState([]);
-    const [commission, setCommission] = useState('');
+    const [commission, setCommission] = useState('0');
     const [reloadPage, setReloadPage] = useState(false); // State to trigger page reload
     const [chargersLoading, setChargersLoading] = useState(true); // State to manage loading state
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
@@ -76,7 +76,10 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
 
     // set commission
     const handleCommissionChange = (e) => {
-        setCommission(e.target.value);
+        const value = e.target.value;
+        // Remove any non-digit characters
+        const cleanedValue = value.replace(/[^0-9]/g, '');
+        setCommission(cleanedValue);
     };
 
     // submit data
@@ -141,14 +144,27 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                 });
             }
         } catch (error) {
-            console.error('Error assigning charger:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error assigning charger',
-                text: 'Please try again later.',
-                timer: 2000,
-                timerProgressBar: true
-            });
+            // Handle network errors or unexpected server responses
+            if (error.response && error.response.data) {
+                // Error response from server
+                const errorMessage = error.response.data.message || 'An unknown error occurred.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: errorMessage,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                // Network or unexpected error
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while assign the charger",
+                    icon: "error",
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }
         }
     };
 

@@ -34,9 +34,14 @@ const Assigntoass = ({ userInfo, handleLogout }) => {
             if (response.data.status === 'Success' && response.data.data.length > 0) {
                 const fetchedData = response.data.data.map(item => ({
                     association_name: item.association_name,
-                    charger_id: item.charger_id
+                    charger_id: item.charger_id,
+                    association_email_id:item.association_email_id,
+                    association_phone_no:item.association_phone_no,
+                    association_address:item.association_address,
+                    status:item.status
                     // Add other fields you want to fetch from the response
                 }));
+                console.log( response.data.data)
                 setData(fetchedData);
                 setFilteredData(fetchedData);
             } else {
@@ -127,6 +132,10 @@ const Assigntoass = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Association name</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Email ID</th>
+                                                        <th>Address</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -135,11 +144,15 @@ const Assigntoass = ({ userInfo, handleLogout }) => {
                                                             <tr key={index} style={{ textAlign: 'center' }}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{item.association_name ? item.association_name : '-'}</td>
+                                                                <td>{item.association_phone_no ? item.association_phone_no : '-'}</td>
+                                                                <td>{item.association_email_id ? item.association_email_id : '-'}</td>
+                                                                <td>{item.association_address ? item.association_address : '-'}</td>
+                                                                <td>{item.status === true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                             </tr>
                                                         ))
                                                     ) : (
                                                         <tr>
-                                                            <td colSpan="2" className="text-center">No associations found.</td>
+                                                            <td colSpan="6" className="text-center">No associations found.</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

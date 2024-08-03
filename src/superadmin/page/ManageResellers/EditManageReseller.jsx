@@ -48,10 +48,12 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
         }
 
         try {
+            const reseller_phone_nos = parseInt(reseller_phone_no);
+
             const updatedReseller = {
                 reseller_id: dataItem?.reseller_id,
                 reseller_name:reseller_name,
-                reseller_phone_no: parseInt(reseller_phone_no),
+                reseller_phone_no: reseller_phone_nos,
                 status: selectStatus === 'true',
                 reseller_address:reseller_address,
                 modified_by: userInfo.data.email_id,
