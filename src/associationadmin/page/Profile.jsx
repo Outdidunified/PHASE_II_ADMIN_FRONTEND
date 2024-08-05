@@ -20,6 +20,14 @@ const Profile = ({ userInfo, handleLogout }) => {
 
     const fetchProfileCalled = useRef(false); // Ref to track if fetchProfile has been called
 
+    // Store initial values
+    const [initialAssociationData, setInitialAssociationData] = useState({});
+    const [initialUserData, setInitialUserData] = useState({});
+  
+    // Store whether any changes have been made
+    const [associationModified, setAssociationModified] = useState(false);
+    const [userModified, setUserModified] = useState(false);
+     
     // get profile data
     useEffect(() => {
         const fetchProfile = async () => {
@@ -38,6 +46,9 @@ const Profile = ({ userInfo, handleLogout }) => {
                     // Assuming `association_details` is an array with one object
                     const associationDetails = data.data.association_details[0] || {};
                     setPostsAss(associationDetails);
+                    // Set initial values
+                    setInitialAssociationData(associationDetails);
+                    setInitialUserData(data.data);
                 } else {
                     setErrorMessage('Failed to fetch profile, ' + response.statusText); 
                     console.error('Failed to fetch profile:', response.statusText); 
@@ -190,6 +201,23 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     };
     
+    useEffect(() => {
+        // Check if client profile data has been modified
+        setAssociationModified(
+            association_name !== initialAssociationData.association_name ||
+            association_email_id !== initialAssociationData.association_email_id ||
+            association_phone_no !== initialAssociationData.association_phone_no ||
+            association_address !== initialAssociationData.association_address
+        );
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [association_name, association_phone_no, association_email_id, association_address, username, phone_no, password, initialAssociationData, initialUserData]);
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -234,7 +262,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessageAss && <div className="text-danger">{errorMessageAss}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!associationModified}>Update</button>
                                             </div> 
                                         </form>
                                     </div>
@@ -265,7 +293,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Update</button>
                                             </div>                                    
                                         </form>
                                     </div>

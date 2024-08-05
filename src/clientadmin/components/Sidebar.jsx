@@ -12,7 +12,7 @@ const Sidebar = () => {
         '/clientadmin/Createass',
         '/clientadmin/Editass',
         '/clientadmin/Sessionhistoryass',
-        
+        '/clientadmin/assignfinance',        
     ].includes(location.pathname);
 
     const isManageUsersActive = [

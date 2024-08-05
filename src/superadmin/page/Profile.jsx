@@ -29,6 +29,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                 if (response.ok) {
                     const data = await response.json();
                     setPosts(data.data);
+                    setInitialUserData(data.data);
                 } else {
                     setErrorMessage('Failed to fetch profile');
                     console.error('Failed to fetch profile:', response.statusText);
@@ -119,6 +120,23 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // Store initial values
+    const [initialUserData, setInitialUserData] = useState({});
+
+    // Store whether any changes have been made
+    const [userModified, setUserModified] = useState(false);
+
+    useEffect(() => {
+       
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [username, phone_no, password, initialUserData]);
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -171,7 +189,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

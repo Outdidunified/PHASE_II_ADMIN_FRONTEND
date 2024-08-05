@@ -20,6 +20,14 @@ const Profile = ({ userInfo, handleLogout }) => {
     const [client_address, setUpdateAddress] = useState('');
     const fetchProfileCalled = useRef(false); // Ref to track if fetchProfile has been called
 
+    // Store initial values
+    const [initialClientData, setInitialClientData] = useState({});
+    const [initialUserData, setInitialUserData] = useState({});
+
+    // Store whether any changes have been made
+    const [clientModified, setClientModified] = useState(false);
+    const [userModified, setUserModified] = useState(false);
+
     // Define fetchClientUserDetails using useCallback to memoize it
     const fetchClientUserDetails = useCallback(async () => {
         try {
@@ -32,6 +40,9 @@ const Profile = ({ userInfo, handleLogout }) => {
                 setPosts(data);
                 const clientDetails = data.client_details[0] || {};
                 setPostsAss(clientDetails);
+                // Set initial values
+                setInitialClientData(clientDetails);
+                setInitialUserData(data);
             } else {
                 setErrorMessage('Failed to fetch profile');
                 console.error('Failed to fetch profile:', response.statusText);
@@ -58,6 +69,23 @@ const Profile = ({ userInfo, handleLogout }) => {
             setUpdateAddress(dataAss.client_address || '');
         }
     }, [dataAss]);
+
+    useEffect(() => {
+        // Check if client profile data has been modified
+        setClientModified(
+            client_name !== initialClientData.client_name ||
+            client_email_id !== initialClientData.client_email_id ||
+            client_phone_no !== initialClientData.client_phone_no ||
+            client_address !== initialClientData.client_address
+        );
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [client_name, client_email_id, client_phone_no, client_address, username, phone_no, password, initialClientData, initialUserData]);
 
     // Set timeout
     useEffect(() => {
@@ -242,7 +270,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessages && <div className="text-danger">{errorMessages}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!clientModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>
@@ -273,7 +301,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>

@@ -20,6 +20,14 @@ const Profile = ({ userInfo, handleLogout }) => {
     const [reseller_address, setUpdateAddress] = useState('');
     const fetchProfileCalled = useRef(false); // Ref to track if fetchProfile has been called
 
+    // Store initial values
+    const [initialResellerData, setInitialResellerData] = useState({});
+    const [initialUserData, setInitialUserData] = useState({});
+ 
+    // Store whether any changes have been made
+    const [reselllerModified, setReselllerModified] = useState(false);
+    const [userModified, setUserModified] = useState(false);
+
     // Define fetchResellerUserDetails using useCallback to memoize it
     const fetchResellerUserDetails = useCallback(async () => {
         try {
@@ -32,6 +40,9 @@ const Profile = ({ userInfo, handleLogout }) => {
                 setPosts(data);
                 const resellerDetails = data.reseller_details[0] || {};
                 setPostsAss(resellerDetails);
+                // Set initial values
+                setInitialResellerData(resellerDetails);
+                setInitialUserData(data);
             } else {
                 setErrorMessage('Failed to fetch profile');
                 console.error('Failed to fetch profile:', response.statusText);
@@ -198,6 +209,23 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     };
 
+    useEffect(() => {
+        // Check if client profile data has been modified
+        setReselllerModified(
+            reseller_name !== initialResellerData.reseller_name ||
+            reseller_email_id !== initialResellerData.reseller_email_id ||
+            reseller_phone_no !== initialResellerData.reseller_phone_no ||
+            reseller_address !== initialResellerData.reseller_address
+        );
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [reseller_name, reseller_phone_no, reseller_email_id, reseller_address, username, phone_no, password, initialResellerData, initialUserData]);
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -242,7 +270,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessages && <div className="text-danger">{errorMessages}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!reselllerModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>
@@ -287,7 +315,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>
