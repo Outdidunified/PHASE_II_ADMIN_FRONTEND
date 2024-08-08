@@ -12,6 +12,7 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const fetchChargerDetailsCalled = useRef(false);
+    const [initialResellerCommission, setInitialResellerCommission] = useState('');
 
     // Fetch charger details
     const fetchChargerDetails = useCallback(async () => {
@@ -77,6 +78,7 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
     const handleEditUser = (item) => {
         setEditDataItem(item);
         setEditRellComm(item.reseller_commission); // Set role name for editing
+        setInitialResellerCommission(item.reseller_commission); // Set initial value for comparison
         setShowEditForm(true); // Open the form
     };
 
@@ -144,6 +146,10 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
             });
         }
     };
+
+    // Determine if the Update button should be enabled
+    const isUpdateButtonEnabled = reseller_commission !== initialResellerCommission;
+    
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -188,7 +194,7 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
                                             </div>
                                         </div>
                                         <div style={{textAlign:'center'}}>
-                                            <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}}>Update</button>
+                                            <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}} disabled={!isUpdateButtonEnabled}>Update</button>
                                         </div>
                                     </div>
                                 </form>

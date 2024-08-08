@@ -123,7 +123,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                 modified_by: userInfo.data.email_id,
             });
 
-            if (response.data.status === 200) {
+            if (response.data.status === 'Success') {
                 Swal.fire({
                     icon: 'success',
                     title: 'Charger Assigned Successfully',

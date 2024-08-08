@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -16,6 +16,22 @@ const Editass = ({ userInfo, handleLogout }) => {
     const [association_address, setAssociationAddress] = useState(dataItems?.association_address || '');
     const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        association_name: dataItems?.association_name || '',
+        association_phone_no: dataItems?.association_phone_no || '',
+        association_address: dataItems?.association_address || '',
+        status: dataItems?.status ? 'true' : 'false'
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        association_name !== initialValues.association_name ||
+        association_phone_no !== initialValues.association_phone_no ||
+        association_address !== initialValues.association_address ||
+        status !== initialValues.status
+    );
 
     // Select status
     const handleStatusChange = (e) => {
@@ -84,7 +100,17 @@ const Editass = ({ userInfo, handleLogout }) => {
         navigate('/clientadmin/ManageAssociation')  
     };
 
-      return (
+    useEffect(() => {
+        // Update initial values if dataItems changes
+        setInitialValues({
+            association_name: dataItems?.association_name || '',
+            association_phone_no: dataItems?.association_phone_no || '',
+            association_address: dataItems?.association_address || '',
+            status: dataItems?.status ? 'true' : 'false'
+        });
+    }, [dataItems]);
+
+    return (
         <div className='container-scroller'>
             {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
@@ -219,7 +245,7 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

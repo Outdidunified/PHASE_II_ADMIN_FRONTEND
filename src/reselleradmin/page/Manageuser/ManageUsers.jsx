@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
@@ -11,23 +11,32 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const fetchUsersCalled = useRef(false); 
 
-    // fetch users
-    const fetchUsers = async () => {
+    // Define fetchUsers using useCallback to memoize it
+    const fetchUsers = useCallback(async () => {
         try {
-            const response = await axios.get('/reselleradmin/FetchUsers');
-            setUsers(response.data.data || []);
+            const response = await axios.post('/reselleradmin/FetchUsers', {
+                reseller_id: userInfo.data.reseller_id,
+            });
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                setUsers(data || []);
+            } else {
+                console.error('Error fetching users');
+                setUsers([]);
+            }
         } catch (error) {
             console.error('Error fetching users:', error);
             setUsers([]);
         }
-    };
+    }, [userInfo.data.reseller_id]);
 
     useEffect(() => {
-        if (!fetchUsersCalled.current) {
+        if (!fetchUsersCalled.current && userInfo && userInfo.data && userInfo.data.reseller_id) {
             fetchUsers();
-            fetchUsersCalled.current = true;
+            fetchUsersCalled.current = true; // Mark fetchResellerUserDetails as called
         }
-    }, []);
+    }, [fetchUsers, userInfo]);
     
     // back create users
     const navigateToCreateUser = () => {

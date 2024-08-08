@@ -13,6 +13,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     const [filteredData] = useState([]);
     const [posts, setPosts] = useState([]);
     const fetchUserRoleCalled = useRef(false); // Ref to track if fetchProfile has been called
+    const [initialRoleEditname, setInitialRoleEditname] = useState('');
 
     // Fetch user roles
     const fetchUserRoles = async () => {
@@ -144,6 +145,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     const handleEditUser = (dataItem) => {
         setEditDataItem(dataItem);
         setEdituserRole(dataItem.role_name); // Set role name for editing
+        setInitialRoleEditname(dataItem.role_name); // Set initial value for comparison
         setShowEditForm(true); // Open the form
     };
 
@@ -305,7 +307,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
-                                            <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button>
+                                            {/* <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button> */}
                                             {/* Add role start */}
                                             <div className="modalStyle" style={modalAddStyle}>
                                                 <div className="modalContentStyle" style={{ maxHeight: '680px', overflowY: 'auto' }}>
@@ -349,7 +351,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                                                 </div>
                                                             </div>
                                                             <div style={{textAlign:'center'}}>
-                                                                <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}}>Update</button>
+                                                                <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}} disabled={roleEditname === initialRoleEditname}>Update</button>
                                                             </div>
                                                         </div>
                                                     </form>

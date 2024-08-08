@@ -22,6 +22,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const editBackManageDevice = () => {
         navigate('/superadmin/ManageDevice');
     };
+
     // Edit manage device
     const [charger_id, setChargerID] = useState(dataItem?.charger_id || '');
     const [tag_id, setTagID] = useState(dataItem?.tag_id || '');
@@ -33,6 +34,19 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const [max_power, setMaxPower] = useState(dataItem?.max_power || '');
     const [socket_count, setSocketCount] = useState(dataItem?.socket_count || '');
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Initial values
+    const initialValues = {
+        charger_id: dataItem?.charger_id || '',
+        tag_id: dataItem?.tag_id || '',
+        model: dataItem?.model || '',
+        type: dataItem?.type || '',
+        vendor: dataItem?.vendor || '',
+        gun_connector: dataItem?.gun_connector || '',
+        max_current: dataItem?.max_current || '',
+        max_power: dataItem?.max_power || '',
+        socket_count: dataItem?.socket_count || '',
+    };
 
     // Select model 
     const handleModel = (e) => {
@@ -145,6 +159,21 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     };
     // Add Chargers end
     
+    // Check if form values have changed
+    const isFormChanged = () => {
+        return (
+            charger_id !== initialValues.charger_id ||
+            tag_id !== initialValues.tag_id ||
+            model !== initialValues.model ||
+            type !== initialValues.type ||
+            vendor !== initialValues.vendor ||
+            gun_connector !== initialValues.gun_connector ||
+            max_current !== initialValues.max_current ||
+            max_power !== initialValues.max_power ||
+            socket_count !== initialValues.socket_count
+        );
+    };
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -250,34 +279,33 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Max Current</label>
                                                                     <div className="col-sm-9">
-    <input 
-        type="tel" 
-        className="form-control" 
-        placeholder="Max Current" 
-        value={max_current} 
-        onChange={(e) => {
-            let value = e.target.value;
-            
-            // Remove any non-numeric characters
-            value = value.replace(/\D/g, '');
-            
-            // Ensure the value is within the specified range
-            if (value < 1) {
-                value = '';
-            } else if (value > 32) {
-                setErrorMessageCurrent('Max Current limit is 1 to 32');
+                                                                        <input 
+                                                                            type="tel" 
+                                                                            className="form-control" 
+                                                                            placeholder="Max Current" 
+                                                                            value={max_current} 
+                                                                            onChange={(e) => {
+                                                                                let value = e.target.value;
+                                                                                
+                                                                                // Remove any non-numeric characters
+                                                                                value = value.replace(/\D/g, '');
+                                                                                
+                                                                                // Ensure the value is within the specified range
+                                                                                if (value < 1) {
+                                                                                    value = '';
+                                                                                } else if (value > 32) {
+                                                                                    setErrorMessageCurrent('Max Current limit is 1 to 32');
 
-                value = '32';
-            }
-            
-            // Update the state with the sanitized and restricted value
-            setMaxCurrent(value);
-        }} 
-        required 
-    />
-    {errorMessageCurrent && <div className="text-danger">{errorMessageCurrent}</div>}
-</div>
-
+                                                                                    value = '32';
+                                                                                }
+                                                                                
+                                                                                // Update the state with the sanitized and restricted value
+                                                                                setMaxCurrent(value);
+                                                                            }} 
+                                                                            required 
+                                                                        />
+                                                                        {errorMessageCurrent && <div className="text-danger">{errorMessageCurrent}</div>}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-6">
@@ -327,7 +355,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{textAlign:'center'}}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isFormChanged()}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

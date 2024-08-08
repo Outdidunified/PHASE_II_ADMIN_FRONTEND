@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -19,6 +19,22 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
     const [password, setPassword] = useState(dataItem?.password || '');
     const [phone_no, setPhoneNumber] = useState(dataItem?.phone_no || '');
 
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        username: dataItem?.username || '',
+        password: dataItem?.password || '',
+        phone_no: dataItem?.phone_no || '',
+        status: dataItem.status ? 'true' : 'false'
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        username !== initialValues.username ||
+        password !== initialValues.password ||
+        phone_no !== initialValues.phone_no ||
+        selectStatus !== initialValues.status
+    );
+
     /// Selected status
     const handleStatusChange = (e) => {
         setSelectedStatus(e.target.value);
@@ -26,7 +42,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
 
     // Back Manage user page 
     const backManageUser = () => {
-        navigate('/associationadmin/ViewManageUser');
+        navigate('/associationadmin/ManageUsers');
     };
 
     // Update manage user
@@ -93,6 +109,16 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
         }
     };
 
+    useEffect(() => {
+        // Update initial values if dataItem changes
+        setInitialValues({
+            username: dataItem?.username || '',
+            password: dataItem?.password || '',
+            phone_no: dataItem?.phone_no || '',
+            status: dataItem.status ? 'true' : 'false'
+        });
+    }, [dataItem]);
+    
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -178,7 +204,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

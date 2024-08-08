@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -16,39 +16,43 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
     const [clientNames, setClientNames] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchUserRoles();
-        fetchClientNames();
-    }, []);
-
     // fetch user roles
-    const fetchUserRoles = async () => {
+    const fetchUserRoles = useCallback(async () => {
         try {
             const response = await axios.get('/reselleradmin/FetchSpecificUserRoleForSelection');
             if (response.data.status === 'Success') {
-                setUserRoles(response.data.data); // Set userRoles state to the array of roles
+                setUserRoles(response.data.data);
             } else {
                 console.error('Failed to fetch user roles:', response.data.message);
             }
         } catch (error) {
             console.error('Error fetching user roles:', error);
         }
-    };
+    }, []);
 
     // fetch client names
-    const fetchClientNames = async () => {
+    
+    const fetchClientNames = useCallback(async () => {
         try {
-            const response = await axios.get('/reselleradmin/FetchClientForSelection');
+            const response = await axios.post('/reselleradmin/FetchClientForSelection', {
+                reseller_id: userInfo.data.reseller_id,
+            });
+
             if (response.data.status === 'Success') {
-                setClientNames(response.data.data); // Set clientNames state to the array of clients
+                setClientNames(response.data.data);
             } else {
                 console.error('Failed to fetch client names:', response.data.message);
             }
         } catch (error) {
             console.error('Error fetching client names:', error);
         }
-    };
+    }, [userInfo.data.reseller_id]);
 
+    useEffect(() => {
+        fetchUserRoles();
+        fetchClientNames();
+    }, [fetchUserRoles, fetchClientNames]);
+   
     // create users
     const createUser = async (e) => {
         e.preventDefault();

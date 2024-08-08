@@ -55,8 +55,8 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
     }
     
     // view assign deviece page
-    const navigatetochargerdetails = (association) =>{
-        navigate('/clientadmin/Assigneddevass',{ state: { association }})
+    const navigatetochargerdetails = (association_id) =>{
+        navigate('/clientadmin/Assigneddevass',{ state: {association_id }})
     }
 
     return (
@@ -140,7 +140,7 @@ const ManageAssociation = ({ userInfo, handleLogout }) => {
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewAssociationDetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>
                                                                 <td>
-                                                                    <button type="button" className="btn btn-outline-warning btn-icon-text" onClick={() => navigatetochargerdetails(association)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="ti-file btn-icon-prepend"></i>Device</button>
+                                                                    <button type="button" className="btn btn-outline-warning btn-icon-text" onClick={() => navigatetochargerdetails(association.association_id)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="ti-file btn-icon-prepend"></i>Device</button>
                                                                 </td>
                                                             </tr>
                                                         ))

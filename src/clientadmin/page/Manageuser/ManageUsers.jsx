@@ -14,9 +14,18 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
 
     // fetch users
     const fetchUsers = async () => {
-        try {
-            const response = await axios.get('/clientadmin/FetchUsers');
-            setUsers(response.data.data || []);
+         try {
+            const response = await axios.post('/clientadmin/FetchUsers', {
+                client_id: userInfo.data.client_id,
+            });
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                setUsers(data || []);
+            } else {
+                console.error('Error fetching users');
+                setUsers([]);
+            }
         } catch (error) {
             console.error('Error fetching users:', error);
             setUsers([]);

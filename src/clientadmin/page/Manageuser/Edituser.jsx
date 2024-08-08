@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -19,6 +19,22 @@ const Edituser = ({ userInfo, handleLogout }) => {
     const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false'); // Initialize with Active or Inactive
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        username: dataItems?.username || '',
+        phone_no: dataItems?.phone_no || '',
+        password: dataItems?.password || '',
+        status: dataItems?.status ? 'true' : 'false',
+    });
+    
+    // Check if any field has been modified
+    const isModified = (
+        username !== initialValues.username ||
+        phone_no !== initialValues.phone_no ||
+        password !== initialValues.password ||
+        status !== initialValues.status
+    );
+    
     // update client user
     const updateClientUser = async (e) => {
         e.preventDefault();
@@ -103,6 +119,16 @@ const Edituser = ({ userInfo, handleLogout }) => {
     const handleStatusChange = (e) => {
         setStatus(e.target.value);
     };
+
+    useEffect(() => {
+        // Update initial values if dataItems changes
+        setInitialValues({
+            username: dataItems?.username || '',
+            phone_no: dataItems?.phone_no || '',
+            password: dataItems?.password || '',
+            status: dataItems?.status ? 'true' : 'false',
+        });
+    }, [dataItems]);
 
     return (
         <div className='container-scroller'>
@@ -244,7 +270,7 @@ const Edituser = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

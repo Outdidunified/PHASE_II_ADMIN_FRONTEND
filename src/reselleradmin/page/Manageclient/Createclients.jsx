@@ -43,7 +43,7 @@ const CreateClients = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-                body: JSON.stringify({ client_name, client_phone_no:PhoneNumber, client_email_id, client_address, created_by:userInfo.data.email_id }),
+                body: JSON.stringify({ reseller_id:userInfo.data.reseller_id, client_name, client_phone_no:PhoneNumber, client_email_id, client_address, created_by:userInfo.data.email_id }),
             });
             if (response.status === 200) {
                 Swal.fire({
