@@ -307,7 +307,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
-                                            {/* <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button> */}
+                                            <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button>
                                             {/* Add role start */}
                                             <div className="modalStyle" style={modalAddStyle}>
                                                 <div className="modalContentStyle" style={{ maxHeight: '680px', overflowY: 'auto' }}>

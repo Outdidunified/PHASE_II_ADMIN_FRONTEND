@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
@@ -29,41 +29,39 @@ const Profile = ({ userInfo, handleLogout }) => {
     const [userModified, setUserModified] = useState(false);
      
     // get profile data
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await fetch('/associationadmin/FetchUserProfile', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user_id: userInfo.data.user_id }),
-                });
+    const fetchProfile = useCallback(async () => {
+        try {
+            const response = await fetch('/associationadmin/FetchUserProfile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userInfo.data.user_id }),
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setPosts(data.data);
-                    // Assuming `association_details` is an array with one object
-                    const associationDetails = data.data.association_details[0] || {};
-                    setPostsAss(associationDetails);
-                    // Set initial values
-                    setInitialAssociationData(associationDetails);
-                    setInitialUserData(data.data);
-                } else {
-                    setErrorMessage('Failed to fetch profile, ' + response.statusText); 
-                    console.error('Failed to fetch profile:', response.statusText); 
-                }
-            } catch (error) {
-                setErrorMessage('An error occurred while fetching the profile');
-                console.error('Error:', error);
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data.data);
+                const associationDetails = data.data.association_details[0] || {};
+                setPostsAss(associationDetails);
+                setInitialAssociationData(associationDetails);
+                setInitialUserData(data.data);
+            } else {
+                setErrorMessage('Failed to fetch profile, ' + response.statusText); 
+                console.error('Failed to fetch profile:', response.statusText); 
             }
-        };
+        } catch (error) {
+            setErrorMessage('An error occurred while fetching the profile');
+            console.error('Error:', error);
+        }
+    }, [userInfo]);
 
+    useEffect(() => {
         if (!fetchProfileCalled.current && userInfo && userInfo.data && userInfo.data.user_id) {
             fetchProfile();
             fetchProfileCalled.current = true; // Mark fetchProfile as called
         }
-    }, [userInfo]);
+    }, [fetchProfile, userInfo]);
    
     // Association profile
     useEffect(() => {
@@ -117,7 +115,8 @@ const Profile = ({ userInfo, handleLogout }) => {
                 Swal.fire({
                     title: "Association profile updated successfully",
                     icon: "success"
-                });       
+                });                
+                fetchProfile();
             } else {
                 const responseData = await response.json();
                 Swal.fire({
@@ -183,7 +182,9 @@ const Profile = ({ userInfo, handleLogout }) => {
                 Swal.fire({
                     title: "User profile updated successfully",
                     icon: "success"
-                });               
+                });     
+                fetchProfile();
+        
             } else {
                 const responseData = await response.json();
                 Swal.fire({

@@ -135,6 +135,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "Client profile updated successfully",
                     icon: "success",
                 });
+                fetchClientUserDetails();
             } else {
                 const responseData = await response.json();
                 Swal.fire({
@@ -209,6 +210,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "User profile updated successfully",
                     icon: "success",
                 });
+                fetchClientUserDetails();
             } else {
                 const responseData = await response.json();
                 Swal.fire({

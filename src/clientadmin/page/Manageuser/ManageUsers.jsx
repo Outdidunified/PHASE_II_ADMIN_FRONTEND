@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
@@ -13,8 +13,8 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
     const fetchUsersCalled = useRef(false); 
 
     // fetch users
-    const fetchUsers = async () => {
-         try {
+    const fetchUsers = useCallback(async () => {
+        try {
             const response = await axios.post('/clientadmin/FetchUsers', {
                 client_id: userInfo.data.client_id,
             });
@@ -23,21 +23,22 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                 const data = response.data.data;
                 setUsers(data || []);
             } else {
-                console.error('Error fetching users');
+                const data = response.data.data;
+                console.error('Error fetching users: ', data);
                 setUsers([]);
             }
         } catch (error) {
             console.error('Error fetching users:', error);
             setUsers([]);
         }
-    };
+    }, [userInfo.data.client_id]);
 
     useEffect(() => {
         if (!fetchUsersCalled.current) {
             fetchUsers();
             fetchUsersCalled.current = true;
         }
-    }, []);
+    }, [fetchUsers]); // Add fetchUsers to the dependency array
 
   
     // view createuser

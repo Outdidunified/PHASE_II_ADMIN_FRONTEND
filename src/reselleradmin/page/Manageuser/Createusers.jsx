@@ -31,7 +31,6 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
     }, []);
 
     // fetch client names
-    
     const fetchClientNames = useCallback(async () => {
         try {
             const response = await axios.post('/reselleradmin/FetchClientForSelection', {

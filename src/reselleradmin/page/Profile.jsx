@@ -118,6 +118,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "Reseller profile updated successfully",
                     icon: "success",
                 });
+                fetchResellerUserDetails();
             } else {
                 const responseData = await response.json();
                 Swal.fire({
@@ -192,6 +193,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "User profile updated successfully",
                     icon: "success",
                 });
+                fetchResellerUserDetails();
             } else {
                 const responseData = await response.json();
                 Swal.fire({
