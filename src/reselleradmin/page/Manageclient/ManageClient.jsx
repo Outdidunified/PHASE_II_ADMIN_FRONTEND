@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 const Manageclient = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
-
     const fetchUsersCalled = useRef(false); 
 
+    // fetch all clients
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -31,63 +31,31 @@ const Manageclient = ({ userInfo, handleLogout }) => {
             fetchUsersCalled.current = true;
         }
     }, [userInfo.data.reseller_id]);
-
-
-    const handleDeactivateUser = async (client_id, status) => {
-        try {
-            const response = await axios.post('/reselleradmin/DeActivateClient', {
-                client_id: client_id,
-                modified_by: userInfo.data.reseller_name,
-                status: !status // Toggle status
-            });
-
-            if (response.status === 200) {
-                setUsers(prevUsers =>
-                    prevUsers.map(user =>
-                        user.client_id === client_id ? { ...user, status: !status } : user
-                    )
-                );
-                Swal.fire({
-                    title: status ? "Deactivated!" : "Activated!",
-                    icon: "success"
-                });
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to update user status.",
-                    icon: "error"
-                });
-            }
-        } catch (error) {
-            console.error('Error in updating user status:', error);
-            Swal.fire({
-                title: "Error",
-                text: "An error occurred while updating user status.",
-                icon: "error"
-            });
-        }
-    };
-
+    
+    // back create client page
     const navigateToCreateUser = () => {
         navigate('/reselleradmin/CreateClients');
     };
 
+    // back viewclient page 
     const navigateToViewClient = (user) => {
         navigate('/reselleradmin/viewclient', { state: { user } });
     };
 
+    // back assigntoass page
     const navassignedtoass = (client_id) => {
-        navigate('/reselleradmin/Asssigntoass', { state: { client_id } });
+        navigate('/reselleradmin/Assigntoass', { state: { client_id } });
     };
 
+    // back assigneddevicesclient page
     const navtoassdev = (client_id) => {
         navigate('/reselleradmin/Assigneddevicesclient', { state: { client_id } });
     };
 
+    // search
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
-
     const filteredUsers = users.filter((user) => {
         const searchFields = ['client_name'];
         return searchFields.some((field) =>
@@ -141,17 +109,15 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Client Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email ID</th>
-                                                        <th>Address</th>
                                                         <th>Status</th>
-                                                        <th>Active/DeActive</th>
                                                         <th>Actions</th>
                                                         <th>Assigned Association</th>
                                                         <th>Assigned Devices</th>
@@ -160,28 +126,12 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                 <tbody style={{ textAlign: 'center' }}>
                                                     {filteredUsers.length > 0 ? (
                                                         filteredUsers.map((user, index) => (
-                                                            <tr key={user.client_id}>
+                                                            <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{user.client_name}</td>
                                                                 <td>{user.client_phone_no}</td>
                                                                 <td>{user.client_email_id}</td>
-                                                                <td>{user.client_address}</td>
-                                                                <td style={{ color: user.status ? 'green' : 'red' }}>
-                                                                    {user.status ? 'Active' : 'DeActive'}
-                                                                </td>
-                                                                <td>
-                                                                    <div className='form-group' style={{paddingTop:'13px'}}> 
-                                                                        {user.status===true ?
-                                                                            <div className="form-check form-check-danger">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios2" value={false} onClick={() => handleDeactivateUser(user.client_id, user.status)}/>DeActive<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        :
-                                                                            <div className="form-check form-check-success">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios1" value={true} onClick={() => handleDeactivateUser(user.client_id, user.status)}/>Active<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                </td>
+                                                                <td>{user.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewClient(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
                                                                 </td>
@@ -195,7 +145,7 @@ const Manageclient = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="10">No Record Found</td>
+                                                            <td colSpan="8">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

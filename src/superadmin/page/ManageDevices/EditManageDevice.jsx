@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
@@ -22,6 +22,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const editBackManageDevice = () => {
         navigate('/superadmin/ManageDevice');
     };
+
     // Edit manage device
     const [charger_id, setChargerID] = useState(dataItem?.charger_id || '');
     const [tag_id, setTagID] = useState(dataItem?.tag_id || '');
@@ -33,6 +34,19 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const [max_power, setMaxPower] = useState(dataItem?.max_power || '');
     const [socket_count, setSocketCount] = useState(dataItem?.socket_count || '');
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Initial values
+    const initialValues = {
+        charger_id: dataItem?.charger_id || '',
+        tag_id: dataItem?.tag_id || '',
+        model: dataItem?.model || '',
+        type: dataItem?.type || '',
+        vendor: dataItem?.vendor || '',
+        gun_connector: dataItem?.gun_connector || '',
+        max_current: dataItem?.max_current || '',
+        max_power: dataItem?.max_power || '',
+        socket_count: dataItem?.socket_count || '',
+    };
 
     // Select model 
     const handleModel = (e) => {
@@ -54,6 +68,25 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
         setType(e.target.value);
     };
 
+    const [errorMessageCurrent, setErrorMessageCurrent] = useState('');
+    const [errorMessagePower, setErrorMessagePower] = useState('');
+
+    // Set timeout
+    useEffect(() => {
+        if (errorMessageCurrent) {
+            const timeout = setTimeout(() => setErrorMessageCurrent(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessagePower) {
+            const timeout = setTimeout(() => setErrorMessagePower(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessage) {
+            const timeout = setTimeout(() => setErrorMessage(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+    }, [errorMessageCurrent, errorMessagePower, errorMessage]); 
+    
     // Update manage device
     const editManageDevice = async (e) => {
         e.preventDefault();
@@ -100,7 +133,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.username  }),
+            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.email_id  }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -109,9 +142,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Update",
+                    text: "Failed to Update, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -125,6 +159,21 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     };
     // Add Chargers end
     
+    // Check if form values have changed
+    const isFormChanged = () => {
+        return (
+            charger_id !== initialValues.charger_id ||
+            tag_id !== initialValues.tag_id ||
+            model !== initialValues.model ||
+            type !== initialValues.type ||
+            vendor !== initialValues.vendor ||
+            gun_connector !== initialValues.gun_connector ||
+            max_current !== initialValues.max_current ||
+            max_power !== initialValues.max_power ||
+            socket_count !== initialValues.socket_count
+        );
+    };
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -170,7 +219,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Tag ID</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id}  onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id} maxLength={12} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -230,31 +279,33 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Max Current</label>
                                                                     <div className="col-sm-9">
-    <input 
-        type="tel" 
-        className="form-control" 
-        placeholder="Max Current" 
-        value={max_current} 
-        onChange={(e) => {
-            let value = e.target.value;
-            
-            // Remove any non-numeric characters
-            value = value.replace(/\D/g, '');
-            
-            // Ensure the value is within the specified range
-            if (value < 1) {
-                value = '1';
-            } else if (value > 32) {
-                value = '32';
-            }
-            
-            // Update the state with the sanitized and restricted value
-            setMaxCurrent(value);
-        }} 
-        required 
-    />
-</div>
+                                                                        <input 
+                                                                            type="tel" 
+                                                                            className="form-control" 
+                                                                            placeholder="Max Current" 
+                                                                            value={max_current} 
+                                                                            onChange={(e) => {
+                                                                                let value = e.target.value;
+                                                                                
+                                                                                // Remove any non-numeric characters
+                                                                                value = value.replace(/\D/g, '');
+                                                                                
+                                                                                // Ensure the value is within the specified range
+                                                                                if (value < 1) {
+                                                                                    value = '';
+                                                                                } else if (value > 32) {
+                                                                                    setErrorMessageCurrent('Max Current limit is 1 to 32');
 
+                                                                                    value = '32';
+                                                                                }
+                                                                                
+                                                                                // Update the state with the sanitized and restricted value
+                                                                                setMaxCurrent(value);
+                                                                            }} 
+                                                                            required 
+                                                                        />
+                                                                        {errorMessageCurrent && <div className="text-danger">{errorMessageCurrent}</div>}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-6">
@@ -270,8 +321,9 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                             
                                                                             // Ensure the value is within the specified range
                                                                             if (value < 1) {
-                                                                                value = '1';
-                                                                            } else if (value > 32) {
+                                                                                value = '';
+                                                                            } else if (value > 200) {
+                                                                                setErrorMessagePower('Max Power limit is 1 to 200');
                                                                                 value = '200';
                                                                             }
                                                                             
@@ -279,6 +331,8 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                             setMaxPower(value);
                                                                         }} 
                                                                          required/> 
+                                                                                                                                                  {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -301,7 +355,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{textAlign:'center'}}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isFormChanged()}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

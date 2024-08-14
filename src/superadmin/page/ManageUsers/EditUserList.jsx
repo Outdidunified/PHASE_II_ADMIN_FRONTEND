@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -16,9 +16,29 @@ const EditUserList = ({ userInfo, handleLogout }) => {
     const [email_id, setEmailId] = useState(dataItem?.email_id || '');
     const [passwords, setPassword] = useState(dataItem?.password || '');
     const [phone_no, setPhoneNo] = useState(dataItem?.phone_no || '');
-    const [wallet_bal, setWalletBal] = useState(dataItem?.wallet_bal || '');
+    const [wallet_bal, setWalletBal] = useState(dataItem?.wallet_bal || '0');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectStatus, setSelectStatus] = useState(dataItem?.status ? 'true' : 'false');
+
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        username: dataItem?.username || '',
+        email_id: dataItem?.email_id || '',
+        passwords: dataItem?.password || '',
+        phone_no: dataItem?.phone_no || '',
+        wallet_bal: dataItem?.wallet_bal || '0',
+        status: dataItem?.status ? 'true' : 'false',
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        username !== initialValues.username ||
+        email_id !== initialValues.email_id ||
+        passwords !== initialValues.passwords ||
+        phone_no !== initialValues.phone_no ||
+        wallet_bal !== initialValues.wallet_bal ||
+        selectStatus !== initialValues.status
+    );
 
     // Select status
     const handleStatusChange = (e) => {
@@ -61,11 +81,11 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: dataItem?.user_id,
                     username: username,
-                    phone_no: phone_no,
-                    password: passwords,
+                    phone_no: parseInt(phone_no),
+                    password: parseInt(passwords),
                     status: selectStatus === 'true',
                     wallet_bal: parseInt(wallet_bal),
-                    modified_by: userInfo.data.username}),
+                    modified_by: userInfo.data.email_id}),
             });
     
             if (response.ok) {
@@ -75,9 +95,10 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                 });
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update user',
+                    text: 'Failed to update user, ' + responseData.message,
                     icon: 'error',
                 });
             }
@@ -90,6 +111,17 @@ const EditUserList = ({ userInfo, handleLogout }) => {
         }
     };
     
+    useEffect(() => {
+        // Update initial values if dataItem changes
+        setInitialValues({
+            username: dataItem?.username || '',
+            email_id: dataItem?.email_id || '',
+            passwords: dataItem?.password || '',
+            phone_no: dataItem?.phone_no || '',
+            wallet_bal: dataItem?.wallet_bal || '0',
+            status: dataItem?.status ? 'true' : 'false',
+        });
+    }, [dataItem]);
 
     return (
         <div className='container-scroller'>
@@ -164,7 +196,11 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Wallet</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" value={wallet_bal} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setWalletBal(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" value={wallet_bal}
+                                                                            onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            const sanitizedValue = value.replace(/[^0-9]/g, '');
+                                                                            setWalletBal(sanitizedValue);}} required  />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -182,7 +218,7 @@ const EditUserList = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

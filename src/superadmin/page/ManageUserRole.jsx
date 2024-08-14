@@ -13,6 +13,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     const [filteredData] = useState([]);
     const [posts, setPosts] = useState([]);
     const fetchUserRoleCalled = useRef(false); // Ref to track if fetchProfile has been called
+    const [initialRoleEditname, setInitialRoleEditname] = useState('');
 
     // Fetch user roles
     const fetchUserRoles = async () => {
@@ -78,63 +79,64 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     }
 
     // Add user role start 
-    const [showAddForm, setShowAddForm] = useState(false);
+    // const [showAddForm, setShowAddForm] = useState(false);
 
-    const addChargers = () => {
-        setShowAddForm(prevState => !prevState); // Toggles the form visibility
-    };
-    const closeAddModal = () => {
-        setShowAddForm(false); // Close the form
-        setTheadsticky('sticky');
-        setTheadfixed('fixed');
-        setTheadBackgroundColor('white');
+    // const addChargers = () => {
+    //     setShowAddForm(prevState => !prevState); // Toggles the form visibility
+    // };
+    // const closeAddModal = () => {
+    //     setuserRole(''); 
+    //     setShowAddForm(false); // Close the form
+    //     setTheadsticky('sticky');
+    //     setTheadfixed('fixed');
+    //     setTheadBackgroundColor('white');
 
-    };
-    const modalAddStyle = {
-        display: showAddForm ? 'block' : 'none',
-    }
+    // };
+    // const modalAddStyle = {
+    //     display: showAddForm ? 'block' : 'none',
+    // }
 
     // Add user role
-    const [rolename, setuserRole] = useState('');
+    // const [rolename, setuserRole] = useState('');
 
-    const addUserRole = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('/superadmin/CreateUserRole', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ rolename, created_by: userInfo.data.username }),
-            });
-            if (response.ok) {
-                Swal.fire({
-                    title: "Add user role successfully",
-                    icon: "success"
-                });
-                setuserRole(''); 
-                setShowAddForm(false);
-                closeAddModal();
-                fetchUserRoles();
-                setTheadsticky('sticky');
-                setTheadfixed('fixed');
-                setTheadBackgroundColor('white');
-            } else {
-                const responseData = await response.json();
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to user role " + responseData.message,
-                    icon: "error"
-                });
-            }
-        }catch (error) {
-            Swal.fire({
-                title: "Error:", error,
-                text: "An error occurred while adding user role",
-                icon: "error"
-            });
-        }
-    };
+    // const addUserRole = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await fetch('/superadmin/CreateUserRole', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ rolename, created_by: userInfo.data.email_id }),
+    //         });
+    //         if (response.ok) {
+    //             Swal.fire({
+    //                 title: "Add user role successfully",
+    //                 icon: "success"
+    //             });
+    //             setuserRole(''); 
+    //             setShowAddForm(false);
+    //             closeAddModal();
+    //             fetchUserRoles();
+    //             setTheadsticky('sticky');
+    //             setTheadfixed('fixed');
+    //             setTheadBackgroundColor('white');
+    //         } else {
+    //             const responseData = await response.json();
+    //             Swal.fire({
+    //                 title: "Error",
+    //                 text: "Failed to user role, " + responseData.message,
+    //                 icon: "error"
+    //             });
+    //         }
+    //     }catch (error) {
+    //         Swal.fire({
+    //             title: "Error:", error,
+    //             text: "An error occurred while adding user role",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
 
     // Edit user role start 
     const [showEditForm, setShowEditForm] = useState(false);
@@ -143,6 +145,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     const handleEditUser = (dataItem) => {
         setEditDataItem(dataItem);
         setEdituserRole(dataItem.role_name); // Set role name for editing
+        setInitialRoleEditname(dataItem.role_name); // Set initial value for comparison
         setShowEditForm(true); // Open the form
     };
 
@@ -170,12 +173,12 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
     };
 
     // Add button thead bgcolor
-    const handleAddUserAndToggleBackground = () => {
-        addChargers();
-        setTheadsticky(theadsticky === 'sticky' ? '' : 'sticky');
-        setTheadfixed(theadfixed === 'fixed' ? 'transparent' : 'fixed');
-        setTheadBackgroundColor(theadBackgroundColor === 'white' ? 'transparent' : 'white');
-    }
+    // const handleAddUserAndToggleBackground = () => {
+    //     addChargers();
+    //     setTheadsticky(theadsticky === 'sticky' ? '' : 'sticky');
+    //     setTheadfixed(theadfixed === 'fixed' ? 'transparent' : 'fixed');
+    //     setTheadBackgroundColor(theadBackgroundColor === 'white' ? 'transparent' : 'white');
+    // }
 
     // Edit user role
     const [roleEditname, setEdituserRole] = useState('');
@@ -188,7 +191,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id: dataItem.role_id, role_name: roleEditname, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id: dataItem.role_id, role_name: roleEditname, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -203,9 +206,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 setTheadfixed('fixed');
                 setTheadBackgroundColor('white');
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user role",
+                    text: "Failed to update user role, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -227,7 +231,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id, status:false, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id, status:false, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -236,9 +240,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 });
                 fetchUserRoles();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to DeActivate",
+                    text: "Failed to DeActivate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -260,7 +265,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role_id, status:true, modified_by: userInfo.data.username }),
+            body: JSON.stringify({ role_id, status:true, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -269,9 +274,10 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                 });
                 fetchUserRoles();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Activate",
+                    text: "Failed to Activate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -301,9 +307,9 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
-                                            <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button>
+                                            {/* <button type="button" className="btn btn-success" onClick={handleAddUserAndToggleBackground}>Add Role's</button> */}
                                             {/* Add role start */}
-                                            <div className="modalStyle" style={modalAddStyle}>
+                                            {/* <div className="modalStyle" style={modalAddStyle}>
                                                 <div className="modalContentStyle" style={{ maxHeight: '680px', overflowY: 'auto' }}>
                                                     <span onClick={closeAddModal} style={{ float: 'right', cursor: 'pointer', fontSize:'30px' }}>&times;</span>
                                                     <form className="pt-3" onSubmit={addUserRole}>
@@ -325,7 +331,7 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                     </form>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             {/* Add role end */}
                                             {/* Edit role start */}
                                             <div className="modalStyle" style={modalEditStyle}>
@@ -341,11 +347,11 @@ const ManageUserRole = ({ userInfo, handleLogout }) => {
                                                                     <div className="input-group-prepend">
                                                                         <span className="input-group-text" style={{color:'black', width:'125px'}}>Role Name</span>
                                                                     </div>
-                                                                    <input type="text" className="form-control" placeholder="Role Name" id="roleEditname" value={roleEditname} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setEdituserRole(sanitizedValue);}} required/>
+                                                                    <input type="text" className="form-control" placeholder="Role Name" value={roleEditname} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setEdituserRole(sanitizedValue);}} required/>
                                                                 </div>
                                                             </div>
                                                             <div style={{textAlign:'center'}}>
-                                                                <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}}>Update</button>
+                                                                <button type="submit" className="btn btn-primary mr-2" style={{marginTop:'10px'}} disabled={roleEditname === initialRoleEditname}>Update</button>
                                                             </div>
                                                         </div>
                                                     </form>

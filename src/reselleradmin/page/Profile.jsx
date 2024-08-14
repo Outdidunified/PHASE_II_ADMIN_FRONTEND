@@ -20,6 +20,14 @@ const Profile = ({ userInfo, handleLogout }) => {
     const [reseller_address, setUpdateAddress] = useState('');
     const fetchProfileCalled = useRef(false); // Ref to track if fetchProfile has been called
 
+    // Store initial values
+    const [initialResellerData, setInitialResellerData] = useState({});
+    const [initialUserData, setInitialUserData] = useState({});
+ 
+    // Store whether any changes have been made
+    const [reselllerModified, setReselllerModified] = useState(false);
+    const [userModified, setUserModified] = useState(false);
+
     // Define fetchResellerUserDetails using useCallback to memoize it
     const fetchResellerUserDetails = useCallback(async () => {
         try {
@@ -32,6 +40,9 @@ const Profile = ({ userInfo, handleLogout }) => {
                 setPosts(data);
                 const resellerDetails = data.reseller_details[0] || {};
                 setPostsAss(resellerDetails);
+                // Set initial values
+                setInitialResellerData(resellerDetails);
+                setInitialUserData(data);
             } else {
                 setErrorMessage('Failed to fetch profile');
                 console.error('Failed to fetch profile:', response.statusText);
@@ -71,6 +82,7 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     }, [errorMessage, errorMessages]);
 
+    // update reseller profile
     const addResellerProfileUpdate = async (e) => {
         e.preventDefault();
 
@@ -97,7 +109,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                     reseller_name,
                     reseller_address,
                     reseller_phone_no: phoneNos,
-                    modified_by: userInfo.data.reseller_name,
+                    modified_by: userInfo.data.email_id,
                 }),
             });
 
@@ -106,10 +118,12 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "Reseller profile updated successfully",
                     icon: "success",
                 });
+                fetchResellerUserDetails();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update reseller profile",
+                    text: "Failed to update reseller profile, " +responseData.message,
                     icon: "error",
                 });
             }
@@ -132,6 +146,7 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     }, [data]);
 
+    // update user profile
     const addUserProfileUpdate = async (e) => {
         e.preventDefault();
 
@@ -178,10 +193,12 @@ const Profile = ({ userInfo, handleLogout }) => {
                     title: "User profile updated successfully",
                     icon: "success",
                 });
+                fetchResellerUserDetails();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user profile",
+                    text: "Failed to update user profile, " + responseData.message,
                     icon: "error",
                 });
             }
@@ -193,6 +210,23 @@ const Profile = ({ userInfo, handleLogout }) => {
             });
         }
     };
+
+    useEffect(() => {
+        // Check if client profile data has been modified
+        setReselllerModified(
+            reseller_name !== initialResellerData.reseller_name ||
+            reseller_email_id !== initialResellerData.reseller_email_id ||
+            reseller_phone_no !== initialResellerData.reseller_phone_no ||
+            reseller_address !== initialResellerData.reseller_address
+        );
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [reseller_name, reseller_phone_no, reseller_email_id, reseller_address, username, phone_no, password, initialResellerData, initialUserData]);
 
     return (
         <div className='container-scroller'>
@@ -222,7 +256,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                         <form className="forms-sample" onSubmit={addResellerProfileUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputUsername1">Username</label>
-                                                <input type="text" className="form-control" placeholder="Username" value={reseller_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue); }} required/>
+                                                <input type="text" className="form-control" placeholder="Username" value={reseller_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue); }} readOnly required/>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Email address</label>
@@ -234,11 +268,11 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputConfirmPassword1">Address</label>
-                                                <textarea className="form-control" placeholder="Address" value={reseller_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
+                                                <textarea className="form-control" placeholder="Address" value={reseller_address} maxLength={150} onChange={(e) => setUpdateAddress(e.target.value)} required/>
                                             </div>
                                             {errorMessages && <div className="text-danger">{errorMessages}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!reselllerModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>
@@ -261,6 +295,20 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputPassword1">Phone Number</label>
+                                                {/* <input type="text" className="form-control" placeholder="Phone Number" value={phone_no}
+                                                    maxLength={10}
+                                                    onChange={(e) => {
+                                                        // Get the input value and remove any non-numeric characters
+                                                        const value = e.target.value;
+                                                        const sanitizedValue = value.replace(/[^0-9]/g, '');
+
+                                                        // Check if the sanitized value is valid
+                                                        if (sanitizedValue.length === 0 || (sanitizedValue.length > 0 && sanitizedValue[0] !== '0' && sanitizedValue.length <= 10)) {
+                                                            setUserPhone(sanitizedValue);
+                                                        }
+                                                    }}
+                                                    required
+                                                    /><br/> */}
                                                 <input type="text" className="form-control" placeholder="Phone Number" value={phone_no} maxLength={10} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setUserPhone(sanitizedValue); }} required/>
                                             </div>
                                             <div className="form-group">
@@ -269,7 +317,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Submit</button>
                                             </div>
                                         </form>
                                     </div>

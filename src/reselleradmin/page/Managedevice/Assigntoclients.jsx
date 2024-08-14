@@ -9,17 +9,18 @@ import Footer from '../../components/Footer';
 const Assigntoclients = ({ userInfo, handleLogout }) => {
     const [selectedClientId, setSelectedClientId] = useState('');
     const [selectedChargers, setSelectedChargers] = useState([]);
-    const [commission, setCommission] = useState('');
+    const [commission, setCommission] = useState('0');
     const [reloadPage, setReloadPage] = useState(false); // State to trigger page reload
     const [chargersLoading, setChargersLoading] = useState(true); // State to manage loading state
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
     const [clientsList, setClientsList] = useState([]);
-
+    console.log(commission)
     const navigate = useNavigate();
 
     const fetchClientsCalled = useRef(false); 
     const fetchUnallocatedChargersCalled = useRef(false); 
 
+    // fetch clientuser to assgin charger
     useEffect(() => {
         const fetchClients = async () => {
             try {
@@ -33,6 +34,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
             }
         };
 
+        // fetch unallocated chargers
         const fetchUnallocatedChargers = async () => {
             try {
                 const response = await axios.post('/reselleradmin/FetchUnAllocatedChargerToAssgin', {
@@ -59,6 +61,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     }, [userInfo.data.reseller_id]); // Use userInfo.data.reseller_id as the dependency
 
+    // client changes state
     const handleClientChange = (e) => {
         const selectedClientId = e.target.value;
         setSelectedClientId(selectedClientId);
@@ -72,10 +75,15 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // handle commission
     const handleCommissionChange = (e) => {
-        setCommission(e.target.value);
+        const value = e.target.value;
+        // Remove any non-digit characters
+        const cleanedValue = value.replace(/[^0-9]/g, '');
+        setCommission(cleanedValue);
     };
 
+    // submit data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -105,13 +113,14 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         });
     };
 
+    // assign data submit
     const submitAssign = async () => {
         try {
             const response = await axios.post('/reselleradmin/AssginChargerToClient', {
                 client_id: parseInt(selectedClientId),
                 charger_id: selectedChargers,
                 reseller_commission: commission,
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
             });
 
             if (response.data.status === 'Success') {
@@ -126,23 +135,37 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                 });
                 navigate('/reselleradmin/Allocateddevice')
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Charger Not Assigned',
+                    title: 'Charger Not Assigned, ' + responseData.messages,
                     text: 'Please try again.',
                     timer: 2000,
                     timerProgressBar: true
                 });
             }
         } catch (error) {
-            console.error('Error assigning charger:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error assigning charger',
-                text: 'Please try again later.',
-                timer: 2000,
-                timerProgressBar: true
-            });
+            // Handle network errors or unexpected server responses
+            if (error.response && error.response.data) {
+                // Error response from server
+                const errorMessage = error.response.data.message || 'An unknown error occurred.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: errorMessage,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                // Network or unexpected error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error assigning charger',
+                    text: 'Please try again later.',
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }
         }
     };
 
@@ -153,6 +176,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
         }
     }, [reloadPage]);
 
+    // back allocated device 
     const goBack = () => {
         navigate('/reselleradmin/Allocateddevice');
     };
@@ -270,6 +294,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             value={commission}
+                                                                            
                                                                             onChange={handleCommissionChange}
                                                                         />
                                                                     </div>
@@ -301,6 +326,7 @@ const Assigntoclients = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

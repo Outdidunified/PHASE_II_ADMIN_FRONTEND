@@ -15,7 +15,6 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
-
     const filterChargers = useCallback((chargers) => {
         return chargers.filter((charger) =>
             charger.charger_id.toString().toLowerCase().includes(searchQuery.toLowerCase())
@@ -37,7 +36,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
         try {
             const response = await axios.post('/reselleradmin/DeActivateOrActivateCharger', {
                 charger_id: chargerId,
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
                 status: !status // Toggle status
             });
 
@@ -60,9 +59,10 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                     // Your action after 10 seconds, e.g., navigate, update state, or perform another action
                 }, 10000); // 10000 milliseconds = 10 seconds
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update charger status.",
+                    text: "Failed to update charger status, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -146,10 +146,10 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
                                                         <th>Model</th>

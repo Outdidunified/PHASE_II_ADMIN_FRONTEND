@@ -11,7 +11,8 @@ const Sidebar = () => {
         '/clientadmin/Assignfinance',
         '/clientadmin/Createass',
         '/clientadmin/Editass',
-        
+        '/clientadmin/Sessionhistoryass',
+        '/clientadmin/assignfinance',        
     ].includes(location.pathname);
 
     const isManageUsersActive = [
@@ -39,22 +40,22 @@ const Sidebar = () => {
                 </li>
 
                 <li className={location.pathname === '/clientadmin/Allocateddevice' || location.pathname === '/clientadmin/Unallocateddevice' || location.pathname === '/clientadmin/AssigntoAssociation' || location.pathname === '/clientadmin/ViewAlloc' || location.pathname === '/clientadmin/ViewUnalloc'  ? 'nav-item active' : 'nav-item'} key="ManageDevice">
-                    <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                    <a className="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                     <i className="icon-head menu-icon mdi mdi-cellphone-link"></i>
                     <span className="menu-title">Manage Device</span>
-                    <i class="menu-arrow"></i>
+                    <i className="menu-arrow"></i>
                     </a>
-                    <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <Link class="nav-link" to={{ pathname: "/clientadmin/Allocateddevice" }}>Allocated Chargers</Link></li>
-                        <li class="nav-item"> <Link class="nav-link" to={{ pathname: "/clientadmin/Unallocateddevice" }}>Unallocated Chargers</Link></li>
+                    <div className="collapse" id="ui-basic">
+                    <ul className="nav flex-column sub-menu">
+                        <li className="nav-item"> <Link className="nav-link" to={{ pathname: "/clientadmin/Allocateddevice" }}>Allocated Chargers</Link></li>
+                        <li className="nav-item"> <Link className="nav-link" to={{ pathname: "/clientadmin/Unallocateddevice" }}>Unallocated Chargers</Link></li>
                     </ul>
                     </div>
                 </li>
 
                 <li className={`nav-item ${isManageAssociationActive ? 'active' : ''}`} key="ManageAssociation">
                     <Link className="nav-link" to={{ pathname: "/clientadmin/ManageAssociation" }}>
-                        <i className="icon-head menu-icon mdi mdi-account-multiple"></i>
+                        <i className="icon-head menu-icon mdi mdi-account-group"></i>
                         <span className="menu-title">Manage Association</span>
                     </Link>
                 </li>
@@ -75,7 +76,7 @@ const Sidebar = () => {
                 
                 <li className={location.pathname === '/clientadmin/Wallet' ? 'nav-item active' : 'nav-item'} key="Wallet">
                     <Link className="nav-link" to={{ pathname: "/clientadmin/Wallet" }}>
-                        <i className="icon-head menu-icon mdi mdi-cash-multiple"></i>
+                        <i className="icon-head menu-icon mdi mdi-wallet"></i>
                         <span className="menu-title">Wallet</span>
                     </Link>
                 </li>

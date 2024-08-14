@@ -64,7 +64,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
         }
     };
 
-    // // Update table data 'data', and 'filteredData' 
+    // Update table data 'data', and 'filteredData' 
     useEffect(() => {
         switch (data) {
             case 'filteredData':
@@ -89,21 +89,21 @@ const Dashboard = ({ userInfo, handleLogout }) => {
     const offlinePercentage = (offlineChargers.length / totalChargers) * 10;
     const faultyPercentage = (faultyChargers.length / totalChargers) * 10;
     
-    // // Chart data 
+    // Chart data 
     useEffect(() => {
-        const xValues = [ 'Total', 'Online', 'Offline' ]; // Adjusted order of labels
+        const xValues = ['Total', 'Online', 'Offline'];
         const yValues = [
             data.length,
             onlineChargers.length,
             offlineChargers.length
         ];
-        const barColors = [ "#4B46AC", "#57B657", "#FF4747" ];
-    
+        const barColors = ["#4B46AC", "#57B657", "#FF4747"];
+
         if (chartRef.current) {
             chartRef.current.destroy();
         }
-    
-        const ctx = document.getElementById('myChart');
+
+        const ctx = document.getElementById('myChart').getContext('2d');
         chartRef.current = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -114,18 +114,21 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                 }]
             },
             options: {
+                responsive: true, // Ensure the chart is responsive
+                maintainAspectRatio: false, // Allow the chart to resize while maintaining aspect ratio
                 plugins: {
                     title: {
                         display: true,
+                        text: 'Chart Title'
                     }
                 }
             }
         });
-    
+
         return () => {
             if (chartRef.current) {
                 chartRef.current.destroy();
-            };
+            }
         };
     }, [data, onlineChargers.length, offlineChargers.length]);
     
@@ -150,8 +153,8 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                             <div className="col-md-12 grid-margin">
                                 <div className="row">
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
-                                        <h3 className="font-weight-bold">Welcome to <span style={{color:'#4B49AC'}}>{userInfo.data.association_name}</span>,</h3>
-                                        <h4 className="font-weight-bold">Super Admin Dashboard</h4>
+                                        <h3 className="font-weight-bold">Welcome to <span style={{color:'#4B49AC'}}>{userInfo.data.email_id}</span>,</h3>
+                                        <h4 className="font-weight-bold">Associationadmin Admin Dashboard</h4>
                                     </div>
                                 </div>
                             </div>
@@ -270,9 +273,9 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                 </div>
                                                                 <div className="col-md-6 mt-3">
                                                                     <div className="report-chart">
-                                                                        <div style={{ width: '70%', height: '70%', margin: 'auto', textAlign: 'center' }}>
-                                                                            <canvas id="myChart" />
-                                                                        </div>  
+                                                                        <div style={{ width: '70%', height: '70%', margin: 'auto', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+                                                                            <canvas id="myChart" style={{ width: '100% !important', height: 'auto !important'}}/>
+                                                                        </div> 
                                                                     </div>
                                                                     <div>
                                                                         <div className="report-chart">

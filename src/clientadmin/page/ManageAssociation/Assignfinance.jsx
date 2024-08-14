@@ -7,12 +7,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Assignfinance = ({ userInfo, handleLogout }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [chargerId, setChargerId] = useState('');
     const [financeOptions, setFinanceOptions] = useState([]);
     const [selectedFinanceId, setSelectedFinanceId] = useState('');
-    const location = useLocation();
-    const navigate = useNavigate();
-
+   
     useEffect(() => {
         const { charger_id } = location.state || {};
         if (charger_id) {
@@ -21,6 +21,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         fetchFinanceId();
     }, [location]);
 
+    // fetch finance details for selected
     const fetchFinanceId = async () => {
         try {
             const response = await axios.get('/clientadmin/FetchFinanceDetailsForSelection');
@@ -42,6 +43,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // submit data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -49,21 +51,34 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
             const formattedData = {
                 charger_id: chargerId,
                 finance_id: parseInt(selectedFinanceId),
-                modified_by: userInfo.data.client_name,
+                modified_by: userInfo.data.email_id,
                 // Add other fields as needed for submission
             };
-            await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
+            // await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
+            const response = await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
 
-            // Show success alert using SweetAlert
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Finance has been assigned successfully.',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                // Redirect to previous page or handle navigation as needed
-                navigate(-1); // Navigate back one step
-            });
+            // Check the response data or status
+            if (response.status === 200 && response.data.success) {
+                // Show success alert using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Finance has been assigned successfully.',
+                    confirmButtonText: 'OK',
+                }).then((result) => {
+                    // Redirect to previous page or handle navigation as needed
+                    navigate(-1); // Navigate back one step
+                });
+            } else {
+                // Handle unexpected response or non-success status
+                const responseData = await response.json();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Unexpected Response!',
+                    text: 'Please check the details and try again,' + responseData.message,
+                    confirmButtonText: 'OK',
+                });
+            }
         } catch (error) {
             console.error('Error assigning finance details:', error);
             // Handle error state or show error message
@@ -76,14 +91,17 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -101,7 +119,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                               Back
                                             </button>
                                         </div>
                                     </div>
@@ -161,6 +179,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

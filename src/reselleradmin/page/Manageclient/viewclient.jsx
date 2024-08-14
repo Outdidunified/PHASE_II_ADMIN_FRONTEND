@@ -6,25 +6,17 @@ import Sidebar from '../../components/Sidebar';
 
 const ViewClient = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
-    const [newUser, setNewUser] = useState({
-        client_name: '',
-        client_phone_no: '',
-        client_email_id: '',
-        client_address: '',
-        status: '',
-        created_by: '',
-        created_date: '',
-        modified_by: '',
-        modified_date: '',
-    });
-
     const location = useLocation();
+    const [newUser, setNewUser] = useState({
+        client_name: '', client_id: '', client_phone_no: '', client_email_id: '', client_address: '', 
+        status: '', created_by: '', created_date: '', modified_by: '', modified_date: '', });
 
     useEffect(() => {
         const { user } = location.state || {};
         if (user) {
             setNewUser({
                 client_name: user.client_name || '',
+                client_id: user.client_id || '',
                 client_phone_no: user.client_phone_no || '',
                 client_email_id: user.client_email_id || '',
                 client_address: user.client_address || '',
@@ -45,11 +37,12 @@ const ViewClient = ({ userInfo, handleLogout }) => {
         }
     }, [location]);
 
+    // back manageclient page
     const goBack = () => {
         navigate('/reselleradmin/ManageClient');
     };
 
-    
+    // back updateclient page
     const navigateToEditUser = (newUser) => {
         navigate('/reselleradmin/updateclient', { state: { newUser } });
     };
@@ -113,7 +106,7 @@ const ViewClient = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Name: <span style={{ fontWeight: 'normal' }}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
+                                                                <div className="col-sm-12">Client Name: <span style={{ fontWeight: 'normal' }}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
@@ -157,7 +150,7 @@ const ViewClient = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Status: <span style={{ fontWeight: 'normal' }}>{newUser.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</span></div>
+                                                                <div className="col-sm-12">Status: <span style={{fontWeight:'normal'}}>{newUser.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>

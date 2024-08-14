@@ -8,6 +8,7 @@ const Wallet = ({ userInfo, handleLogout }) => {
     const [commissionAmount, setCommissionAmount] = useState('');
     const fetchCommissionAmountCalled = useRef(false); // Ref to track if fetchCommissionAmount has been called
 
+    // fetch the commission amount
     useEffect(() => {
         const fetchCommissionAmount = async () => {
             try {

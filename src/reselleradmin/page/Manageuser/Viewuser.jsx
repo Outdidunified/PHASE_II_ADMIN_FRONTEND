@@ -7,28 +7,10 @@ import Sidebar from '../../components/Sidebar';
 const Viewuser = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const [newUser, setNewUser] = useState({
-        association_id: '',
-        autostop_price: '',
-        autostop_price_is_checked: false,
-        autostop_time: '',
-        autostop_time_is_checked: false,
-        autostop_unit: '',
-        autostop_unit_is_checked: false,
-        client_id: '',
-        created_by: '',
-        created_date: '',
-        email_id: '',
-        modified_by: '',
-        modified_date: '',
-        password: '',
-        phone_no: '',
-        reseller_id: '',
-        role_id: '',
-        status: '',
-        user_id: '',
-        username: '',
-        wallet_bal: '',
-        _id: '',
+        association_id: '', autostop_price: '', autostop_price_is_checked: false, autostop_time: '', autostop_time_is_checked: false,
+        autostop_unit: '', autostop_unit_is_checked: false, client_id: '', created_by: '', created_date: '',
+        email_id: '', modified_by: '', modified_date: '', password: '', phone_no: '', reseller_id: '',
+        role_id: '', status: '', user_id: '', username: '', client_name: '', role_name: '', wallet_bal: '', _id: '',
     });
 
     const location = useLocation();
@@ -37,31 +19,20 @@ const Viewuser = ({ userInfo, handleLogout }) => {
         const { user } = location.state || {};
         if (user) {
             setNewUser({
-                association_id: user.association_id || '',
-                autostop_price: user.autostop_price || '',
-                autostop_price_is_checked: user.autostop_price_is_checked || false,
-                autostop_time: user.autostop_time || '',
-                autostop_time_is_checked: user.autostop_time_is_checked || false,
-                autostop_unit: user.autostop_unit || '',
-                autostop_unit_is_checked: user.autostop_unit_is_checked || false,
-                client_id: user.client_id || '',
-                created_by: user.created_by || '',
+                association_id: user.association_id || '', autostop_price: user.autostop_price || '', autostop_price_is_checked: user.autostop_price_is_checked || false,
+                autostop_time: user.autostop_time || '', autostop_time_is_checked: user.autostop_time_is_checked || false,
+                autostop_unit: user.autostop_unit || '', autostop_unit_is_checked: user.autostop_unit_is_checked || false,
+                client_id: user.client_id || '', created_by: user.created_by || '',
                 created_date: user.created_date ? new Date(user.created_date).toLocaleString() : '',
-                email_id: user.email_id || '',
-                modified_by: user.modified_by || '',
+                email_id: user.email_id || '', modified_by: user.modified_by || '',
                 modified_date: user.modified_date ? new Date(user.modified_date).toLocaleString() : '',
-                password: user.password || '',
-                phone_no: user.phone_no || '',
-                reseller_id: user.reseller_id || '',
-                role_id: user.role_id || '',
-                status: user.status || '',
-                user_id: user.user_id || '',
-                username: user.username || '',
-                wallet_bal: user.wallet_bal || '',
-                _id: user._id || '',
+                password: user.password || '', phone_no: user.phone_no || '', reseller_id: user.reseller_id || '',
+                role_id: user.role_id || '', status: user.status || '', user_id: user.user_id || '', username: user.username || '',
+                client_name: user.client_name || '', role_name: user.role_name || '',
+                wallet_bal: user.wallet_bal || '', _id: user._id || '',
             });
-         // Save to localStorage
-         localStorage.setItem('userData', JSON.stringify(user));
+            // Save to localStorage
+            localStorage.setItem('userData', JSON.stringify(user));
         } else {
             // Load from localStorage if available
             const savedData = JSON.parse(localStorage.getItem('userData'));
@@ -71,10 +42,12 @@ const Viewuser = ({ userInfo, handleLogout }) => {
         }
     }, [location]);
 
+    // back manage user page
     const goBack = () => {
         navigate('/reselleradmin/ManageUsers');
     };
 
+    // edit page view
     const navigateToEditUser = (newUser) => {
         navigate('/reselleradmin/updateuser', { state: { newUser } });
     };
@@ -138,12 +111,7 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Client Id: <span style={{fontWeight:'normal'}}>{newUser.client_id ? newUser.client_id : '-'}</span></div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-4">
-                                                            <div className="form-group row">
-                                                                <div className="col-sm-12">Name: <span style={{fontWeight:'normal'}}>{newUser.username ? newUser.username : '-'}</span></div>  
+                                                                <div className="col-sm-12">User Name: <span style={{fontWeight:'normal'}}>{newUser.username ? newUser.username : '-'}</span></div>  
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
@@ -151,21 +119,26 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Phone Number: <span style={{fontWeight:'normal'}}>{newUser.phone_no ? newUser.phone_no : '-'}</span></div> 
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Email ID: <span style={{fontWeight:'normal'}}>{newUser.email_id ? newUser.email_id : '-'}</span></div>   
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Wallet Balance: <span style={{fontWeight:'normal'}}>{newUser.wallet_bal ? newUser.wallet_bal : '-'}</span></div>
+                                                                <div className="col-sm-12">Wallet Balance: <span style={{fontWeight:'normal'}}>{newUser.wallet_bal ? newUser.wallet_bal : '0'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Role ID: <span style={{fontWeight:'normal'}}>{newUser.role_id ? newUser.role_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Client Name: <span style={{fontWeight:'normal'}}>{newUser.client_name ? newUser.client_name : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Role Name: <span style={{fontWeight:'normal'}}>{newUser.role_name ? newUser.role_name : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -190,6 +163,11 @@ const Viewuser = ({ userInfo, handleLogout }) => {
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified Date: <span style={{fontWeight:'normal'}}>{newUser.modified_date ? formatTimestamp(newUser.modified_date) : '-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Password: <span style={{fontWeight:'normal'}}>{newUser.password ? newUser.password : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">

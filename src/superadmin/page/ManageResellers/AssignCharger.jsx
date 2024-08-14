@@ -26,6 +26,8 @@ const AssignCharger = ({ userInfo, handleLogout }) => {
                 if (response.ok) {
                     const responseData = await response.json();
                     setData(responseData.data);
+                    console.log(responseData.data);
+                    
                     setFilteredData(responseData.data); // Initialize filtered data with all data
                 } else {
                     console.error('Failed to fetch assigned chargers');

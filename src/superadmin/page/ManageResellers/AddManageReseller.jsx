@@ -36,14 +36,14 @@ const AddManageReseller = ({ userInfo, handleLogout }) => {
         }
 
         try {
-            const PhoneNumber = parseInt(phoneNumber);
+            const phoneNumbers = parseInt(phoneNumber);
 
             const response = await fetch('/superadmin/CreateReseller', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-                body: JSON.stringify({ reseller_name, reseller_phone_no:PhoneNumber, reseller_email_id, reseller_address, created_by:userInfo.data.username }),
+                body: JSON.stringify({ reseller_name, reseller_phone_no:phoneNumbers, reseller_email_id, reseller_address, created_by:userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -59,7 +59,7 @@ const AddManageReseller = ({ userInfo, handleLogout }) => {
                 const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to add reseller " + responseData.message,
+                    text: "Failed to add reseller, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -127,7 +127,19 @@ const AddManageReseller = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Email ID</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="email" className="form-control" placeholder="Email ID" value={reseller_email_id} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setEmailID(sanitizedEmail); }}required/>  
+                                                                    <input type="email" className="form-control" placeholder="Email ID" value={reseller_email_id} 
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            // Remove spaces and invalid characters
+                                                                            const noSpaces = value.replace(/\s/g, '');
+                                                                            const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, '');
+                                                                            // Convert to lowercase
+                                                                            const lowerCaseEmail = validChars.toLowerCase();
+                                                                            // Handle multiple @ symbols
+                                                                            const atCount = (lowerCaseEmail.match(/@/g) || []).length;
+                                                                            const sanitizedEmail = atCount <= 1 ? lowerCaseEmail : lowerCaseEmail.replace(/@.*@/, '@');
+                                                                            // Set the sanitized and lowercase email
+                                                                            setEmailID(sanitizedEmail); }} required />
                                                                     </div>
                                                                 </div>
                                                             </div>

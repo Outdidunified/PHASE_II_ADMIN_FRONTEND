@@ -129,11 +129,11 @@ const ManageReseller = ({ userInfo, handleLogout }) => {
                                                         <th>Sl.No</th>
                                                         <th>Reseller Name</th>
                                                         <th>Phone Number</th>
-                                                        <th>Emial ID</th>
+                                                        <th>Email ID</th>
                                                         <th>Status</th>
                                                         <th>Option</th>
-                                                        <th>Assign Client</th>
-                                                        <th>Assign Charger</th>
+                                                        <th>Assigned Client</th>
+                                                        <th>Assigned Charger</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody style={{textAlign:'center'}}>

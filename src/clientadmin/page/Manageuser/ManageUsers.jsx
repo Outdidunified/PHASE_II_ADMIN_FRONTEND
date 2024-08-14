@@ -1,85 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const ManageUsers = ({ userInfo, handleLogout, children }) => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
+    const fetchUsersCalled = useRef(false); 
 
-    const fetchUsers = async () => {
+    // fetch users
+    const fetchUsers = useCallback(async () => {
         try {
-            const response = await axios.get('/clientadmin/FetchUsers');
-          
-            setUsers(response.data.data || []);
+            const response = await axios.post('/clientadmin/FetchUsers', {
+                client_id: userInfo.data.client_id,
+            });
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                setUsers(data || []);
+            } else {
+                const data = response.data.data;
+                console.error('Error fetching users: ', data);
+                setUsers([]);
+            }
         } catch (error) {
             console.error('Error fetching users:', error);
             setUsers([]);
         }
-    };
+    }, [userInfo.data.client_id]);
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
-
-
-    const handleDeactivateUser = async (user_id, status) => {
-        try {
-          
-            const response = await axios.post('/clientadmin/DeActivateUser', {
-                user_id: user_id,
-                modified_by: userInfo.data.client_name,
-                status: !status // Toggle status
-            });
-
-            if (response.status === 200) {
-                setUsers(prevUsers =>
-                    prevUsers.map(user =>
-                        user.user_id === user_id ? { ...user, status: !status } : user
-                    )
-                );
-                Swal.fire({
-                    title: status ? "Deactivated!" : "Activated!",
-                    icon: "success"
-                });
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to update user status.",
-                    icon: "error"
-                });
-            }
-        } catch (error) {
-            console.error('Error in updating user status:', error);
-            Swal.fire({
-                title: "Error",
-                text: "An error occurred while updating user status.",
-                icon: "error"
-            });
+        if (!fetchUsersCalled.current) {
+            fetchUsers();
+            fetchUsersCalled.current = true;
         }
-    };
-    
+    }, [fetchUsers]); // Add fetchUsers to the dependency array
+
+  
+    // view createuser
     const navigateToCreateUser = () => {
         navigate('/clientadmin/Createuser');
     };
 
-    const navigateToEditUser = (user) => {
-        navigate('/clientadmin/Edituser', { state: { user } });
-    };
-
+    // view user page
     const navigateToViewSession = (user) => {
-   
         navigate('/clientadmin/Viewuser', { state: { user } });
     };
 
+    // search
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
-
     const filteredUsers = users.filter((user) => {
         const searchFields = ['username'];
         return searchFields.some((field) =>
@@ -133,17 +108,15 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
+                                                        <th>Role Name</th>
                                                         <th>User Name</th>
-                                                        <th>Phone Number</th>
                                                         <th>Email ID</th>
-                                                        <th>Role Id</th>
                                                         <th>Status</th>
-                                                        <th>Active/DeActive</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -152,35 +125,20 @@ const ManageUsers = ({ userInfo, handleLogout, children }) => {
                                                         filteredUsers.map((user, index) => (
                                                             <tr key={user.user_id}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{user.username}</td>
-                                                                <td>{user.phone_no}</td>
-                                                                <td>{user.email_id}</td>
-                                                                <td>{user.role_id}</td>
+                                                                <td>{user.role_name ? user.role_name : '-'}</td>
+                                                                <td>{user.username ? user.username : '-'}</td>
+                                                                <td>{user.email_id ? user.email_id : '-'}</td>
                                                                 <td style={{ color: user.status ? 'green' : 'red' }}>
                                                                     {user.status ? 'Active' : 'DeActive'}
                                                                 </td>
                                                                 <td>
-                                                                    <div className='form-group' style={{paddingTop:'13px'}}> 
-                                                                        {user.status===true ?
-                                                                            <div className="form-check form-check-danger">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios2" value={false} onClick={() => handleDeactivateUser(user.user_id, user.status)}/>DeActive<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        :
-                                                                            <div className="form-check form-check-success">
-                                                                                <label className="form-check-label"><input type="radio" className="form-check-input" name="optionsRadios1" id="optionsRadios1" value={true} onClick={() => handleDeactivateUser(user.user_id, user.status)}/>Active<i className="input-helper"></i></label>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                </td>
-                                                                <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewSession(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
-                                                                    <button type="button" className="btn btn-outline-primary btn-icon-text" onClick={() => navigateToEditUser(user)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-pencil btn-icon-prepend"></i>Edit</button>
                                                                 </td>
                                                             </tr>
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="8">No Record Found</td>
+                                                            <td colSpan="6">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

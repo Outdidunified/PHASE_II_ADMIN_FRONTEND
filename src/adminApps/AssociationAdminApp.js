@@ -6,6 +6,7 @@ import ManageDevice from '../associationadmin/page/ManageDevices/ManageDevice';
 import ViewManageDevice from '../associationadmin/page/ManageDevices/ViewManageDevice';
 import EditManageDevice from '../associationadmin/page/ManageDevices/EditManageDevice';
 import ManageUsers from '../associationadmin/page/ManageUser/ManageUsers';
+import ViewManageUser from '../associationadmin/page/ManageUser/ViewManageUser';
 import EditManageUsers from '../associationadmin/page/ManageUser/EditManageUsers';
 import Wallet from '../associationadmin/page/Wallet';
 import Profile from '../associationadmin/page/Profile';
@@ -85,6 +86,14 @@ const AssociationAdminApp = () => {
           path="/ManageUsers"
           element={loggedIn ? (
             <ManageUsers userInfo={userInfo} handleLogout={handleLogout} />
+          ) : (
+            <Navigate to="/associationadmin" />
+          )}
+        />
+        <Route
+          path="/ViewManageUser"
+          element={loggedIn ? (
+            <ViewManageUser userInfo={userInfo} handleLogout={handleLogout} />
           ) : (
             <Navigate to="/associationadmin" />
           )}
