@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -16,6 +16,24 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const [wifiUsername, setWifiUsername] = useState(dataItem.wifi_username || '');
     const [wifiPassword, setWifiPassword] = useState(dataItem.wifi_password || '');
     const [selectStatus, setSelectedStatus] = useState(dataItem?.charger_accessibility || '');
+
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        lat: dataItem?.lat || '',
+        long: dataItem.long || '',
+        wifi_username: dataItem.wifi_username || '',
+        wifi_password: dataItem.wifi_password || '',
+        charger_accessibility: dataItem?.charger_accessibility || ''
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        latitude !== initialValues.lat ||
+        longitude !== initialValues.long ||
+        wifiUsername !== initialValues.wifi_username ||
+        wifiPassword !== initialValues.wifi_password ||
+        selectStatus !== initialValues.charger_accessibility
+    );
 
     // Selected status
     const handleStatusChange = (e) => {
@@ -47,7 +65,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                     long: longitude,
                     wifi_username: wifiUsername,
                     wifi_password: wifiPassword,
-                    modified_by: userInfo.data.association_name
+                    modified_by: userInfo.data.email_id
                 }),
             });
 
@@ -62,9 +80,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                 setWifiPassword('');
                 editBackManageDevice();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update device",
+                    text: "Failed to update device, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -76,6 +95,17 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             });
         }
     };
+
+    useEffect(() => {
+        // Update initial values if dataItem changes
+        setInitialValues({
+            lat: dataItem?.lat || '',
+            long: dataItem.long || '',
+            wifi_username: dataItem.wifi_username || '',
+            wifi_password: dataItem.wifi_password || '',
+            charger_accessibility: dataItem?.charger_accessibility || ''
+        });
+    }, [dataItem]);
 
     return (
         <div className='container-scroller'>
@@ -112,7 +142,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Public/Private</label>
+                                                                    <label className="col-sm-3 col-form-label">Charger Accessibility</label>
                                                                     <div className="col-sm-9">
                                                                         <select className="form-control" value={selectStatus} onChange={handleStatusChange} required>
                                                                             <option value="1">Public</option>
@@ -159,7 +189,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                         </div>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

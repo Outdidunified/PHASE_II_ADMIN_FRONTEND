@@ -21,7 +21,25 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
     const [selectChargerType, setSelectedChargerType] = useState('');
     const [data, setData] = useState([]);
     const fetchDataCalled = useRef(false);
+    const [errorMessageCurrent, setErrorMessageCurrent] = useState('');
+    const [errorMessagePower, setErrorMessagePower] = useState('');
 
+     // Set timeout
+     useEffect(() => {
+        if (errorMessageCurrent) {
+            const timeout = setTimeout(() => setErrorMessageCurrent(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessagePower) {
+            const timeout = setTimeout(() => setErrorMessagePower(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+        if (errorMessage) {
+            const timeout = setTimeout(() => setErrorMessage(''), 5000); // Clear error message after 5 seconds
+            return () => clearTimeout(timeout);
+        }
+    }, [errorMessageCurrent, errorMessagePower, errorMessage]); 
+    
     // Clone data
     const handleClone = (cloneModel) => {
         const selectedModelData = data.find(item => item.model === cloneModel);
@@ -109,7 +127,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ charger_id, tag_id, model, type: selectChargerType, vendor, gun_connector, max_current, max_power, socket_count, created_by: userInfo.data.username }),
+                body: JSON.stringify({ charger_id, tag_id, model, type: selectChargerType, vendor, gun_connector, max_current, max_power, socket_count, created_by: userInfo.data.email_id }),
             });
 
             if (response.ok) {
@@ -207,7 +225,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Charger ID</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Charger ID" value={charger_id} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setChargerID(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" placeholder="Charger ID" value={charger_id} maxLength={14} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setChargerID(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -215,7 +233,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Tag ID</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id} maxLength={12} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -285,8 +303,9 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                             
                                                                             // Ensure the value is within the specified range
                                                                             if (value < 1) {
-                                                                                value = '1';
+                                                                                value = '';
                                                                             } else if (value > 32) {
+                                                                                setErrorMessageCurrent('Max Current limit is 1 to 32');
                                                                                 value = '32';
                                                                             }
                                                                             
@@ -294,6 +313,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                             setMaxCurrent(value);
                                                                         }} 
                                                                          required/> 
+                                                                        {errorMessageCurrent && <div className="text-danger">{errorMessageCurrent}</div>}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -310,8 +330,9 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                             
                                                                             // Ensure the value is within the specified range
                                                                             if (value < 1) {
-                                                                                value = '1';
-                                                                            } else if (value > 32) {
+                                                                                value = '';
+                                                                            } else if (value > 200) {
+                                                                                setErrorMessagePower('Max Power limit is 1 to 200');
                                                                                 value = '200';
                                                                             }
                                                                             
@@ -319,6 +340,7 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                             setMaxPower(value);
                                                                         }} 
                                                                          required/> 
+                                                                         {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
                                                                     </div>
                                                                 </div>
                                                             </div>

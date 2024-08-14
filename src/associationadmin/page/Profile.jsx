@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
@@ -20,39 +20,48 @@ const Profile = ({ userInfo, handleLogout }) => {
 
     const fetchProfileCalled = useRef(false); // Ref to track if fetchProfile has been called
 
+    // Store initial values
+    const [initialAssociationData, setInitialAssociationData] = useState({});
+    const [initialUserData, setInitialUserData] = useState({});
+  
+    // Store whether any changes have been made
+    const [associationModified, setAssociationModified] = useState(false);
+    const [userModified, setUserModified] = useState(false);
+     
     // get profile data
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await fetch('/associationadmin/FetchUserProfile', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user_id: userInfo.data.user_id }),
-                });
+    const fetchProfile = useCallback(async () => {
+        try {
+            const response = await fetch('/associationadmin/FetchUserProfile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userInfo.data.user_id }),
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setPosts(data.data);
-                    // Assuming `association_details` is an array with one object
-                    const associationDetails = data.data.association_details[0] || {};
-                    setPostsAss(associationDetails);
-                } else {
-                    setErrorMessage('Failed to fetch profile');
-                    console.error('Failed to fetch profile:', response.statusText);
-                }
-            } catch (error) {
-                setErrorMessage('An error occurred while fetching the profile');
-                console.error('Error:', error);
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data.data);
+                const associationDetails = data.data.association_details[0] || {};
+                setPostsAss(associationDetails);
+                setInitialAssociationData(associationDetails);
+                setInitialUserData(data.data);
+            } else {
+                setErrorMessage('Failed to fetch profile, ' + response.statusText); 
+                console.error('Failed to fetch profile:', response.statusText); 
             }
-        };
+        } catch (error) {
+            setErrorMessage('An error occurred while fetching the profile');
+            console.error('Error:', error);
+        }
+    }, [userInfo]);
 
+    useEffect(() => {
         if (!fetchProfileCalled.current && userInfo && userInfo.data && userInfo.data.user_id) {
             fetchProfile();
             fetchProfileCalled.current = true; // Mark fetchProfile as called
         }
-    }, [userInfo]);
+    }, [fetchProfile, userInfo]);
    
     // Association profile
     useEffect(() => {
@@ -101,17 +110,18 @@ const Profile = ({ userInfo, handleLogout }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ association_id: userInfo.data.association_id, association_address, association_phone_no: phoneNos, modified_by: userInfo.data.association_name}),});
+                body: JSON.stringify({ association_id: userInfo.data.association_id, association_address, association_phone_no: phoneNos, modified_by: userInfo.data.email_id}),});
             if (response.ok) {
                 Swal.fire({
                     title: "Association profile updated successfully",
                     icon: "success"
-                });       
-                        
+                });                
+                fetchProfile();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update association profile",
+                    text: "Failed to update association profile, " +responseData.message,
                     icon: "error"
                 });
             }
@@ -172,11 +182,14 @@ const Profile = ({ userInfo, handleLogout }) => {
                 Swal.fire({
                     title: "User profile updated successfully",
                     icon: "success"
-                });               
+                });     
+                fetchProfile();
+        
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to update user profile",
+                    text: "Failed to update user profile, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -189,6 +202,23 @@ const Profile = ({ userInfo, handleLogout }) => {
         }
     };
     
+    useEffect(() => {
+        // Check if client profile data has been modified
+        setAssociationModified(
+            association_name !== initialAssociationData.association_name ||
+            association_email_id !== initialAssociationData.association_email_id ||
+            association_phone_no !== initialAssociationData.association_phone_no ||
+            association_address !== initialAssociationData.association_address
+        );
+
+        // Check if user profile data has been modified
+        setUserModified(
+            username !== initialUserData.username ||
+            phone_no !== initialUserData.phone_no ||
+            password !== initialUserData.password
+        );
+    }, [association_name, association_phone_no, association_email_id, association_address, username, phone_no, password, initialAssociationData, initialUserData]);
+
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -217,7 +247,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                         <form className="forms-sample" onSubmit={addAssProfileUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputUsername1">Username</label>
-                                                <input type="text" className="form-control" placeholder="Username" value={association_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue);}} required/>
+                                                <input type="text" className="form-control" placeholder="Username" value={association_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUpdateUname(sanitizedValue);}} readOnly required/>
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Email address</label>
@@ -229,11 +259,11 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputConfirmPassword1">Address</label>
-                                                <textarea type="password" className="form-control" placeholder="Address" value={association_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
+                                                <textarea type="password" className="form-control" placeholder="Address" maxLength={150} value={association_address} onChange={(e) => setUpdateAddress(e.target.value)} required/>
                                             </div>
                                             {errorMessageAss && <div className="text-danger">{errorMessageAss}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!associationModified}>Update</button>
                                             </div> 
                                         </form>
                                     </div>
@@ -264,7 +294,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                             </div>
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                             <div style={{textAlign:'center'}}>
-                                                <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                <button type="submit" className="btn btn-primary mr-2" disabled={!userModified}>Update</button>
                                             </div>                                    
                                         </form>
                                     </div>

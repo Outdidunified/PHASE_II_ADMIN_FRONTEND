@@ -1,78 +1,85 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Header from '../../components/Header';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const Managefinance = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [financeDetails, setFinanceDetails] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
+    const fetchUsersCalled = useRef(false); 
+
+    // fetch finance details
+    const fetchFinanceDetails = async () => {
+        try {
+            const response = await axios.get('/clientadmin/FetchFinanceDetails');
+            setFinanceDetails(response.data.data || []);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            setFinanceDetails([]);
+        }
+    };
 
     useEffect(() => {
-        const fetchFinanceDetails = async () => {
-            try {
-                const response = await axios.get('/clientadmin/FetchFinanceDetails');
-                setFinanceDetails(response.data.data); // Assuming response.data.data is an array of finance details objects
-            } catch (error) {
-                console.error('Error managing finance:', error);
-                setFinanceDetails([]); // Set financeDetails to empty array in case of error
-            }
-        };
+        if (!fetchUsersCalled.current) {
+            fetchFinanceDetails();
+            fetchUsersCalled.current = true;
+        }
+    }, []);
 
-        fetchFinanceDetails();
-    }, []); // Empty dependency array ensures this runs once on component mount
-
+    // search
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
 
+    // view finance page
     const handleView = (finance) => {
         navigate('/clientadmin/ViewFinance', { state: { finance } });
     };
 
-    const handleEdit = (finance) => {
-        navigate('/clientadmin/EditFinance', { state: { finance } });
-    };
+    // view create finance page
     const navigateToCreateUser = () => {
         navigate('/clientadmin/CreateFinance');
     };
-    const handleDeactivate = async (finance) => {
-        try {
-            const response = await axios.post('/clientadmin/DeactivateOrActivateFinanceDetails', {
-                finance_id: finance.finance_id,
-                modified_by: userInfo.data.client_name,
-                status: !finance.status // Toggle status
-            });
 
-            if (response.data.status === "Success") {
-                setFinanceDetails(prevFinances =>
-                    prevFinances.map(fin =>
-                        fin.finance_id === finance.finance_id ? { ...fin, status: !finance.status } : fin
-                    )
-                );
-                Swal.fire({
-                    title: finance.status ? "Deactivated!" : "Activated!",
-                    icon: "success"
-                });
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to update finance status.",
-                    icon: "error"
-                });
-            }
-        } catch (error) {
-            console.error('Error in updating finance status:', error);
-            Swal.fire({
-                title: "Error",
-                text: "An error occurred while updating finance status.",
-                icon: "error"
-            });
-        }
-    };
+    // Active and deactive users
+    // const handleDeactivate = async (finance) => {
+    //     try {
+    //         const response = await axios.post('/clientadmin/DeactivateOrActivateFinanceDetails', {
+    //             finance_id: finance.finance_id,
+    //             modified_by: userInfo.data.client_name,
+    //             status: !finance.status // Toggle status
+    //         });
+
+    //         if (response.data.status === "Success") {
+    //             setFinanceDetails(prevFinances =>
+    //                 prevFinances.map(fin =>
+    //                     fin.finance_id === finance.finance_id ? { ...fin, status: !finance.status } : fin
+    //                 )
+    //             );
+    //             Swal.fire({
+    //                 title: finance.status ? "Deactivated!" : "Activated!",
+    //                 icon: "success"
+    //             });
+    //         } else {
+    //             Swal.fire({
+    //                 title: "Error",
+    //                 text: "Failed to update finance status.",
+    //                 icon: "error"
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in updating finance status:', error);
+    //         Swal.fire({
+    //             title: "Error",
+    //             text: "An error occurred while updating finance status.",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
 
     return (
         <div className='container-scroller'>
@@ -116,19 +123,20 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
+                                                        <th>Sl.No</th>
                                                         <th>Client Id</th>
-                                                        <th>Association_id</th>
+                                                        <th>Association ID</th>
                                                         <th>App Charges</th>
                                                         <th>EB Charges</th>
                                                         <th>Open A EB Charges</th>
                                                         <th>Parking Charges</th>
                                                         <th>Rent Charges</th>
                                                         <th>Status</th>
-                                                        <th>Active/DeActive</th>
+                                                        {/* <th>Active/DeActive</th> */}
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -136,17 +144,18 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                     {financeDetails.length > 0 ? (
                                                         financeDetails.map((finance, index) => (
                                                             <tr key={index}>
-                                                                <td>{finance.client_id}</td>
-                                                                <td>{finance.association_id}</td>
-                                                                <td>{finance.app_charges}</td>
-                                                                <td>{finance.eb_charges}</td>
-                                                                <td>{finance.open_a_eb_charges}</td>
-                                                                <td>{finance.parking_charges}</td>
-                                                                <td>{finance.rent_charges}</td>
+                                                                <td>{index + 1}</td>
+                                                                <td>{finance.client_id ? finance.client_id : '-'}</td>
+                                                                <td>{finance.association_id ? finance.association_id : '-'}</td>
+                                                                <td>{finance.app_charges ? finance.app_charges : '-'}</td>
+                                                                <td>{finance.eb_charges  ? finance.eb_charges : '-'}</td>
+                                                                <td>{finance.open_a_eb_charges ?  finance.open_a_eb_charges : '-'}</td>
+                                                                <td>{finance.parking_charges ? finance.parking_charges : '-'}</td>
+                                                                <td>{finance.rent_charges ? finance.rent_charges : '-'}</td>
                                                                 <td style={{ color: finance.status ? 'green' : 'red' }}>
                                                                     {finance.status ? 'Active' : 'DeActive'}
                                                                 </td>
-                                                                <td>
+                                                                {/* <td>
                                                                     <div className='form-group' style={{paddingTop:'13px'}}> 
                                                                         {finance.status===true ?
                                                                             <div className="form-check form-check-danger">
@@ -158,10 +167,9 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                                             </div>
                                                                         }
                                                                     </div>
-                                                                </td>
+                                                                </td> */}
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => handleView(finance)} style={{ marginRight: '5px' }}><i className="mdi mdi-eye btn-icon-prepend"></i> View</button>
-                                                                    <button type="button" className="btn btn-outline-info btn-icon-text" onClick={() => handleEdit(finance)} style={{ marginRight: '5px' }}><i className="mdi mdi-pencil btn-icon-prepend"></i> Edit</button>
                                                                 </td>
                                                             </tr>
                                                         ))

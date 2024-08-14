@@ -1,67 +1,84 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const CreateClients = ({ userInfo, handleLogout }) => {
-    const [newUser, setNewUser] = useState({ "client_name": '', "client_phone_no": '', "client_email_id": '', "client_address": '' });
-    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-
-    const Goback = () => {
+    
+    // Back manage client
+    const backManageClient = () => {
         navigate('/reselleradmin/ManageClient');
     };
 
-    const addClientUser = async (e) => {
-        e.preventDefault();
+    // Add client
+    const [client_name, setClientName] = useState('');
+    const [client_phone_no, setPhoneNumber] = useState('');
+    const [client_email_id, setEmailID] = useState('');
+    const [client_address, setAddress] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
-        // Phone number validation regex
+    // Add manage device
+    const addManageClient = async (e) => {
+        e.preventDefault();
+         
+        // Validate phone number
         const phoneRegex = /^\d{10}$/;
-        if (!newUser.client_phone_no || !phoneRegex.test(newUser.client_phone_no)) {
-            setErrorMessage('Phone number must be a 10-digit number.');
+        if (!client_phone_no) {
+            setErrorMessage("Phone can't be empty.");
             return;
         }
-        
+        if (!phoneRegex.test(client_phone_no)) {
+            setErrorMessage('Oops! Phone must be a 10-digit number.');
+            return;
+        }
+
         try {
-            // Ensure that keys are explicitly set as strings
-            const userData = {
-                "reseller_id": userInfo.data.reseller_id, // Explicitly setting the empty key
-                "client_name": newUser["client_name"],
-                "client_phone_no": newUser["client_phone_no"],
-                "client_email_id": newUser["client_email_id"],
-                "client_address": newUser["client_address"],
-                "created_by": userInfo.data.reseller_name
-            };
+            const PhoneNumber = parseInt(client_phone_no);
 
-            const response = await axios.post('/reselleradmin/addNewClient', userData);
-
+            const response = await fetch('/reselleradmin/addNewClient', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+                body: JSON.stringify({ reseller_id:userInfo.data.reseller_id, client_name, client_phone_no:PhoneNumber, client_email_id, client_address, created_by:userInfo.data.email_id }),
+            });
             if (response.status === 200) {
                 Swal.fire({
-                    title: "Success!",
-                    text: "User created successfully",
+                    title: "Client added successfully",
                     icon: "success"
                 });
-                setNewUser({ "client_name": '', "client_phone_no": '', "client_email_id": '', "client_address": '' });
-                navigate('/reselleradmin/ManageClient');
+                setClientName(''); 
+                setPhoneNumber(''); 
+                setEmailID(''); 
+                setAddress(''); 
+                backManageClient();
             } else {
-                setErrorMessage('Failed to add user');
+                const responseData = await response.json();
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to add client, " + responseData.message,
+                    icon: "error"
+                });
             }
-        } catch (error) {
-            console.error('Error creating user:', error);
-            setErrorMessage('An error occurred while creating the user.');
+        }catch (error) {
+            Swal.fire({
+                title: "Error:", error,
+                text: "An error occurred while adding the client",
+                icon: "error"
+            });
         }
     };
-
+    
     return (
         <div className='container-scroller'>
             {/* Header */}
-            <Header userInfo={userInfo} handleLogout={handleLogout} />
+            <Header userInfo={userInfo} handleLogout={handleLogout}/>
             <div className="container-fluid page-body-wrapper" style={{paddingTop:'40px'}}>
                 {/* Sidebar */}
-                <Sidebar />
+                <Sidebar/>
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="row">
@@ -72,7 +89,7 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
-                                            <button type="button" className="btn btn-success" onClick={Goback}>Back</button>
+                                            <button type="button" className="btn btn-success" onClick={backManageClient}>Back</button>
                                         </div>
                                     </div>
                                 </div>
@@ -86,64 +103,41 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                             <div className="card">
                                                 <div className="card-body">
                                                     <h4 className="card-title">Create Client Users</h4>
-                                                    <form className="form-sample" onSubmit={addClientUser}>
+                                                    <form className="form-sample" onSubmit={addManageClient}>
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Name</label>
+                                                                    <label className="col-sm-3 col-form-label">Client Name</label>
                                                                     <div className="col-sm-9">
-                                                                    <input 
-    type="text" 
-    className="form-control" 
-    placeholder="Name" 
-    value={newUser.client_name} 
-    onChange={(e) => {
-        const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
-        setNewUser({ ...newUser, client_name: sanitizedValue });
-    }} 
-    required 
-/>
+                                                                        <input type="text" className="form-control" placeholder="Client Name" value={client_name} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setClientName(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Phone No</label>
+                                                                    <label className="col-sm-3 col-form-label">Phone Number</label>
                                                                     <div className="col-sm-9">
-                                                                    <input 
-    type="text" 
-    className="form-control" 
-    placeholder="Phone No" 
-    value={newUser.client_phone_no} 
-    maxLength={10}
-    onChange={(e) => {
-        const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
-        setNewUser({ ...newUser, client_phone_no: sanitizedValue });
-    }} 
-    required 
-/>
+                                                                        <input type="text" className="form-control" placeholder="Phone Number" value={client_phone_no} maxLength={10} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setPhoneNumber(sanitizedValue);}} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Email ID</label>
                                                                     <div className="col-sm-9">
-                                                                    <input 
-    type="email" 
-    className="form-control" 
-    placeholder="Email ID" 
-    value={newUser.client_email_id} 
-    onChange={(e) => {
-        const inputValue = e.target.value;
-        const sanitizedEmail = inputValue
-            .replace(/\s/g, '') // Remove whitespace
-            .replace(/[^a-zA-Z0-9@.]/g, '') // Remove non-alphanumeric characters except @ and .
-            .replace(/@.*@/, '@'); // Ensure there's at most one @ character
-        setNewUser({ ...newUser, client_email_id: sanitizedEmail });
-    }} 
-    required 
-/>
+                                                                        <input type="email" className="form-control" placeholder="Email ID" value={client_email_id} onChange={(e) => {const value = e.target.value;
+                                                                                // Remove spaces and invalid characters
+                                                                                const noSpaces = value.replace(/\s/g, '');
+                                                                                const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, '');
+                                                                                // Convert to lowercase
+                                                                                const lowerCaseEmail = validChars.toLowerCase();
+                                                                                // Handle multiple @ symbols
+                                                                                const atCount = (lowerCaseEmail.match(/@/g) || []).length;
+                                                                                const sanitizedEmail = atCount <= 1 ? lowerCaseEmail : lowerCaseEmail.replace(/@.*@/, '@');
+                                                                                // Set the sanitized and lowercase email
+                                                                                setEmailID(sanitizedEmail); }}required/>  
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -151,14 +145,14 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Address</label>
                                                                     <div className="col-sm-9">
-                                                                        <textarea type="text" className="form-control" placeholder="Address" max={150} value={newUser.client_address} onChange={(e) => setNewUser({ ...newUser, "client_address": e.target.value })} required />
+                                                                        <textarea type="text" className="form-control" placeholder="Address" value={client_address} maxLength={150} onChange={(e) => setAddress(e.target.value)} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
-                                                        <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Create</button>
+                                                        {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
+                                                        <div style={{textAlign:'center'}}>
+                                                            <button type="submit" className="btn btn-primary mr-2">Add</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -171,10 +165,10 @@ const CreateClients = ({ userInfo, handleLogout }) => {
                     </div>
                     {/* Footer */}
                     <Footer />
-                </div>
-            </div>
+                </div>         
+            </div>    
         </div>
     );
-};
-
-export default CreateClients;
+};   
+                 
+export default CreateClients

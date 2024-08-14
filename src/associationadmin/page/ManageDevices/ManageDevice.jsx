@@ -37,7 +37,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 setData(data.data);
                 setLoading(false);
             } else {
-                setError('Failed to fetch profile');
+                setError('Failed to fetch profile, ' + response.statusText);
                 console.error('Failed to fetch profile:', response.statusText);
             }
         } catch (error) {
@@ -86,7 +86,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id:dataItem.charger_id, status:false, modified_by: userInfo.data.association_name }),
+            body: JSON.stringify({ charger_id:dataItem.charger_id, status:false, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -95,9 +95,10 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 FetchAllocatedCharger();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to DeActivate",
+                    text: "Failed to DeActivate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -119,7 +120,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id:dataItem.charger_id, status:true, modified_by: userInfo.data.association_name }),
+            body: JSON.stringify({ charger_id:dataItem.charger_id, status:true, modified_by: userInfo.data.email_id }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -128,9 +129,10 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                 });
                 FetchAllocatedCharger();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to Activate",
+                    text: "Failed to Activate, " + responseData.message,
                     icon: "error"
                 });
             }
@@ -214,7 +216,9 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{dataItem.charger_id ? dataItem.charger_id : '-'}</td>
-                                                                <td>{dataItem.model ? dataItem.model : '-'}</td>
+                                                                <td className="py-1">
+                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
+                                                                </td>
                                                                 <td>{dataItem.type ?  dataItem.type : '-'}</td>
                                                                 <td>
                                                                     {dataItem.gun_connector === 1

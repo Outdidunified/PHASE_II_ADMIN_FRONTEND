@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -11,54 +11,110 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     const dataItems = location.state?.newUser || JSON.parse(localStorage.getItem('editDeviceData'));
     localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
-
     const [username, setUsername] = useState(dataItems?.username || '');
     const [email_id] = useState(dataItems?.email_id || ''); // Read-only, so no need for state
-    const [password] = useState(dataItems?.password || ''); // Read-only, so no need for state
+    const [password, setPassword] = useState(dataItems?.password || ''); // Read-only, so no need for state
     const [phone_no, setPhoneNo] = useState(dataItems?.phone_no || '');
-    const [role_id] = useState(dataItems?.role_id || ''); // Read-only, so no need for state
-    const [status, setStatus] = useState(dataItems?.status || 'Active'); // Initialize with Active or Inactive
+    const [role_name] = useState(dataItems?.role_name || ''); // Read-only, so no need for state
+    const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false'); // Initialize with Active or Inactive
     const [errorMessage, setErrorMessage] = useState('');
 
+     // Store initial values
+     const [initialValues, setInitialValues] = useState({
+        username: dataItems?.username || '',
+        phone_no: dataItems?.phone_no || '',
+        password: dataItems?.password || '',
+        status: dataItems?.status ? 'true' : 'false',
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        username !== initialValues.username ||
+        phone_no !== initialValues.phone_no ||
+        password !== initialValues.password ||
+        status !== initialValues.status
+    );
+
+    // update client users
     const updateClientUser = async (e) => {
         e.preventDefault();
+        
         // phone number validation
         const phoneRegex = /^\d{10}$/;
         if (!phone_no || !phoneRegex.test(phone_no)) {
             setErrorMessage('Phone number must be a 10-digit number.');
             return;
         }
+ 
+        // Validate password
+        const passwordRegex = /^\d{4}$/;
+        if (!password) {
+            setErrorMessage("Password can't be empty.");
+            return;
+        }
+        if (!passwordRegex.test(password)) {
+            setErrorMessage('Oops! Password must be a 4-digit number.');
+            return;
+        }
+
         try {
             const formattedUserData = {
-                user_id: userInfo.data.user_id,
+                user_id: dataItems?.user_id,
                 username: username,
                 phone_no: parseInt(phone_no),
-                modified_by: userInfo.data.reseller_name,
+                modified_by: userInfo.data.email_id,
                 password: parseInt(password), // Assuming this is not supposed to be changed
-                status: status === 'Active',
+                status: status === 'true',
             };
 
-            await axios.post(`/reselleradmin/UpdateUser`, formattedUserData);
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "User updated successfully",
-                showConfirmButton: false,
-                timer: 1500
-            });
-            navigate('/reselleradmin/ManageUsers');
+            const response = await axios.post(`/reselleradmin/UpdateUser`, formattedUserData);
+
+            if (response.status === 200) {
+                // Handle success
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "User updated successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate('/reselleradmin/ManageUsers');
+            } else {
+                const responseData = await response.json();
+                // Handle other status codes
+                Swal.fire({
+                    position: "center",
+                    icon: "Error",
+                    title: "Failed to update user. Please try again, " + responseData.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                // setErrorMessage('Failed to update user. Please try again, ');
+            }
         } catch (error) {
             console.error('Error updating user:', error);
         }
     };
 
+    // back manage user page
     const goBack = () => {
         navigate('/reselleradmin/ManageUsers');
     };
 
+    // search
     const handleStatusChange = (e) => {
         setStatus(e.target.value);
     };
+
+    useEffect(() => {
+        // Update initial values if dataItems changes
+        setInitialValues({
+            username: dataItems?.username || '',
+            phone_no: dataItems?.phone_no || '',
+            password: dataItems?.password || '',
+            status: dataItems?.status ? 'true' : 'false',
+        });
+    }, [dataItems]);
 
     return (
         <div className='container-scroller'>
@@ -150,19 +206,24 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
                                                                             type="text"
                                                                             className="form-control"
                                                                             value={password}
-                                                                            readOnly
+                                                                            maxLength={4}
+                                                                            onChange={(e) => {
+                                                                                const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
+                                                                                setPassword(sanitizedValue.slice(0, 4));
+                                                                            }}
+                                                                            required
                                                                         />
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Role ID</label>
+                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
                                                                             className="form-control"
-                                                                            value={role_id}
+                                                                            value={role_name}
                                                                             readOnly
                                                                         />
                                                                     </div>
@@ -179,8 +240,8 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
                                                                             required
                                                                             style={{ color: "black" }}
                                                                         >
-                                                                            <option value="Active">Active</option>
-                                                                            <option value="Inactive">DeActive</option>
+                                                                            <option value="true">Active</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -188,7 +249,7 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

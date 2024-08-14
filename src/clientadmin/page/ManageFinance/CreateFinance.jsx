@@ -7,29 +7,19 @@ import Sidebar from '../../components/Sidebar';
 import Swal from 'sweetalert2';
 
 const CreateFinance = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
     const [newFinance, setNewFinance] = useState({
-      
-        eb_charges: '',
-        app_charges: '',
-        other_charges: '',
-        parking_charges: '',
-        rent_charges: '',
-        open_a_eb_charges: '',
-        open_other_charges: '',
-        created_by: userInfo.data.client_name, // Assuming userInfo has necessary client info
+        eb_charges: '', app_charges: '', other_charges: '', parking_charges: '',
+        rent_charges: '', open_a_eb_charges: '', open_other_charges: '', created_by: userInfo.data.email_id, // Assuming userInfo has necessary client info
     });
 
     const [errorMessage, setErrorMessage] = useState('');
    
-    const navigate = useNavigate();
-
-   
-
+    // create finance
     const createFinance = async (e) => {
         e.preventDefault();
         try {
             const formattedFinanceData = {
-                
                 client_id: userInfo.data.client_id, // Assuming userInfo has necessary client info
                 eb_charges: newFinance.eb_charges,
                 app_charges: newFinance.app_charges,
@@ -55,14 +45,17 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
         }
     };
 
+    // back page
     const goBack = () => {
         navigate(-1);
     };
 
     return (
         <div className='container-scroller'>
+            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
+                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -80,7 +73,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                                Go Back
+                                                Back
                                             </button>
                                         </div>
                                     </div>
@@ -104,7 +97,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="EB Chargers"
                                                                             value={newFinance.eb_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, eb_charges: e.target.value })}
                                                                             required
@@ -118,7 +111,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="App Charges"
                                                                             value={newFinance.app_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, app_charges: e.target.value })}
                                                                             required
@@ -132,7 +125,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Other Charges"
                                                                             value={newFinance.other_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, other_charges: e.target.value })}
                                                                             required
@@ -146,7 +139,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Parking Charges"
                                                                             value={newFinance.parking_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, parking_charges: e.target.value })}
                                                                             required
@@ -160,7 +153,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Rent Charges"
                                                                             value={newFinance.rent_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, rent_charges: e.target.value })}
                                                                             required
@@ -174,7 +167,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Open A EB Charges"
                                                                             value={newFinance.open_a_eb_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, open_a_eb_charges: e.target.value })}
                                                                             required
@@ -188,7 +181,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <input
                                                                             type="text"
-                                                                            className="form-control"
+                                                                            className="form-control" placeholder="Open Other Charges"
                                                                             value={newFinance.open_other_charges}
                                                                             onChange={(e) => setNewFinance({ ...newFinance, open_other_charges: e.target.value })}
                                                                             required
@@ -210,6 +203,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

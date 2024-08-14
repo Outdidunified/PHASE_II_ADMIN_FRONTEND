@@ -128,7 +128,7 @@ const SessignHistory = ({ userInfo, handleLogout }) => {
                                                                 <td>{post.session_id ? post.session_id : '-'}</td>
                                                                 <td>{post.created_date ? formatTimestamp(post.created_date) : '-'}</td>
                                                                 <td>{post.price ? post.price :'-'}</td>
-                                                                <td>{post.unit_consumed ? post.unit_consumed : '-'}</td>
+                                                                <td>{post.unit_consummed ? post.unit_consummed : '-'}</td>
                                                                 <td>{post.start_time ? formatTimestamp(post.start_time) : '-'}</td>
                                                                 <td>{post.stop_time ? formatTimestamp(post.stop_time) : '-'}</td>
                                                             </tr>

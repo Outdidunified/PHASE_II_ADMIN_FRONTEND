@@ -9,58 +9,26 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     
     const [newDevice, setNewDevice] = useState({
-        charger_id: '',
-        model: '',
-        type: '',
-        gun_connector: '',
-        max_current: '',
-        created_date: '',
-        status: '',
-        tag_id: '',
-        assigned_association_date: '',
-        assigned_client_date: '',
-        assigned_reseller_date: '',
-        charger_accessibility: '',
-        client_commission: '',
-        created_by: '',
-        current_or_active_user: '',
-        max_power: '',
-        modified_by: '',
-        modified_date: '',
-        reseller_commission: '',
-        short_description: '',
-        socket_count: '',
-        vendor: '',
-        wifi_password: '',
+        charger_id: '', model: '', type: '', gun_connector: '', max_current: '', created_date: '', status: '',
+        tag_id: '', assigned_association_date: '', assigned_client_date: '', assigned_reseller_date: '', charger_accessibility: '',
+        client_commission: '', created_by: '', current_or_active_user: '', max_power: '', modified_by: '', modified_date: '',
+        reseller_commission: '', short_description: '', socket_count: '', vendor: '', wifi_password: '',
     });
 
     useEffect(() => {
         const { charger } = location.state || {};
         if (charger) {
             setNewDevice({
-                charger_id: charger.charger_id || '',
-                model: charger.model || '',
-                type: charger.type || '',
-                gun_connector: charger.gun_connector || '',
-                max_current: charger.max_current || '',
-                created_date: charger.created_date || '',
-                status: charger.status || '',
-                tag_id: charger.tag_id || '',
-                assigned_association_date: charger.assigned_association_date || '',
-                assigned_client_date: charger.assigned_client_date || '',
-                assigned_reseller_date: charger.assigned_reseller_date || '',
-                charger_accessibility: charger.charger_accessibility || '',
-                client_commission: charger.client_commission || '',
-                created_by: charger.created_by || '',
-                current_or_active_user: charger.current_or_active_user || '',
-                max_power: charger.max_power || '',
-                modified_by: charger.modified_by || '',
-                modified_date: charger.modified_date || '',
-                reseller_commission: charger.reseller_commission || '',
-                short_description: charger.short_description || '',
-                socket_count: charger.socket_count || '',
-                vendor: charger.vendor || '',
-                wifi_password: charger.wifi_password || '',
+                charger_id: charger.charger_id || '', model: charger.model || '',
+                type: charger.type || '', gun_connector: charger.gun_connector || '', max_current: charger.max_current || '',
+                created_date: charger.created_date || '', status: charger.status || '', tag_id: charger.tag_id || '',
+                assigned_association_date: charger.assigned_association_date || '', assigned_client_date: charger.assigned_client_date || '',
+                assigned_reseller_date: charger.assigned_reseller_date || '', charger_accessibility: charger.charger_accessibility || '',
+                client_commission: charger.client_commission || '', created_by: charger.created_by || '',
+                current_or_active_user: charger.current_or_active_user || '', max_power: charger.max_power || '',
+                modified_by: charger.modified_by || '', modified_date: charger.modified_date || '',
+                reseller_commission: charger.reseller_commission || '', short_description: charger.short_description || '',
+                socket_count: charger.socket_count || '', vendor: charger.vendor || '', wifi_password: charger.wifi_password || '',
             });
         // Save to localStorage
         localStorage.setItem('userData', JSON.stringify(charger));
@@ -73,6 +41,7 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
         }
     }, [location]);
 
+    // back allocated device page
     const goBack = () => {
         navigate('/reselleradmin/Allocateddevice');
     };

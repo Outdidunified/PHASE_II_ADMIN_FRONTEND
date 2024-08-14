@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 const EditManageUsers = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const dataItem = location.state?.dataItem || JSON.parse(localStorage.getItem('editDeviceData'));
+    const dataItem = location.state?.newUser || JSON.parse(localStorage.getItem('editDeviceData'));
     localStorage.setItem('editDeviceData', JSON.stringify(dataItem));
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -18,6 +18,22 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
     const [username, setUsername] = useState(dataItem?.username || '');
     const [password, setPassword] = useState(dataItem?.password || '');
     const [phone_no, setPhoneNumber] = useState(dataItem?.phone_no || '');
+
+    // Store initial values
+    const [initialValues, setInitialValues] = useState({
+        username: dataItem?.username || '',
+        password: dataItem?.password || '',
+        phone_no: dataItem?.phone_no || '',
+        status: dataItem.status ? 'true' : 'false'
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        username !== initialValues.username ||
+        password !== initialValues.password ||
+        phone_no !== initialValues.phone_no ||
+        selectStatus !== initialValues.status
+    );
 
     /// Selected status
     const handleStatusChange = (e) => {
@@ -33,15 +49,25 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
     const editManageUser = async (e) => {
         e.preventDefault();
 
+        // Validate phone number
         const phoneRegex = /^\d{10}$/;
-        if (!dataItem.phone_no || !phoneRegex.test(dataItem.phone_no)) {
-            setErrorMessage('Phone number must be a 10-digit number.');
+        if (!phone_no) {
+            setErrorMessage("Phone can't be empty.");
             return;
         }
-
+        if (!phoneRegex.test(phone_no)) {
+            setErrorMessage('Oops! Phone must be a 10-digit number.');
+            return;
+        }
+  
+        // Validate password
         const passwordRegex = /^\d{4}$/;
-        if (!dataItem.password || !passwordRegex.test(dataItem.password)) {
-            setErrorMessage('Password must be a 4-digit number.');
+        if (!password) {
+            setErrorMessage("Password can't be empty.");
+            return;
+        }
+        if (!passwordRegex.test(password)) {
+            setErrorMessage('Oops! Password must be a 4-digit number.');
             return;
         }
 
@@ -52,7 +78,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                 phone_no: parseInt(phone_no),
                 password: parseInt(password),
                 status: selectStatus === 'true',
-                modified_by: userInfo.data.association_name,
+                modified_by: userInfo.data.email_id,
             };
             const response = await fetch('/associationadmin/UpdateUser', {
                 method: 'POST',
@@ -67,9 +93,10 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                 });
                 backManageUser();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update user',
+                    text: 'Failed to update user, ' + responseData.message,
                     icon: 'error',
                 });
             }
@@ -82,6 +109,16 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
         }
     };
 
+    useEffect(() => {
+        // Update initial values if dataItem changes
+        setInitialValues({
+            username: dataItem?.username || '',
+            password: dataItem?.password || '',
+            phone_no: dataItem?.phone_no || '',
+            status: dataItem.status ? 'true' : 'false'
+        });
+    }, [dataItem]);
+    
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -159,7 +196,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="col-sm-9">
                                                                         <select className="form-control" value={selectStatus} onChange={handleStatusChange}  required >
                                                                             <option value="true">Active</option>
-                                                                            <option value="false">Deactive</option>
+                                                                            <option value="false">DeActive</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -167,7 +204,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

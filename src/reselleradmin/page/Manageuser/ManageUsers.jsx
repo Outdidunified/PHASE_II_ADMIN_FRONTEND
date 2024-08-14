@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
@@ -11,31 +11,44 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
     const fetchUsersCalled = useRef(false); 
 
-    const fetchUsers = async () => {
+    // Define fetchUsers using useCallback to memoize it
+    const fetchUsers = useCallback(async () => {
         try {
-            const response = await axios.get('/reselleradmin/FetchUsers');
-            setUsers(response.data.data || []);
+            const response = await axios.post('/reselleradmin/FetchUsers', {
+                reseller_id: userInfo.data.reseller_id,
+            });
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                setUsers(data || []);
+            } else {
+                console.error('Error fetching users');
+                setUsers([]);
+            }
         } catch (error) {
             console.error('Error fetching users:', error);
             setUsers([]);
         }
-    };
+    }, [userInfo.data.reseller_id]);
 
     useEffect(() => {
-        if (!fetchUsersCalled.current) {
+        if (!fetchUsersCalled.current && userInfo && userInfo.data && userInfo.data.reseller_id) {
             fetchUsers();
-            fetchUsersCalled.current = true;
+            fetchUsersCalled.current = true; // Mark fetchResellerUserDetails as called
         }
-    }, []);
+    }, [fetchUsers, userInfo]);
     
+    // back create users
     const navigateToCreateUser = () => {
         navigate('/reselleradmin/Createusers');
     };
 
+    // view user page
     const navigateToViewSession = (user) => {
         navigate('/reselleradmin/Viewuser', { state: { user } });
     };
 
+    // search users
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
@@ -93,13 +106,13 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
+                                                        <th>Role Name</th>
                                                         <th>User Name</th>
-                                                        <th>Phone Number</th>
                                                         <th>Email ID</th>
                                                         <th>Status</th>
                                                         <th>Actions</th>
@@ -108,14 +121,12 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 <tbody style={{ textAlign: 'center' }}>
                                                     {filteredUsers.length > 0 ? (
                                                         filteredUsers.map((user, index) => (
-                                                            <tr key={user.user_id}>
+                                                            <tr key={index}>
                                                                 <td>{index + 1}</td>
+                                                                <td>{user.role_name ? user.role_name : '-'}</td>
                                                                 <td>{user.username ? user.username : '-'}</td>
-                                                                <td>{user.phone_no ? user.phone_no : '-'}</td>
                                                                 <td>{user.email_id ? user.email_id : '-'}</td>
-                                                                <td style={{ color: user.status ? 'green' : 'red' }}>
-                                                                    {user.status ? 'Active' : 'DeActive'}
-                                                                </td>
+                                                                <td>{user.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewSession(user)} style={{ marginBottom: '10px', marginRight: '10px' }}>
                                                                         <i className="mdi mdi-eye btn-icon-prepend"></i>View
@@ -125,7 +136,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="7">No Record Found</td>
+                                                            <td colSpan="6">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

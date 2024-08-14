@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -20,6 +20,23 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
     const [reseller_email_id, setEmilaID] = useState(dataItem?.reseller_email_id || '');
     const [reseller_address, setResellerAddress] = useState(dataItem?.reseller_address || '');
     
+     // Store initial values
+     const [initialValues, setInitialValues] = useState({
+        reseller_name: dataItem?.reseller_name || '',
+        reseller_phone_no: dataItem?.reseller_phone_no || '',
+        reseller_email_id: dataItem?.reseller_email_id || '',
+        reseller_address: dataItem?.reseller_address || '',
+        status: dataItem?.status ? 'true' : 'false',
+    });
+
+    // Check if any field has been modified
+    const isModified = (
+        reseller_name !== initialValues.reseller_name ||
+        reseller_phone_no !== initialValues.reseller_phone_no ||
+        reseller_email_id !== initialValues.reseller_email_id ||
+        reseller_address !== initialValues.reseller_address ||
+        selectStatus !== initialValues.status
+    );
 
     // Selected status
     const handleStatusChange = (e) => {
@@ -48,13 +65,15 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
         }
 
         try {
+            const reseller_phone_nos = parseInt(reseller_phone_no);
+
             const updatedReseller = {
                 reseller_id: dataItem?.reseller_id,
                 reseller_name:reseller_name,
-                reseller_phone_no: parseInt(reseller_phone_no),
+                reseller_phone_no: reseller_phone_nos,
                 status: selectStatus === 'true',
                 reseller_address:reseller_address,
-                modified_by: userInfo.data.username,
+                modified_by: userInfo.data.email_id,
             };
             const response = await fetch('/superadmin/UpdateReseller', {
                 method: 'POST',
@@ -69,9 +88,10 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
                 });
                 EditBackManageResellers();
             } else {
+                const responseData = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: 'Failed to update reseller',
+                    text: 'Failed to update reseller, ' + responseData.message,
                     icon: 'error',
                 });
             }
@@ -83,6 +103,17 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
             });
         }
     };
+
+    useEffect(() => {
+        // Update initial values if dataItem changes
+        setInitialValues({
+            reseller_name: dataItem?.reseller_name || '',
+            reseller_phone_no: dataItem?.reseller_phone_no || '',
+            reseller_email_id: dataItem?.reseller_email_id || '',
+            reseller_address: dataItem?.reseller_address || '',
+            status: dataItem?.status ? 'true' : 'false',
+        });
+    }, [dataItem]);
 
     return (
         <div className='container-scroller'>
@@ -167,7 +198,7 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}<br/>
                                                         <div style={{ textAlign: 'center' }}>
-                                                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                                                            <button type="submit" className="btn btn-primary mr-2" disabled={!isModified}>Update</button>
                                                         </div>
                                                     </form>
                                                 </div>

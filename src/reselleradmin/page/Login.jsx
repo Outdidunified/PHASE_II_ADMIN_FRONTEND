@@ -6,12 +6,20 @@ const Login = ({ handleLogin }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // login
   const handleLoginFormSubmit = async (e) => {
     e.preventDefault();
+       
+    // password validation
+    const passwordRegex = /^\d{4}$/;
+    if (!password || !passwordRegex.test(password)) {
+        setErrorMessage('Password number must be a 4-digit number.');
+        return;
+    }
     try {
-      const passwordAsInteger = parseInt(password, 10);
+      const passwordAsInteger = parseInt(password) ;
   
-  // Perform API call for login
+      // Perform API call for login
       const response = await fetch('/reselleradmin/CheckLoginCredentials', {
          method: 'POST',
            headers: {
@@ -28,6 +36,7 @@ const Login = ({ handleLogin }) => {
         // Include email in the data sent to handleLogin
         handleLogin({ ...data, email }); // Adding email to the data object
       } else {
+        // const responseData = await response.json();
         setErrorMessage('Login failed. Please check your credentials.');
       }
     } catch (error) {
@@ -54,7 +63,21 @@ const Login = ({ handleLogin }) => {
                 <h6 className="font-weight-light">Sign in to continue.</h6>
                 <form className="pt-3" onSubmit={handleLoginFormSubmit}>
                   <div className="form-group">
-                    <input type="email" className="form-control form-control-lg" placeholder="Enter your email" value={email} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setEmail(sanitizedEmail); }}required/>  
+                  <input type="email" className="form-control" placeholder="Enter your email" value={email} 
+  onChange={(e) => {
+    const value = e.target.value;
+    // Remove spaces and invalid characters
+    const noSpaces = value.replace(/\s/g, '');
+    const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, '');
+    // Convert to lowercase
+    const lowerCaseEmail = validChars.toLowerCase();
+    // Handle multiple @ symbols
+    const atCount = (lowerCaseEmail.match(/@/g) || []).length;
+    const sanitizedEmail = atCount <= 1 ? lowerCaseEmail : lowerCaseEmail.replace(/@.*@/, '@');
+    // Set the sanitized and lowercase email
+    setEmail(sanitizedEmail);
+  }} required />
+                    {/* <input type="email" className="form-control form-control-lg" placeholder="Enter your email" value={email} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setEmail(sanitizedEmail); }}required/>   */}
                   </div>
                   <div className="form-group">
                     <input type="password" className="form-control form-control-lg" placeholder="Enter your password" value={password} maxLength={4} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^0-9]/g, ''); setPassword(sanitizedValue);}} required/>

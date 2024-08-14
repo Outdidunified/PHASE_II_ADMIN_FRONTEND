@@ -5,25 +5,24 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 
-const Asssigntoass = ({ userInfo, handleLogout }) => {
+const Assigntoass = ({ userInfo, handleLogout }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const fetchAsssigntoassDataCalled = useRef(false);
 
+    // Data localstorage
+    const client_id = location.state?.client_id || JSON.parse(localStorage.getItem('client_id'));
     useEffect(() => {
-        const client_id = getClientIdFromLocalStorage();
         if (client_id && !fetchAsssigntoassDataCalled.current) {
-            localStorage.setItem('client_id', JSON.stringify(client_id));
             fetchAsssigntoassData(client_id);
             fetchAsssigntoassDataCalled.current = true;
         }
-    }, [location]);
-
+    }, [client_id, location]);
+    
+    // Fetch assigned association
     const fetchAsssigntoassData = async (client_id) => {
         try {
             const response = await axios.post('/reselleradmin/FetchAssignedAssociation', {
@@ -34,10 +33,14 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
             if (response.data.status === 'Success' && response.data.data.length > 0) {
                 const fetchedData = response.data.data.map(item => ({
                     association_name: item.association_name,
-                    charger_id: item.charger_id
+                    charger_id: item.charger_id,
+                    association_email_id:item.association_email_id,
+                    association_phone_no:item.association_phone_no,
+                    association_address:item.association_address,
+                    status:item.status
                     // Add other fields you want to fetch from the response
                 }));
-
+                console.log( response.data.data)
                 setData(fetchedData);
                 setFilteredData(fetchedData);
             } else {
@@ -50,12 +53,8 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
             // Handle error appropriately
         }
     };
-
-    const getClientIdFromLocalStorage = () => {
-        const client_id = JSON.parse(localStorage.getItem('client_id'));
-        return client_id;
-    };
-
+ 
+    // search
     const handleSearch = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
@@ -66,6 +65,7 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
         setFilteredData(filtered);
     };
 
+    // back manage client
     const goBack = () => {
         navigate('/reselleradmin/ManageClient');
     };
@@ -120,12 +120,16 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="table-responsive">
+                                        <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                                    <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Association name</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Email ID</th>
+                                                        <th>Address</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -134,11 +138,15 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
                                                             <tr key={index} style={{ textAlign: 'center' }}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{item.association_name ? item.association_name : '-'}</td>
+                                                                <td>{item.association_phone_no ? item.association_phone_no : '-'}</td>
+                                                                <td>{item.association_email_id ? item.association_email_id : '-'}</td>
+                                                                <td>{item.association_address ? item.association_address : '-'}</td>
+                                                                <td>{item.status === true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                             </tr>
                                                         ))
                                                     ) : (
                                                         <tr>
-                                                            <td colSpan="2" className="text-center">No associations found.</td>
+                                                            <td colSpan="6" className="text-center">No associations found.</td>
                                                         </tr>
                                                     )}
                                                 </tbody>
@@ -157,4 +165,4 @@ const Asssigntoass = ({ userInfo, handleLogout }) => {
     );
 };
 
-export default Asssigntoass;
+export default Assigntoass;

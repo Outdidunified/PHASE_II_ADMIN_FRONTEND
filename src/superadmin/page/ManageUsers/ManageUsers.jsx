@@ -90,49 +90,95 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
             setErrorMessage('Oops! Password must be a 4-digit number.');
             return;
         }
-        try {
-            const roleID = parseInt(role);
-            const resellerID = parseInt(reseller_id);
-            const password = parseInt(Password);
-            const phone_no = parseInt(phoneNo);
-            // const wallet_bal = parseInt(walletBal);
-            const response = await fetch('/superadmin/CreateUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.username }),
-            });
-            if (response.ok) {
-                Swal.fire({
-                    title: "User added successfully",
-                    icon: "success"
+ 
+       // reseller_id
+        if(reseller_id){
+            try {
+                const roleID = parseInt(role.role_id);
+                const resellerID = parseInt(reseller_id);
+                const password = parseInt(Password);
+                const phone_no = parseInt(phoneNo);
+                const response = await fetch('/superadmin/CreateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role_id:roleID, reseller_id:resellerID, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
                 });
-                setuserName(''); 
-                setemailID(''); 
-                setPassword(''); 
-                setPhone(''); 
-                // setWallet(''); 
-                setShowAddForm(false);
-                setTheadsticky('sticky');
-                setTheadfixed('fixed');
-                setTheadBackgroundColor('white');
-                fetchUsers();
-            } else {
-                const responseData = await response.json();
+                if (response.ok) {
+                    Swal.fire({
+                        title: "User added successfully",
+                        icon: "success"
+                    });
+                    setRole('');
+                    setSelectedReseller('');
+                    setuserName(''); 
+                    setemailID(''); 
+                    setPassword(''); 
+                    setPhone(''); 
+                    setShowAddForm(false);
+                    setTheadsticky('sticky');
+                    setTheadfixed('fixed');
+                    setTheadBackgroundColor('white');
+                    fetchUsers();
+                } else {
+                    const responseData = await response.json();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to add user, " + responseData.message,
+                        icon: "error"
+                    });
+                }
+            }catch (error) {
                 Swal.fire({
-                    title: "Error",
-                    text: "Failed to add user " + responseData.message,
+                    title: "Error:", error,
+                    text: "An error occurred while adding the user",
                     icon: "error"
                 });
             }
-        }catch (error) {
-            Swal.fire({
-                title: "Error:", error,
-                text: "An error occurred while adding the user",
-                icon: "error"
-            });
-        }
+         }else{
+            try {
+                const roleID = parseInt(role.role_id);
+                const password = parseInt(Password);
+                const phone_no = parseInt(phoneNo);
+                const response = await fetch('/superadmin/CreateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role_id:roleID, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
+                });
+                if (response.ok) {
+                    Swal.fire({
+                        title: "User added successfully",
+                        icon: "success"
+                    });
+                    setRole('');
+                    setuserName(''); 
+                    setemailID(''); 
+                    setPassword(''); 
+                    setPhone(''); 
+                    setShowAddForm(false);
+                    setTheadsticky('sticky');
+                    setTheadfixed('fixed');
+                    setTheadBackgroundColor('white');
+                    fetchUsers();
+                } else {
+                    const responseData = await response.json();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to add user, " + responseData.message,
+                        icon: "error"
+                    });
+                }
+            }catch (error) {
+                Swal.fire({
+                    title: "Error:", error,
+                    text: "An error occurred while adding the user",
+                    icon: "error"
+                });
+            }
+         }
     };
     // Add Manage User end
 
@@ -184,6 +230,8 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
         try {
             const url = `/superadmin/FetchUsers`;
             const res = await axios.get(url);
+            // const activeUsers = res.data.data.filter(user => user.status === true);
+            // setData(activeUsers);
             setData(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -253,10 +301,10 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             <div className="table-responsive pt-3">
                                                                 <div className="input-group" style={{paddingRight:'1px'}}>
                                                                     <div className="input-group-prepend">
-                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role</span>
+                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role Name</span>
                                                                     </div>
                                                                     <select className="form-control" value={`${role.role_id}|${role.role_name}`} onChange={handleResellerChange}>
-                                                                        <option value="">Select Admin</option>
+                                                                        <option value="">Select Role</option>
                                                                         {selectionRoles.map((role, index) => (
                                                                             <option key={index} value={`${role.role_id}|${role.role_name}`}>{role.role_name}</option>
                                                                         ))}
@@ -286,7 +334,21 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                                     <div className="input-group-prepend">
                                                                         <span className="input-group-text" style={{color:'black', width:'125px'}}>Email ID</span>
                                                                     </div>
-                                                                    <input type="email" className="form-control" placeholder="Email ID" value={email_id} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setemailID(sanitizedEmail); }}required/>  
+                                                                    <input type="email" className="form-control" placeholder="Email ID" value={email_id} 
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            // Remove spaces and invalid characters
+                                                                            const noSpaces = value.replace(/\s/g, '');
+                                                                            const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, '');
+                                                                            // Convert to lowercase
+                                                                            const lowerCaseEmail = validChars.toLowerCase();
+                                                                            // Handle multiple @ symbols
+                                                                            const atCount = (lowerCaseEmail.match(/@/g) || []).length;
+                                                                            const sanitizedEmail = atCount <= 1 ? lowerCaseEmail : lowerCaseEmail.replace(/@.*@/, '@');
+                                                                            // Set the sanitized and lowercase email
+                                                                            setemailID(sanitizedEmail);
+                                                                        }} required />
+                                                                    {/* <input type="email" className="form-control" placeholder="Email ID" value={email_id} onChange={(e) => {const value = e.target.value; const noSpaces = value.replace(/\s/g, ''); const validChars = noSpaces.replace(/[^a-zA-Z0-9@.]/g, ''); const atCount = (validChars.match(/@/g) || []).length; const sanitizedEmail = atCount <= 1 ? validChars : validChars.replace(/@.*@/, '@'); setemailID(sanitizedEmail); }}required/>   */}
                                                                 </div>
                                                                 <div className="input-group">
                                                                     <div className="input-group-prepend">
@@ -343,6 +405,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                 <thead style={{ textAlign: 'center', position: theadsticky, tableLayout: theadfixed, top: 0, backgroundColor: theadBackgroundColor, zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
+                                                        <th>Role Name</th>
                                                         <th>User Name</th>
                                                         <th>Email ID</th>
                                                         <th>Status</th>
@@ -363,6 +426,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             posts.map((dataItem, index) => (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
+                                                                <td>{dataItem.role_name ? dataItem.role_name : '-'}</td>
                                                                 <td>{dataItem.username ? dataItem.username : '-'}</td>
                                                                 <td>{dataItem.email_id ? dataItem.email_id : '-'}</td>                                                              
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
@@ -373,7 +437,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                             <tr>
-                                                                <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                                <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
                                                             </tr>
                                                         )
                                                     )}
