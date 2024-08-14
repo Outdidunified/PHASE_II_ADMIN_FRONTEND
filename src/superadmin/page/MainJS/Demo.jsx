@@ -1,119 +1,164 @@
-import React, {useState, useEffect} from 'react';
-import Header from '../../components/Header';
-import Sidebar from '../../components/Sidebar';
-import Footer from '../../components/Footer';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import MainJS from '../MainJS/MainJS'
 
-const EditManageDevice = ({ userInfo, handleLogout }) => {
-    const {
-        handleBack,
-        editBackManageDevice,
-    } = MainJS();
-
+const MainJS = (url, userInfo) => {
+    const navigate = useNavigate();
     const location = useLocation();
+
+    // State variables
+    const [chargerData, setChargerData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [filteredChargerData] = useState([]);
+    const [chargers, setCharger] = useState([]);
+    const fetchDataCalled = useRef(false);
+    const [isBoxVisible, setIsBoxVisible] = useState(false);
+
+    // Get manage charger data
+    useEffect(() => {
+        if (!fetchDataCalled.current) {
+            axios.get(url)
+                .then((res) => {
+                    setChargerData(res.data.data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error('Error fetching data:', err);
+                    setError('Error fetching data. Please try again.');
+                    setLoading(false);
+                });
+            fetchDataCalled.current = true;
+        }
+    }, [url]);
+
+    // Search manage device 
+    const handleSearchInputChange = (e) => {
+        const inputValue = e.target.value.toUpperCase();
+        if (Array.isArray(chargerData)) {
+            const filteredChargerData = chargerData.filter((item) =>
+                item.charger_id.toUpperCase().includes(inputValue)
+            );
+            setCharger(filteredChargerData);
+        }
+    };
+
+    // Update table data 'data', and 'filteredData' 
+    useEffect(() => {
+        switch (chargerData) {
+            case 'filteredData':
+                setCharger(filteredChargerData);
+                break;
+            default:
+                setCharger(chargerData);
+                break;
+        }
+    }, [chargerData, filteredChargerData]);
+
+    // Navigate functions add manage device page view
+    const handleAddDeviceList = () => {
+        navigate('/superadmin/AddManageDevice');
+    };
+
+    // Navigate functions manage device page view
+    const handleViewDeviceList = (chargerId) => {
+        if (Array.isArray(chargers)) {
+            const viewChargers = chargers.filter((item) =>
+                item._id === chargerId
+            );
+            navigate(`/superadmin/ViewManageDevice`, { state: { chargersView: viewChargers } });
+        }
+    };
+
+    // Navigate functions assign reseller page view
+    const handleAssignReseller = () => {
+        navigate('/superadmin/AssignReseller');
+    };
+
+    // Toggle visibility of faulty chargers box
+    const toggleBoxVisibility = () => {
+        setIsBoxVisible(!isBoxVisible);
+    };
+
+    // Function to format timestamps
+    function formatTimestamp(originalTimestamp) {
+        const date = new Date(originalTimestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = String(hours).padStart(2, '0');
+
+        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+        return formattedDate;
+    }
+    
+    const handleBack = () => navigate(-1);
+
+    const handleEditDeviceList = (chargersView) => {
+        navigate('/superadmin/EditManageDevice', { state: { chargersView } });
+    };
+
+    const editBackManageDevice = () => navigate('/superadmin/ManageDevice');
+
+    // Extract edit form state and logic
     const editChargerItems = location.state?.chargersView || JSON.parse(localStorage.getItem('editDeviceData'));
     localStorage.setItem('editDeviceData', JSON.stringify(editChargerItems));
     const editChargerItem = editChargerItems[0];
-    
-    // Edit manage device
+
     const [charger_id, setChargerID] = useState(editChargerItem?.charger_id || '');
     const [tag_id, setTagID] = useState(editChargerItem?.tag_id || '');
     const [model, setModel] = useState(editChargerItem?.model || '');
     const [type, setType] = useState(editChargerItem?.type || '');
     const [vendor, setVendor] = useState(editChargerItem?.vendor || '');
-    const [gun_connector, setGunConnetor] = useState(editChargerItem?.gun_connector || '');
+    const [gun_connector, setGunConnector] = useState(editChargerItem?.gun_connector || '');
     const [max_current, setMaxCurrent] = useState(editChargerItem?.max_current || '');
     const [max_power, setMaxPower] = useState(editChargerItem?.max_power || '');
     const [socket_count, setSocketCount] = useState(editChargerItem?.socket_count || '');
     const [errorMessage, setErrorMessage] = useState('');
-
-    // Initial values
-    const initialValues = {
-        charger_id: editChargerItem?.charger_id || '',
-        tag_id: editChargerItem?.tag_id || '',
-        model: editChargerItem?.model || '',
-        type: editChargerItem?.type || '',
-        vendor: editChargerItem?.vendor || '',
-        gun_connector: editChargerItem?.gun_connector || '',
-        max_current: editChargerItem?.max_current || '',
-        max_power: editChargerItem?.max_power || '',
-        socket_count: editChargerItem?.socket_count || '',
-    };
-
-    // Select model 
-    const handleModel = (e) => {
-        setModel(e.target.value);
-    };
-    
-    // Select socket
-    const handleSocket = (e) => {
-        setSocketCount(e.target.value);
-    };
-
-    // Select Gunconnector
-    const handleGunconnector = (e) => {
-        setGunConnetor(e.target.value);
-    };
-    
-    // Selected charger type
-    const handleChargerType = (e) => {
-        setType(e.target.value);
-    };
-
     const [errorMessageCurrent, setErrorMessageCurrent] = useState('');
     const [errorMessagePower, setErrorMessagePower] = useState('');
 
-    // Set timeout
     useEffect(() => {
-        if (errorMessageCurrent) {
-            const timeout = setTimeout(() => setErrorMessageCurrent(''), 5000); // Clear error message after 5 seconds
+        if (errorMessageCurrent || errorMessagePower || errorMessage) {
+            const timeout = setTimeout(() => {
+                setErrorMessageCurrent('');
+                setErrorMessagePower('');
+                setErrorMessage('');
+            }, 5000);
             return () => clearTimeout(timeout);
         }
-        if (errorMessagePower) {
-            const timeout = setTimeout(() => setErrorMessagePower(''), 5000); // Clear error message after 5 seconds
-            return () => clearTimeout(timeout);
-        }
-        if (errorMessage) {
-            const timeout = setTimeout(() => setErrorMessage(''), 5000); // Clear error message after 5 seconds
-            return () => clearTimeout(timeout);
-        }
-    }, [errorMessageCurrent, errorMessagePower, errorMessage]); 
-    
-    // Update manage device
+    }, [errorMessageCurrent, errorMessagePower, errorMessage]);
+
+    const handleModel = (e) => setModel(e.target.value);
+    const handleSocket = (e) => setSocketCount(e.target.value);
+    const handleGunconnector = (e) => setGunConnector(e.target.value);
+    const handleChargerType = (e) => setType(e.target.value);
+
     const editManageDevice = async (e) => {
         e.preventDefault();
-        // Validate Charger ID
-        const chargerIDRegex = /^[a-zA-Z0-9]{1,14}$/;;
-        if (!charger_id) {
-            setErrorMessage("Charger ID can't be empty.");
-            return;
-        }
-        if (!chargerIDRegex.test(charger_id)) {
-            setErrorMessage('Oops! Charger ID must be a maximum of 14 characters.');
+        const chargerIDRegex = /^[a-zA-Z0-9]{1,14}$/;
+        if (!charger_id || !chargerIDRegex.test(charger_id)) {
+            setErrorMessage("Charger ID must be a maximum of 14 characters.");
             return;
         }
 
-        // Validate Tag ID
-        const tagIDRegex = /^[a-zA-Z0-9]{1,12}$/;;
-        if (!tag_id) {
-            setErrorMessage("Charger ID can't be empty.");
-            return;
-        }
-        if (!tagIDRegex.test(tag_id)) {
-            setErrorMessage('Oops! Tag ID must be a maximum of 12 characters.');
+        const tagIDRegex = /^[a-zA-Z0-9]{1,12}$/;
+        if (!tag_id || !tagIDRegex.test(tag_id)) {
+            setErrorMessage("Tag ID must be a maximum of 12 characters.");
             return;
         }
 
-        // Validate vendor
         const vendorRegex = /^[a-zA-Z0-9 ]{1,20}$/;
-        if (!vendor) {
-            setErrorMessage("Vendor name can't be empty.");
-            return;
-        }
-        if (!vendorRegex.test(vendor)) {
-            setErrorMessage('Oops! Vendor name must be 1 to 20 characters and contain alphanumeric and numbers.');
+        if (!vendor || !vendorRegex.test(vendor)) {
+            setErrorMessage("Vendor name must be 1 to 20 characters and contain alphanumeric characters.");
             return;
         }
 
@@ -123,51 +168,127 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             const maxPowers = parseInt(max_power);
             const socketCounts = parseInt(socket_count);
             const response = await fetch('/superadmin/UpdateCharger', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.email_id  }),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    charger_id,
+                    tag_id,
+                    model,
+                    type,
+                    vendor,
+                    gun_connector: gunConnector,
+                    max_current: maxCurrents,
+                    max_power: maxPowers,
+                    socket_count: socketCounts,
+                    modified_by: userInfo.data.email_id
+                }),
             });
             if (response.ok) {
-                Swal.fire({
-                    title: "Charger updated successfully",
-                    icon: "success"
-                });
+                Swal.fire({ title: "Charger updated successfully", icon: "success" });
                 editBackManageDevice();
             } else {
                 const responseData = await response.json();
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to Update, " + responseData.message,
-                    icon: "error"
-                });
+                Swal.fire({ title: "Error", text: "Failed to Update, " + responseData.message, icon: "error" });
             }
-        }catch (error) {
-            Swal.fire({
-                title: "Error:", error,
-                text: "An error occurred while updated the charger",
-                icon: "error"
-            });
+        } catch (error) {
+            Swal.fire({ title: "Error", text: "An error occurred while updating the charger", icon: "error" });
         }
     };
-    // Add Chargers end
-    
-    // Check if form values have changed
-    const isFormChanged = () => {
-        return (
-            charger_id !== initialValues.charger_id ||
-            tag_id !== initialValues.tag_id ||
-            model !== initialValues.model ||
-            type !== initialValues.type ||
-            vendor !== initialValues.vendor ||
-            gun_connector !== initialValues.gun_connector ||
-            max_current !== initialValues.max_current ||
-            max_power !== initialValues.max_power ||
-            socket_count !== initialValues.socket_count
-        );
+
+    const initialValues = {
+        charger_id,
+        tag_id,
+        model,
+        type,
+        vendor,
+        gun_connector,
+        max_current,
+        max_power,
+        socket_count
     };
 
+    const isFormChanged = () => (
+        charger_id !== initialValues.charger_id ||
+        tag_id !== initialValues.tag_id ||
+        model !== initialValues.model ||
+        type !== initialValues.type ||
+        vendor !== initialValues.vendor ||
+        gun_connector !== initialValues.gun_connector ||
+        max_current !== initialValues.max_current ||
+        max_power !== initialValues.max_power ||
+        socket_count !== initialValues.socket_count
+    );
+
+    return {
+        chargers,
+        filteredChargerData,
+        loading,
+        error,
+        handleAddDeviceList,
+        handleAssignReseller,
+        handleSearchInputChange,
+        handleViewDeviceList,
+        toggleBoxVisibility,
+        formatTimestamp,
+        handleBack,
+        handleEditDeviceList,
+        editBackManageDevice,
+        charger_id, setChargerID, tag_id, setTagID, model, setModel, type, setType, vendor, setVendor,
+        gun_connector, setGunConnector, max_current, setMaxCurrent, max_power, setMaxPower, socket_count, setSocketCount,
+        errorMessage, errorMessageCurrent, errorMessagePower,
+        handleModel, handleSocket, handleGunconnector, handleChargerType,
+        editManageDevice, isFormChanged, setErrorMessageCurrent, setErrorMessagePower
+    };
+};
+
+export default MainJS;
+
+
+
+
+
+
+
+/////////////////////////////////////
+
+
+import React from 'react';
+import Header from '../../components/Header';
+import Sidebar from '../../components/Sidebar';
+import Footer from '../../components/Footer';
+import { useLocation } from 'react-router-dom';
+import MainJS from '../MainJS/MainJS';
+
+const EditManageDevice = ({ userInfo, handleLogout }) => {
+    const location = useLocation();
+    const editChargerItems = location.state?.chargersView || JSON.parse(localStorage.getItem('editDeviceData'));
+    localStorage.setItem('editDeviceData', JSON.stringify(editChargerItems));
+    const editChargerItem = editChargerItems[0];
+
+    const url = '/api/charger'; // Your API endpoint
+    const {
+        handleBack,
+        charger_id, setChargerID, tag_id, setTagID, model, setModel, type, setType, vendor, setVendor,
+        gun_connector, setGunConnector, max_current, setMaxCurrent, max_power, setMaxPower, socket_count, setSocketCount,
+        errorMessage, errorMessageCurrent, errorMessagePower,
+        handleModel, handleSocket, handleGunconnector, handleChargerType,
+        editManageDevice, isFormChanged, setErrorMessageCurrent, setErrorMessagePower
+    } = MainJS(url);
+
+    React.useEffect(() => {
+        if (editChargerItem) {
+            setChargerID(editChargerItem.charger_id || '');
+            setTagID(editChargerItem.tag_id || '');
+            setModel(editChargerItem.model || '');
+            setType(editChargerItem.type || '');
+            setVendor(editChargerItem.vendor || '');
+            setGunConnector(editChargerItem.gun_connector || '');
+            setMaxCurrent(editChargerItem.max_current || '');
+            setMaxPower(editChargerItem.max_power || '');
+            setSocketCount(editChargerItem.socket_count || '');
+        }
+    }, [editChargerItem, setChargerID, setTagID, setModel, setType, setVendor, setGunConnector, setMaxCurrent, setMaxPower, setSocketCount]);    
+  
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -325,7 +446,7 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                             setMaxPower(value);
                                                                         }} 
                                                                          required/> 
-                                                                                                                                                  {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
+                                                                          {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
 
                                                                     </div>
                                                                 </div>

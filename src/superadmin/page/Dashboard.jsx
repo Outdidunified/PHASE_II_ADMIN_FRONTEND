@@ -1,130 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
-import axios from 'axios';
-import Chart from 'chart.js/auto';
-
+import MainJS  from './MainJS/MainJS';
+import DashboardChart from './MainJS/DashboardChart';
 const Dashboard = ({ userInfo, handleLogout }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [filteredData] = useState([]);
-    const [posts, setPosts] = useState([]); 
-    
-    const chartRef = useRef(null);
-    const fetchDataCalled = useRef(false);
+    const url = `/superadmin/FetchCharger`;
+    const {
+        chargers, loading, error, handleSearchInputChange, toggleBoxVisibility,
+    } = MainJS(url);
 
-    // Get table data
-    useEffect(() => {
-        if (!fetchDataCalled.current) {
-            const url = `/superadmin/FetchCharger`;
-            axios.get(url)
-                .then((res) => {
-                    setData(res.data.data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.error('Error fetching data:', err);
-                    setError('Error fetching data. Please try again.');
-                    setLoading(false);
-                });
-            fetchDataCalled.current = true;
-        }
-    }, []);
-
-    // Faulty data onclick show box data
-    const [isBoxVisible, setIsBoxVisible] = useState(false);
-    const toggleBoxVisibility = () => {
-      setIsBoxVisible(!isBoxVisible);
-    };
-    
-    // Search data 
-    const handleSearchInputChange = (e) => {
-        const inputValue = e.target.value.toUpperCase();
-        // Filter the data array based on the input value (converted to uppercase)
-        const filteredData = data.filter((item) =>
-          item.charger_id.toString().toUpperCase().includes(inputValue)
-        );
-        // Update the search state with the filtered results
-        setPosts(filteredData); // Set posts to the filteredData
-    };
-
-    // Update table data 'data', and 'filteredData' 
-    useEffect(() => {
-        switch (data) {
-            case 'filteredData':
-                setPosts(filteredData);
-                break;
-            default:
-                setPosts(data);
-                break;
-        }
-    }, [data, filteredData]);
-    
-    // Online, Offline and Faulty charger lengths 
-    const onlineChargers = data.filter((post) => post.status === true || post.status === 'true');
-    const offlineChargers = data.filter((post) => post.status === false || post.status === 'false');
-    const faultyChargers = data.filter((post) => post.status === 'Faulted');
-
-    // Total chargers count
-    const totalChargers = data.length;
-
-    const totalPercentage = (data.length / totalChargers) * 10;
-    const onlinePercentage = (onlineChargers.length / totalChargers) * 10;
-    const offlinePercentage = (offlineChargers.length / totalChargers) * 10;
-    const faultyPercentage = (faultyChargers.length / totalChargers) * 10;
-    
-   // Chart data 
-   useEffect(() => {
-    const xValues = ['Total', 'Online', 'Offline'];
-    const yValues = [
-        data.length,
-        onlineChargers.length,
-        offlineChargers.length
-    ];
-    const barColors = ["#4B46AC", "#57B657", "#FF4747"];
-
-    if (chartRef.current) {
-        chartRef.current.destroy();
-    }
-
-    const ctx = document.getElementById('myChart').getContext('2d');
-    chartRef.current = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                data: yValues
-            }]
-        },
-        options: {
-            responsive: true, // Ensure the chart is responsive
-            maintainAspectRatio: false, // Allow the chart to resize while maintaining aspect ratio
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Chart Title'
-                }
-            }
-        }
-    });
-
-    return () => {
-        if (chartRef.current) {
-            chartRef.current.destroy();
-        }
-    };
-}, [data, onlineChargers.length, offlineChargers.length]);
-    
-    const fetchDataAndUpdateChart = () => {
-        setData([...Array(0)]);
-    };
-    
-    useEffect(() => {
-        fetchDataAndUpdateChart();
-    }, []);
+    const {
+        totalChargers, onlineChargers, offlineChargers, faultyChargers, totalPercentage, onlinePercentage, offlinePercentage, faultyPercentage,
+    } = DashboardChart();
 
     return (
         <div className='container-scroller'>
@@ -159,7 +47,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                         <div className="card card-tale">
                                             <div className="card-body">
                                                 <h4 className="mb-4">Todays Chargers</h4>
-                                                <h3 className="fs-30 mb-2">{data.length} Charger's</h3>
+                                                <h3 className="fs-30 mb-2">{chargers.length} Charger's</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -224,7 +112,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                                             <div className="progress-bar bg-primary" role="progressbar" style={{width:`${totalPercentage}%`}}></div>
                                                                                         </div>
                                                                                     </td>
-                                                                                    <td><h5 className="font-weight-bold mb-0">{data.length}</h5></td>
+                                                                                    <td><h5 className="font-weight-bold mb-0">{totalChargers}</h5></td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td className="text-muted"><h5>Online</h5>Currently Charging</td>
@@ -270,7 +158,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                                     <div className="mr-3" style={{width:'20px', height:'20px', borderRadius:'50%', backgroundColor:' #4B49AC'}}></div>
                                                                                         <p className="mb-0">Total</p>
                                                                                 </div>
-                                                                                        <p className="mb-0">{data.length}</p>
+                                                                                        <p className="mb-0">{totalChargers}</p>
                                                                                 </div>
                                                                             <div className="d-flex justify-content-between mx-4 mx-xl-5 mt-3">
                                                                                 <div className="d-flex align-items-center">
@@ -367,18 +255,18 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                         <td colSpan="9" style={{ marginTop: '50px', textAlign: 'center' }}>Error: {error}</td>
                                                         </tr>
                                                     ) : (
-                                                        Array.isArray(posts) && posts.length > 0 ? (
-                                                            posts.map((dataItem, index) => (
+                                                        Array.isArray(chargers) && chargers.length > 0 ? (
+                                                            chargers.map((chargerItem, index) => (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{dataItem.charger_id ? (
-                                                                    <span>{dataItem.charger_id}</span>
+                                                                <td>{chargerItem.charger_id ? (
+                                                                    <span>{chargerItem.charger_id}</span>
                                                                     ): (
                                                                         <span>-</span> 
                                                                     )}
                                                                 </td>
                                                                 <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
+                                                                    <img src={`../../images/dashboard/${chargerItem.model ? chargerItem.model : '-'}kw.png`} alt="img" />
                                                                 </td>
                                                                 {/* <td>{dataItem.model ? (
                                                                     <span>{dataItem.model}</span>
@@ -386,30 +274,30 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                         <span>-</span> 
                                                                     )}
                                                                 </td> */}
-                                                                <td>{dataItem.type ? (
-                                                                    <span>{dataItem.type}</span>
+                                                                <td>{chargerItem.type ? (
+                                                                    <span>{chargerItem.type}</span>
                                                                     ): (
                                                                         <span>-</span> 
                                                                     )}
                                                                 </td>
                                                                 <td>
-                                                                    {dataItem.gun_connector === 1
+                                                                    {chargerItem.gun_connector === 1
                                                                         ? 'Single phase'
-                                                                        : dataItem.gun_connector === 2
+                                                                        : chargerItem.gun_connector === 2
                                                                         ? 'CSS Type 2'
-                                                                        : dataItem.gun_connector === 3
+                                                                        : chargerItem.gun_connector === 3
                                                                         ? '3 phase socket'
                                                                     : '-'}
                                                                 </td>
-                                                                <td>{dataItem.max_current ? (
-                                                                    <span>{dataItem.max_current}</span>
+                                                                <td>{chargerItem.max_current ? (
+                                                                    <span>{chargerItem.max_current}</span>
                                                                     ) : (
                                                                     <span>-</span>
                                                                     )}
                                                                 </td>
-                                                                <td>{dataItem.status === true ? (
+                                                                <td>{chargerItem.status === true ? (
                                                                         <span className="text-success">Active</span>
-                                                                    ) : dataItem.status === false ? (
+                                                                    ) : chargerItem.status === false ? (
                                                                         <span className="text-danger">DeActive</span>
                                                                     ) : (
                                                                         <span>-</span>

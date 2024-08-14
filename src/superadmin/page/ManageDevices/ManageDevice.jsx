@@ -1,75 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react';
-import axios from 'axios';
+import React from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
-import { useNavigate } from 'react-router-dom';
+import MainJS from '../MainJS/MainJS'
 
 const ManageDevice = ({ userInfo, handleLogout }) => {
-    const navigate = useNavigate();
-    
-    // View add manage device page
-    const handleAddDeviceList = () => {
-        navigate('/superadmin/AddManageDevice');
-    };
-
-    // View manage device list page
-    const handleViewDeviceList = (dataItem) => {
-        navigate(`/superadmin/ViewManageDevice`, { state: { dataItem } });
-    };
-
-    // View assign reseller page
-    const handleAssignReseller = () => {
-        navigate('/superadmin/AssignReseller');
-    };
-
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [filteredData] = useState([]);
-    const [posts, setPosts] = useState([]);
-    const fetchDataCalled = useRef(false);
-
-    // Get manage charger data
-    useEffect(() => {
-        if (!fetchDataCalled.current) {
-            const url = `/superadmin/FetchCharger`;
-            axios.get(url)
-                .then((res) => {
-                    setData(res.data.data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.error('Error fetching data:', err);
-                    setError('Error fetching data. Please try again.');
-                    setLoading(false);
-                });
-            fetchDataCalled.current = true;
-        }
-    }, []);
-    
-    // Search data 
-    const handleSearchInputChange = (e) => {
-        const inputValue = e.target.value.toUpperCase();
-        if (Array.isArray(data)) {
-            const filteredData = data.filter((item) =>
-                item.charger_id.toUpperCase().includes(inputValue)
-            );
-            setPosts(filteredData);
-        }
-    };
-
-    // Update table data 'data', and 'filteredData' 
-    useEffect(() => {
-        switch (data) {
-            case 'filteredData':
-                setPosts(filteredData);
-                break;
-            default:
-                setPosts(data);
-                break;
-        }
-    }, [data, filteredData]);
+    const url = `/superadmin/FetchCharger`;
+    const {
+        chargers, loading, error, handleAddDeviceList, handleAssignReseller, handleSearchInputChange, handleViewDeviceList,
+    } = MainJS(url);
 
     return (
         <div className='container-scroller'>
@@ -142,35 +81,35 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                         <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>Error: {error}</td>
                                                         </tr>
                                                     ) : (
-                                                        Array.isArray(posts) && posts.length > 0 ? (
-                                                            posts.map((dataItem, index) => (
-                                                            <tr key={index}>
-                                                                <td>{index + 1}</td>
-                                                                <td>{dataItem.charger_id ? dataItem.charger_id : '-'}</td>
-                                                                <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
-                                                                </td>  
-                                                                <td>{dataItem.type ? dataItem.type : '-'}</td>
-                                                                <td>
-                                                                    {dataItem.gun_connector === 1
-                                                                        ? 'Single phase'
-                                                                        : dataItem.gun_connector === 2
-                                                                        ? 'CSS Type 2'
-                                                                        : dataItem.gun_connector === 3
-                                                                        ? '3 phase socket'
-                                                                    : '-'}
-                                                                </td>
-                                                                <td>{dataItem.max_current ? dataItem.max_current : '-'}</td>
-                                                                <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
-                                                                <td>
-                                                                    <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => handleViewDeviceList(dataItem)} style={{marginBottom:'10px', marginRight:'10px'}}><i className="mdi mdi-eye"></i>View</button> 
-                                                                </td>
-                                                            </tr>
-                                                        ))
+                                                        Array.isArray(chargers) && chargers.length > 0 ? (
+                                                            chargers.map((chargerItem, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{index + 1}</td>
+                                                                    <td>{chargerItem.charger_id ? chargerItem.charger_id : '-'}</td>
+                                                                    <td className="py-1">
+                                                                        <img src={`../../images/dashboard/${chargerItem.model ? chargerItem.model : '-'}kw.png`} alt="img" />
+                                                                    </td>  
+                                                                    <td>{chargerItem.type ? chargerItem.type : '-'}</td>
+                                                                    <td>
+                                                                        {chargerItem.gun_connector === 1
+                                                                            ? 'Single phase'
+                                                                            : chargerItem.gun_connector === 2
+                                                                            ? 'CSS Type 2'
+                                                                            : chargerItem.gun_connector === 3
+                                                                            ? '3 phase socket'
+                                                                        : '-'}
+                                                                    </td>
+                                                                    <td>{chargerItem.max_current ? chargerItem.max_current : '-'}</td>
+                                                                    <td>{chargerItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
+                                                                    <td>
+                                                                        <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => handleViewDeviceList(chargerItem._id)} style={{marginBottom:'10px', marginRight:'10px'}}><i className="mdi mdi-eye"></i>View</button> 
+                                                                    </td>
+                                                                </tr>
+                                                            ))
                                                         ) : (
-                                                        <tr>
-                                                            <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
-                                                        </tr>
+                                                            <tr>
+                                                                <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                            </tr>
                                                         )
                                                     )}
                                                 </tbody>
