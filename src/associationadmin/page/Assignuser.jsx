@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 const Assignuser = ({ userInfo, handleLogout }) => {
   const [usersToAssign, setUsersToAssign] = useState([]);
   const [usersToUnassign, setUsersToUnassign] = useState([]);
+  const [originalUsersToUnassign, setOriginalUsersToUnassign] = useState([]); // Store original users list
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,6 +29,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
         association_id: userInfo.data.association_id,
       });
       setUsersToUnassign(response.data.data); // assuming response.data.data is an array of users
+      setOriginalUsersToUnassign(response.data.data); // Store the original list
       setLoading(false);
     } catch (error) {
       setError('Error fetching data. Please try again.');
@@ -117,6 +119,21 @@ const Assignuser = ({ userInfo, handleLogout }) => {
     }
   };
 
+  // Search assign users name
+  const handleSearchInputChange = (e) => {
+    const inputValue = e.target.value.toUpperCase();
+    setSearchInput(inputValue);
+
+    if (inputValue === '') {
+      setUsersToUnassign(originalUsersToUnassign); // Reset to original list if search is cleared
+    } else {
+      const filteredAssignUsers = originalUsersToUnassign.filter((item) =>
+        item.username.toUpperCase().includes(inputValue)
+      );
+      setUsersToUnassign(filteredAssignUsers);
+    }
+  };
+
   return (
     <div className='container-scroller'>
       {/* Header */}
@@ -193,6 +210,26 @@ const Assignuser = ({ userInfo, handleLogout }) => {
                         </div>
                       </div>
                     </div>
+                    <hr/>
+                    <div className="row">
+                      <div className="col-md-12 grid-margin">
+                        <div className="row">
+                          <div className="col-4 col-xl-8">
+                            <h4 className="card-title" style={{paddingTop:'10px'}}>List Of Chargers</h4>  
+                          </div>
+                          <div className="col-8 col-xl-4">
+                            <div className="input-group">
+                              <div className="input-group-prepend hover-cursor" id="navbar-search-icon">
+                                <span className="input-group-text" id="search">
+                                  <i className="icon-search"></i>
+                                </span>
+                              </div>
+                              <input type="text" className="form-control" placeholder="Search now" aria-label="search" aria-describedby="search" autoComplete="off" onChange={handleSearchInputChange}/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                       <table className="table table-striped">
                         <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
@@ -232,7 +269,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                <td colSpan="7" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
                               </tr>
                             )
                           )}
