@@ -154,6 +154,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                                                                                 const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
                                                                                 setClientName(sanitizedValue.slice(0, 25));
                                                                             }}
+                                                                            readOnly
                                                                             required
                                                                         />
                                                                     </div>

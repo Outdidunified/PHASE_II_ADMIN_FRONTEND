@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useCallback} from 'react';
 import axios from 'axios';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const ManageUsers = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
@@ -14,128 +14,129 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     };
    
     // Add Chargers start 
-    const [showAddForm, setShowAddForm] = useState(false);
+    // const [showAddForm, setShowAddForm] = useState(false);
 
-    const addChargers = () => {
-        setShowAddForm(prevState => !prevState);
-    };
-    const closeAddModal = () => {
-        setRole('');
-        setuserName(''); 
-        setemailID(''); 
-        setPassword(''); 
-        setPhone(''); 
-        setShowAddForm(false);
-        setTheadsticky('sticky');
-        setTheadfixed('fixed');
-        setTheadBackgroundColor('white');
-    };
-    const modalAddStyle = {
-        display: showAddForm ? 'block' : 'none',
-    }
+    // const addChargers = () => {
+    //     setShowAddForm(prevState => !prevState);
+    // };
+
+    // const closeAddModal = () => {
+    //     setRole('');
+    //     setuserName(''); 
+    //     setemailID(''); 
+    //     setPassword(''); 
+    //     setPhone(''); 
+    //     setShowAddForm(false);
+    //     setTheadsticky('sticky');
+    //     setTheadfixed('fixed');
+    //     setTheadBackgroundColor('white');
+    // };
+    // const modalAddStyle = {
+    //     display: showAddForm ? 'block' : 'none',
+    // }
 
     // Add Manage User
-    const [role, setRole] = useState({ role_id: '', role_name: '' });
-    const [username, setuserName] = useState('');
-    const [email_id, setemailID] = useState('');
-    const [Password, setPassword] = useState('');
-    const [phoneNo, setPhone] = useState('');
-    const [updateTrigger, setUpdateTrigger] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    // const [role, setRole] = useState({ role_id: '', role_name: '' });
+    // const [username, setuserName] = useState('');
+    // const [email_id, setemailID] = useState('');
+    // const [Password, setPassword] = useState('');
+    // const [phoneNo, setPhone] = useState('');
+    // const [updateTrigger, setUpdateTrigger] = useState(false);
+    // const [errorMessage, setErrorMessage] = useState('');
 
-    const handleResellerChange = (e) => {
-        const [role_id, role_name] = e.target.value.split('|');
-        setRole({ role_id, role_name });
-    };
+    // const handleResellerChange = (e) => {
+    //     const [role_id, role_name] = e.target.value.split('|');
+    //     setRole({ role_id, role_name });
+    // };
     
     // Add user
-    const addManageUser = async (e) => {
-        e.preventDefault();
+    // const addManageUser = async (e) => {
+    //     e.preventDefault();
          
-        // Validate phone number
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneNo) {
-            setErrorMessage("Phone can't be empty.");
-            return;
-        }
-        if (!phoneRegex.test(phoneNo)) {
-            setErrorMessage('Oops! Phone must be a 10-digit number.');
-            return;
-        }
+    //     // Validate phone number
+    //     const phoneRegex = /^\d{10}$/;
+    //     if (!phoneNo) {
+    //         setErrorMessage("Phone can't be empty.");
+    //         return;
+    //     }
+    //     if (!phoneRegex.test(phoneNo)) {
+    //         setErrorMessage('Oops! Phone must be a 10-digit number.');
+    //         return;
+    //     }
  
-        // Validate password
-        const passwordRegex = /^\d{4}$/;
-        if (!Password) {
-            setErrorMessage("Password can't be empty.");
-            return;
-        }
-        if (!passwordRegex.test(Password)) {
-            setErrorMessage('Oops! Password must be a 4-digit number.');
-            return;
-        }
+    //     // Validate password
+    //     const passwordRegex = /^\d{4}$/;
+    //     if (!Password) {
+    //         setErrorMessage("Password can't be empty.");
+    //         return;
+    //     }
+    //     if (!passwordRegex.test(Password)) {
+    //         setErrorMessage('Oops! Password must be a 4-digit number.');
+    //         return;
+    //     }
         
-        try {
-            const roleID = parseInt(role.role_id);
-            const password = parseInt(Password);
-            const phone_no = parseInt(phoneNo);
-            const response = await fetch('/associationadmin/CreateUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ role_id:roleID, reseller_id:userInfo.data.reseller_id, client_id:userInfo.data.client_id, association_id:userInfo.data.association_id, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
-            });
-            if (response.ok) {
-                setUpdateTrigger((prev) => !prev);
-                Swal.fire({
-                    title: "User added successfully",
-                    icon: "success"
-                });
-                setRole('');
-                setuserName(''); 
-                setemailID(''); 
-                setPassword(''); 
-                setPhone(''); 
-                setShowAddForm(false);
-                setTheadsticky('sticky');
-                setTheadfixed('fixed');
-                setTheadBackgroundColor('white');
-                fetchUsers();
-            } else {
-                const responseData = await response.json();
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to add user " + responseData.message,
-                    icon: "error"
-                });
-            }
-        }catch (error) {
-            Swal.fire({
-                title: "Error:", error,
-                text: "An error occurred while adding the user",
-                icon: "error"
-            });
-        }
-    };
+    //     try {
+    //         const roleID = parseInt(role.role_id);
+    //         const password = parseInt(Password);
+    //         const phone_no = parseInt(phoneNo);
+    //         const response = await fetch('/associationadmin/CreateUser', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ role_id:roleID, reseller_id:userInfo.data.reseller_id, client_id:userInfo.data.client_id, association_id:userInfo.data.association_id, username, email_id, password, phone_no, created_by:userInfo.data.email_id }),
+    //         });
+    //         if (response.ok) {
+    //             setUpdateTrigger((prev) => !prev);
+    //             Swal.fire({
+    //                 title: "User added successfully",
+    //                 icon: "success"
+    //             });
+    //             setRole('');
+    //             setuserName(''); 
+    //             setemailID(''); 
+    //             setPassword(''); 
+    //             setPhone(''); 
+    //             setShowAddForm(false);
+    //             setTheadsticky('sticky');
+    //             setTheadfixed('fixed');
+    //             setTheadBackgroundColor('white');
+    //             fetchUsers();
+    //         } else {
+    //             const responseData = await response.json();
+    //             Swal.fire({
+    //                 title: "Error",
+    //                 text: "Failed to add user " + responseData.message,
+    //                 icon: "error"
+    //             });
+    //         }
+    //     }catch (error) {
+    //         Swal.fire({
+    //             title: "Error:", error,
+    //             text: "An error occurred while adding the user",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
     // Add Manage User end
 
-    const [selectionRoles, setSelectionRoles] = useState([]);
-    const fetchSpecificUserRoleForSelectionCalled = useRef(false);
+    // const [selectionRoles, setSelectionRoles] = useState([]);
+    // const fetchSpecificUserRoleForSelectionCalled = useRef(false);
     const fetchUsersCalled = useRef(false);
 
-    useEffect(() => {
-        if (!fetchSpecificUserRoleForSelectionCalled.current) {
-            const url = '/associationadmin/FetchSpecificUserRoleForSelection';
-            axios.get(url)
-                .then((res) => {
-                    setSelectionRoles(res.data.data);
-                })
-                .catch((err) => {
-                    console.error('Error fetching data:', err);
-                });
-            fetchSpecificUserRoleForSelectionCalled.current = true;
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (!fetchSpecificUserRoleForSelectionCalled.current) {
+    //         const url = '/associationadmin/FetchSpecificUserRoleForSelection';
+    //         axios.get(url)
+    //             .then((res) => {
+    //                 setSelectionRoles(res.data.data);
+    //             })
+    //             .catch((err) => {
+    //                 console.error('Error fetching data:', err);
+    //             });
+    //         fetchSpecificUserRoleForSelectionCalled.current = true;
+    //     }
+    // }, []);
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -144,25 +145,34 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
     const [posts, setPosts] = useState([]);
 
     // Get user data
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         try {
-            const url = `/associationadmin/FetchUsers`;
-            const res = await axios.get(url);
-            setData(res.data.data);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error fetching data:', err);
+            const response = await axios.post('/associationadmin/FetchUsers', {
+                association_id: userInfo.data.association_id,
+            });
+
+            if (response.status === 200) {
+                const data = response.data.data;
+                setData(data || []);
+                setLoading(false);
+            } else {
+                console.error('Error fetching users');
+                setData([]);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
             setError('Error fetching data. Please try again.');
             setLoading(false);
         }
-    };
+    }, [userInfo.data.association_id]);
 
     useEffect(() => {
         if (!fetchUsersCalled.current) {
             fetchUsers();
             fetchUsersCalled.current = true;
         }
-    }, [updateTrigger]);
+    }, [fetchUsers]);
+    // }, [updateTrigger, fetchUsers]);
 
     // Search data 
     const handleSearchInputChange = (e) => {
@@ -187,17 +197,17 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
         }
     }, [data, filteredData]);
 
-    const [theadsticky, setTheadsticky] = useState('sticky');
-    const [theadfixed, setTheadfixed] = useState('fixed');
-    const [theadBackgroundColor, setTheadBackgroundColor] = useState('white');
+    // const [theadsticky, setTheadsticky] = useState('sticky');
+    // const [theadfixed, setTheadfixed] = useState('fixed');
+    // const [theadBackgroundColor, setTheadBackgroundColor] = useState('white');
 
     // Add button thead bgcolor
-    const handleAddUser = () => {
-        addChargers();
-        setTheadsticky(theadsticky === 'sticky' ? '' : 'sticky');
-        setTheadfixed(theadfixed === 'fixed' ? 'transparent' : 'fixed');
-        setTheadBackgroundColor(theadBackgroundColor === 'white' ? 'transparent' : 'white');
-    }
+    // const handleAddUser = () => {
+    //     addChargers();
+    //     setTheadsticky(theadsticky === 'sticky' ? '' : 'sticky');
+    //     setTheadfixed(theadfixed === 'fixed' ? 'transparent' : 'fixed');
+    //     setTheadBackgroundColor(theadBackgroundColor === 'white' ? 'transparent' : 'white');
+    // }
     return (
         <div className='container-scroller'>
             {/* Header */}
@@ -215,9 +225,9 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                     </div>
                                     <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
-                                            <button type="button" className="btn btn-success" onClick={handleAddUser}>Add User's</button>
+                                            {/* <button type="button" className="btn btn-success" onClick={handleAddUser}>Add User's</button> */}
                                             {/* Add user start */}
-                                            <div className="modalStyle" style={modalAddStyle}>
+                                            {/* <div className="modalStyle" style={modalAddStyle}>
                                                 <div className="modalContentStyle" style={{ maxHeight: '680px', overflowY: 'auto' }}>
                                                     <span onClick={closeAddModal} style={{ float: 'right', cursor: 'pointer', fontSize:'30px' }}>&times;</span>
                                                     <form className="card" onSubmit={addManageUser}>
@@ -228,10 +238,10 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             <div className="table-responsive pt-3">
                                                                 <div className="input-group" style={{paddingRight:'1px'}}>
                                                                     <div className="input-group-prepend">
-                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role</span>
+                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role Name</span>
                                                                     </div>
                                                                     <select className="form-control" value={`${role.role_id}|${role.role_name}`} onChange={handleResellerChange}>
-                                                                        <option value="">Select Admin</option>
+                                                                        <option value="">Select Role</option>
                                                                         {selectionRoles.map((role, index) => (
                                                                             <option key={index} value={`${role.role_id}|${role.role_name}`}>{role.role_name}</option>
                                                                         ))}
@@ -279,7 +289,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                     </form>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             {/* Add users end */}
                                         </div>
                                     </div>
@@ -311,7 +321,8 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                         </div>
                                         <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                             <table className="table table-striped">
-                                                <thead style={{ textAlign: 'center', position: theadsticky, tableLayout: theadfixed, top: 0, backgroundColor: theadBackgroundColor, zIndex: 1 }}>
+                                                {/* <thead style={{ textAlign: 'center', position: theadsticky, tableLayout: theadfixed, top: 0, backgroundColor: theadBackgroundColor, zIndex: 1 }}> */}
+                                                <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Role Name</th>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -14,18 +14,14 @@ const CreateUser = ({ userInfo, handleLogout }) => {
     const [userRoles, setUserRoles] = useState([]);
     const [assname, setAssName] = useState([]);
     const navigate = useNavigate();
+    const fetchUsersRoleAssNameCalled = useRef(false); 
 
-    useEffect(() => {
-        fetchUserRoles();
-        fetchAssociationNames();
-    }, []);
-
-    // fetch user roles
+    // Fetch user roles
     const fetchUserRoles = async () => {
         try {
             const response = await axios.get('/clientadmin/FetchSpecificUserRoleForSelection');
             if (response.data.status === 'Success') {
-                setUserRoles(response.data.data); // Set userRoles state to the array of roles
+                setUserRoles(response.data.data);
             } else {
                 console.error('Failed to fetch user roles:', response.data.message);
             }
@@ -34,19 +30,30 @@ const CreateUser = ({ userInfo, handleLogout }) => {
         }
     };
 
-    // fetch association names
-    const fetchAssociationNames = async () => {
+    // Fetch association names
+    const fetchAssociationNames = useCallback(async () => {
         try {
-            const response = await axios.get('/clientadmin/FetchAssociationForSelection');
+            const response = await axios.post('/clientadmin/FetchAssociationForSelection', {
+                client_id: userInfo.data.client_id,
+            });
+
             if (response.data.status === 'Success') {
-                setAssName(response.data.data); // Set assname state to the array of associations
+                setAssName(response.data.data);
             } else {
                 console.error('Failed to fetch association names:', response.data.message);
             }
         } catch (error) {
             console.error('Error fetching association names:', error);
         }
-    };
+    }, [userInfo.data.client_id]);
+    
+    useEffect(() => {
+        if (!fetchUsersRoleAssNameCalled.current) {
+            fetchUserRoles();
+            fetchAssociationNames();
+            fetchUsersRoleAssNameCalled.current = true;
+        }
+    }, [fetchAssociationNames]);
 
     // create users
     const createUser = async (e) => {
@@ -166,7 +173,45 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                 <div className="card-body">
                                                     <h4 className="card-title">Create Users</h4>
                                                     <form className="form-sample" onSubmit={createUser} >
-                                                    <div className="row">
+                                                        <div className="row">
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
+                                                                    <div className="col-sm-9">
+                                                                        <select
+                                                                            className="form-control"
+                                                                            value={newUser.role_name}
+                                                                            onChange={(e) => setNewUser({ ...newUser, role_name: e.target.value })}
+                                                                            required
+                                                                        >
+                                                                            <option value="">Select Role</option>
+                                                                            {userRoles.map(role => (
+                                                                                <option key={role.role_id} value={role.role_name}>{role.role_name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Association Name</label>
+                                                                    <div className="col-sm-9">
+                                                                        <select
+                                                                            className="form-control"
+                                                                            value={newUser.client_name}
+                                                                            onChange={(e) => setNewUser({ ...newUser, client_name: e.target.value })}
+                                                                            required
+                                                                        >
+                                                                            <option value="">Select Association</option>
+                                                                            {assname.map(association => (
+                                                                                <option key={association.association_id} value={association.association_name}>
+                                                                                    {association.association_name}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">User Name</label>
@@ -245,44 +290,6 @@ const CreateUser = ({ userInfo, handleLogout }) => {
                                                                             
                                                                             required
                                                                         />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select
-                                                                            className="form-control"
-                                                                            value={newUser.role_name}
-                                                                            onChange={(e) => setNewUser({ ...newUser, role_name: e.target.value })}
-                                                                            required
-                                                                        >
-                                                                            <option value="">Select Role</option>
-                                                                            {userRoles.map(role => (
-                                                                                <option key={role.role_id} value={role.role_name}>{role.role_name}</option>
-                                                                            ))}
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association Name</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select
-                                                                            className="form-control"
-                                                                            value={newUser.client_name}
-                                                                            onChange={(e) => setNewUser({ ...newUser, client_name: e.target.value })}
-                                                                            required
-                                                                        >
-                                                                            <option value="">Select Association</option>
-                                                                            {assname.map(association => (
-                                                                                <option key={association.association_id} value={association.association_name}>
-                                                                                    {association.association_name}
-                                                                                </option>
-                                                                            ))}
-                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>

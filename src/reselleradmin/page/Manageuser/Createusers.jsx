@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback  } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header';
@@ -15,6 +15,7 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
     const [userRoles, setUserRoles] = useState([]);
     const [clientNames, setClientNames] = useState([]);
     const navigate = useNavigate();
+    const fetchUsersRoleClientNameCalled = useRef(false); 
 
     // fetch user roles
     const fetchUserRoles = useCallback(async () => {
@@ -47,9 +48,13 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
         }
     }, [userInfo.data.reseller_id]);
 
+   
     useEffect(() => {
-        fetchUserRoles();
-        fetchClientNames();
+        if (!fetchUsersRoleClientNameCalled.current) {
+            fetchUserRoles();
+            fetchClientNames();
+            fetchUsersRoleClientNameCalled.current = true;
+        }
     }, [fetchUserRoles, fetchClientNames]);
    
     // create users
@@ -168,6 +173,42 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                     <h4 className="card-title">Create Users</h4>
                                                     <form className="form-sample" onSubmit={createUser}>
                                                         <div className="row">
+                                                        <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
+                                                                    <div className="col-sm-9">
+                                                                        <select
+                                                                            className="form-control"
+                                                                            value={newUser.role_name}
+                                                                            onChange={(e) => setNewUser({ ...newUser, role_name: e.target.value })}
+                                                                            required
+                                                                        >
+                                                                            <option value="">Select Role</option>
+                                                                            {userRoles.map(role => (
+                                                                                <option key={role.role_id} value={role.role_name}>{role.role_name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Client Name</label>
+                                                                    <div className="col-sm-9">
+                                                                        <select
+                                                                            className="form-control"
+                                                                            value={newUser.client_name}
+                                                                            onChange={(e) => setNewUser({ ...newUser, client_name: e.target.value })}
+                                                                            required
+                                                                        >
+                                                                            <option value="">Select Client</option>
+                                                                            {clientNames.map(client => (
+                                                                                <option key={client.client_id} value={client.client_name}>{client.client_name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">User Name</label>
@@ -249,44 +290,6 @@ const CreateUsers = ({ userInfo, handleLogout }) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Role Name</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select
-                                                                            className="form-control"
-                                                                            value={newUser.role_name}
-                                                                            onChange={(e) => setNewUser({ ...newUser, role_name: e.target.value })}
-                                                                            required
-                                                                        >
-                                                                            <option value="">Select Role</option>
-                                                                            {userRoles.map(role => (
-                                                                                <option key={role.role_id} value={role.role_name}>{role.role_name}</option>
-                                                                            ))}
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Client Name</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select
-                                                                            className="form-control"
-                                                                            value={newUser.client_name}
-                                                                            onChange={(e) => setNewUser({ ...newUser, client_name: e.target.value })}
-                                                                            required
-                                                                        >
-                                                                            <option value="">Select Client</option>
-                                                                            {clientNames.map(client => (
-                                                                                <option key={client.client_id} value={client.client_name}>{client.client_name}</option>
-                                                                            ))}
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                           
                                                         </div>
                                                         {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                                         <div style={{ textAlign: 'center' }}>

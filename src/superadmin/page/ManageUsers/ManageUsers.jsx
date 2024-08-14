@@ -301,10 +301,10 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                             <div className="table-responsive pt-3">
                                                                 <div className="input-group" style={{paddingRight:'1px'}}>
                                                                     <div className="input-group-prepend">
-                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role</span>
+                                                                        <span className="input-group-text" style={{color:'black', width:'125px'}}>Role Name</span>
                                                                     </div>
                                                                     <select className="form-control" value={`${role.role_id}|${role.role_name}`} onChange={handleResellerChange}>
-                                                                        <option value="">Select Admin</option>
+                                                                        <option value="">Select Role</option>
                                                                         {selectionRoles.map((role, index) => (
                                                                             <option key={index} value={`${role.role_id}|${role.role_name}`}>{role.role_name}</option>
                                                                         ))}

@@ -14,15 +14,14 @@ const Assigntoass = ({ userInfo, handleLogout }) => {
     const fetchAsssigntoassDataCalled = useRef(false);
 
     // Data localstorage
+    const client_id = location.state?.client_id || JSON.parse(localStorage.getItem('client_id'));
     useEffect(() => {
-        const client_id = getClientIdFromLocalStorage();
         if (client_id && !fetchAsssigntoassDataCalled.current) {
-            localStorage.setItem('client_id', JSON.stringify(client_id));
             fetchAsssigntoassData(client_id);
             fetchAsssigntoassDataCalled.current = true;
         }
-    }, [location]);
-
+    }, [client_id, location]);
+    
     // Fetch assigned association
     const fetchAsssigntoassData = async (client_id) => {
         try {
@@ -54,12 +53,7 @@ const Assigntoass = ({ userInfo, handleLogout }) => {
             // Handle error appropriately
         }
     };
-
-    const getClientIdFromLocalStorage = () => {
-        const client_id = JSON.parse(localStorage.getItem('client_id'));
-        return client_id;
-    };
-
+ 
     // search
     const handleSearch = (e) => {
         const query = e.target.value.toLowerCase();
