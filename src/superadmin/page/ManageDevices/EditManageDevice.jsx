@@ -25,42 +25,27 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
 
     // Edit manage device
     const [charger_id, setChargerID] = useState(dataItem?.charger_id || '');
-    const [tag_id, setTagID] = useState(dataItem?.tag_id || '');
-    const [model, setModel] = useState(dataItem?.model || '');
-    const [type, setType] = useState(dataItem?.type || '');
+    const [charger_model, setModel] = useState(dataItem?.model || '');
+    const [charger_type, setType] = useState(dataItem?.type || '');
     const [vendor, setVendor] = useState(dataItem?.vendor || '');
-    const [gun_connector, setGunConnetor] = useState(dataItem?.gun_connector || '');
     const [max_current, setMaxCurrent] = useState(dataItem?.max_current || '');
     const [max_power, setMaxPower] = useState(dataItem?.max_power || '');
-    const [socket_count, setSocketCount] = useState(dataItem?.socket_count || '');
     const [errorMessage, setErrorMessage] = useState('');
 
     // Initial values
     const initialValues = {
         charger_id: dataItem?.charger_id || '',
         tag_id: dataItem?.tag_id || '',
-        model: dataItem?.model || '',
+        charger_model: dataItem?.charger_model || '',
         type: dataItem?.type || '',
         vendor: dataItem?.vendor || '',
-        gun_connector: dataItem?.gun_connector || '',
         max_current: dataItem?.max_current || '',
         max_power: dataItem?.max_power || '',
-        socket_count: dataItem?.socket_count || '',
     };
 
     // Select model 
     const handleModel = (e) => {
         setModel(e.target.value);
-    };
-    
-    // Select socket
-    const handleSocket = (e) => {
-        setSocketCount(e.target.value);
-    };
-
-    // Select Gunconnector
-    const handleGunconnector = (e) => {
-        setGunConnetor(e.target.value);
     };
     
     // Selected charger type
@@ -101,17 +86,6 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
             return;
         }
 
-        // Validate Tag ID
-        const tagIDRegex = /^[a-zA-Z0-9]{1,12}$/;;
-        if (!tag_id) {
-            setErrorMessage("Charger ID can't be empty.");
-            return;
-        }
-        if (!tagIDRegex.test(tag_id)) {
-            setErrorMessage('Oops! Tag ID must be a maximum of 12 characters.');
-            return;
-        }
-
         // Validate vendor
         const vendorRegex = /^[a-zA-Z0-9 ]{1,20}$/;
         if (!vendor) {
@@ -124,16 +98,14 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
         }
 
         try {
-            const gunConnector = parseInt(gun_connector);
             const maxCurrents = parseInt(max_current);
             const maxPowers = parseInt(max_power);
-            const socketCounts = parseInt(socket_count);
             const response = await fetch('/superadmin/UpdateCharger', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ charger_id, tag_id, model, type, vendor, gun_connector:gunConnector, max_current:maxCurrents, max_power:maxPowers, socket_count:socketCounts, modified_by: userInfo.data.email_id  }),
+            body: JSON.stringify({ charger_id, charger_model, charger_type, vendor, max_current:maxCurrents, max_power:maxPowers, modified_by: userInfo.data.email_id  }),
             });
             if (response.ok) {
                 Swal.fire({
@@ -163,14 +135,11 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
     const isFormChanged = () => {
         return (
             charger_id !== initialValues.charger_id ||
-            tag_id !== initialValues.tag_id ||
-            model !== initialValues.model ||
-            type !== initialValues.type ||
+            charger_model !== initialValues.charger_model ||
+            charger_type !== initialValues.charger_type ||
             vendor !== initialValues.vendor ||
-            gun_connector !== initialValues.gun_connector ||
             max_current !== initialValues.max_current ||
-            max_power !== initialValues.max_power ||
-            socket_count !== initialValues.socket_count
+            max_power !== initialValues.max_power 
         );
     };
 
@@ -217,9 +186,9 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Tag ID</label>
+                                                                    <label className="col-sm-3 col-form-label">Vendor</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id} maxLength={12} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" placeholder="Vendor" value={vendor} maxLength={20} onChange={(e) => {const value = e.target.value; let sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setVendor(sanitizedValue); }} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -227,9 +196,9 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Model</label>
+                                                                    <label className="col-sm-3 col-form-label">Charger Model</label>
                                                                     <div className="col-sm-9">
-                                                                        <select className="form-control" value={model} onChange={handleModel} required>
+                                                                        <select className="form-control" value={charger_model} onChange={handleModel} required>
                                                                             <option value="">Select model</option>
                                                                             <option value="3.5">3.5 KW</option>
                                                                             <option value="7.4">7.4 KW</option>
@@ -243,33 +212,10 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Charger Type</label>
                                                                     <div className="col-sm-9">
-                                                                        <select className="form-control" value={type} onChange={handleChargerType} required >
+                                                                        <select className="form-control" value={charger_type} onChange={handleChargerType} required >
                                                                             <option value="AC">AC</option>
                                                                             <option value="DC">DC</option>
                                                                         </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Vendor</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Vendor" value={vendor} maxLength={20} onChange={(e) => {const value = e.target.value; let sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setVendor(sanitizedValue); }} required/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row"> 
-                                                                    <label className="col-sm-3 col-form-label">Gun connector</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select className="form-control" value={gun_connector} onChange={handleGunconnector} required>
-                                                                            <option value="">Select Gun connector</option>
-                                                                            <option value="3">3 phase socket </option>
-                                                                            <option value="2">CSS Type 2</option>
-                                                                            <option value="1">Single phase socket</option>
-                                                                        </select> 
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -333,22 +279,6 @@ const EditManageDevice = ({ userInfo, handleLogout }) => {
                                                                          required/> 
                                                                                                                                                   {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
 
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Socket Count</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select className="form-control" value={socket_count} onChange={handleSocket} required>
-                                                                            <option value="">Select socket</option>
-                                                                            <option value="1">1 Socket</option>
-                                                                            <option value="2">2 Sockets</option>
-                                                                            <option value="3">3 Sockets</option>
-                                                                            <option value="4">4 Sockets</option>
-                                                                        </select>                                                                    
                                                                     </div>
                                                                 </div>
                                                             </div>

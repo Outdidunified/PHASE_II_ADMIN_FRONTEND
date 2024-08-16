@@ -9,8 +9,8 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     
     const [newDevice, setNewDevice] = useState({
-        charger_id: '', model: '', type: '', gun_connector: '', max_current: '', created_date: '', status: '',
-        tag_id: '', assigned_association_date: '', assigned_client_date: '', assigned_reseller_date: '', charger_accessibility: '',
+        charger_id: '', charger_model: '', charger_type: '', model: '', type: '', gun_connector: '', max_current: '', created_date: '', status: '',
+        assigned_association_date: '', assigned_client_date: '', assigned_reseller_date: '', charger_accessibility: '',
         client_commission: '', created_by: '', current_or_active_user: '', max_power: '', modified_by: '', modified_date: '',
         reseller_commission: '', short_description: '', socket_count: '', vendor: '', wifi_password: '', wifi_username: '',
     });
@@ -20,9 +20,9 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
         if (charger) {
            
             setNewDevice({
-                charger_id: charger.charger_id || '', model: charger.model || '', type: charger.type || '', gun_connector: charger.gun_connector || '',
+                charger_id: charger.charger_id || '', charger_model: charger.charger_model || '', charger_type: charger.charger_type || '', model: charger.model || '', type: charger.type || '', gun_connector: charger.gun_connector || '',
                 max_current: charger.max_current || '', created_date: charger.created_date || '', status: charger.status || '',
-                tag_id: charger.tag_id || '', assigned_association_date: charger.assigned_association_date || '',
+                assigned_association_date: charger.assigned_association_date || '',
                 assigned_client_date: charger.assigned_client_date || '', assigned_reseller_date: charger.assigned_reseller_date || '',
                 charger_accessibility: charger.charger_accessibility || '', client_commission: charger.client_commission || '',
                 created_by: charger.created_by || '', current_or_active_user: charger.current_or_active_user || '',
@@ -116,12 +116,12 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Model: <span style={{fontWeight:'normal'}}>{newDevice.model ? newDevice.model +'KW': '-'}</span></div>
+                                                                <div className="col-sm-12">Charger Model: <span style={{fontWeight:'normal'}}>{newDevice.charger_model ? newDevice.charger_model +'KW': '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Charger Type: <span style={{fontWeight:'normal'}}>{newDevice.type ? newDevice.type : '-'}</span></div>
+                                                                <div className="col-sm-12">Charger Type: <span style={{fontWeight:'normal'}}>{newDevice.charger_type ? newDevice.charger_type : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -155,11 +155,16 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Tag Id: <span style={{fontWeight:'normal'}}>{newDevice.tag_id ?  newDevice.tag_id : '-'}</span></div>
+                                                                <div className="col-sm-12">Model: <span style={{fontWeight:'normal'}}>{newDevice.model ?  newDevice.model : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Type: <span style={{fontWeight:'normal'}}>{newDevice.type ?  newDevice.type : '-'}</span></div>
+                                                            </div>
+                                                        </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Reseller Commission: <span style={{fontWeight:'normal'}}>{newDevice.reseller_commission ? newDevice.reseller_commission : '-'}</span></div>
@@ -170,13 +175,13 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Client Commission: <span style={{fontWeight:'normal'}}>{newDevice.client_commission ? newDevice.client_commission : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Short Description: <span style={{fontWeight:'normal'}}>{newDevice.short_description ? newDevice.short_description : '-'}</span></div>   
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Charger Accessibility: <span style={{ fontWeight: 'normal' }}>{newDevice.charger_accessibility === 1 ? 'Public' : newDevice.charger_accessibility === 2 ? 'Private' : '-'}</span></div> 
@@ -187,14 +192,13 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Wifi Username: <span style={{fontWeight:'normal'}}>{newDevice.wifi_username ? newDevice.wifi_username : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Wifi Password: <span style={{fontWeight:'normal'}}>{newDevice.wifi_password ? newDevice.wifi_password : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Assigned Association Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_association_date ? formatTimestamp(newDevice.assigned_association_date) : '-'}</span></div>
@@ -205,14 +209,14 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Assigned Client Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_client_date ? formatTimestamp(newDevice.assigned_client_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Assigned Reseller Date: <span style={{fontWeight:'normal'}}>{newDevice.assigned_reseller_date ? formatTimestamp(newDevice.assigned_reseller_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
-                                                    <div className="col-md-4">
+                                                        <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Created By: <span style={{fontWeight:'normal'}}>{newDevice.created_by ? newDevice.created_by : '-'}</span></div>
                                                             </div>
@@ -222,13 +226,13 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Created Date: <span style={{fontWeight:'normal'}}>{newDevice.created_date ? formatTimestamp(newDevice.created_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified By: <span style={{fontWeight:'normal'}}>{newDevice.modified_by ? newDevice.modified_by : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified Date: <span style={{fontWeight:'normal'}}>{newDevice.modified_date ? formatTimestamp(newDevice.modified_date) : '-'}</span></div>
@@ -239,11 +243,13 @@ const ViewAlloc = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Current/Active User: <span style={{fontWeight:'normal'}}>{newDevice.current_or_active_user ? newDevice.current_or_active_user : '-'}</span></div>
                                                             </div>
                                                         </div> 
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Status: <span style={{fontWeight:'normal'}}>{newDevice.status === true ? <span className="text-success">Active</span> :  <span className="text-danger">DeActive</span>}</span></div>
                                                             </div>
-                                                        </div>                                                               
+                                                        </div> 
                                                     </div>
                                                 </div>
                                             </div>

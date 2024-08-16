@@ -364,7 +364,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger ID</th>
-                                                        <th>Model</th>
+                                                        <th>Charger Model</th>
                                                         <th>Charger Type</th>
                                                         <th>Gun Connector</th>
                                                         <th>Max Current</th>
@@ -392,7 +392,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                     )}
                                                                 </td>
                                                                 <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
+                                                                    <img src={`../../images/dashboard/${dataItem.charger_model ? dataItem.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td>
                                                                 {/* <td>{dataItem.model ? (
                                                                     <span>{dataItem.model}</span>
@@ -400,8 +400,8 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                         <span>-</span> 
                                                                     )}
                                                                 </td> */}
-                                                                <td>{dataItem.type ? (
-                                                                    <span>{dataItem.type}</span>
+                                                                <td>{dataItem.charger_type ? (
+                                                                    <span>{dataItem.charger_type}</span>
                                                                     ): (
                                                                         <span>-</span> 
                                                                     )}

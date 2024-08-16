@@ -19,12 +19,13 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
     const [reseller_phone_no, setResellerPhoneNumber] = useState(dataItem?.reseller_phone_no || '');
     const [reseller_email_id, setEmilaID] = useState(dataItem?.reseller_email_id || '');
     const [reseller_address, setResellerAddress] = useState(dataItem?.reseller_address || '');
-    
+    const [reseller_wallet, setResellerWallet] = useState(dataItem?.reseller_wallet || '0');
      // Store initial values
      const [initialValues, setInitialValues] = useState({
         reseller_name: dataItem?.reseller_name || '',
         reseller_phone_no: dataItem?.reseller_phone_no || '',
         reseller_email_id: dataItem?.reseller_email_id || '',
+        reseller_wallet: dataItem?.reseller_wallet || '',
         reseller_address: dataItem?.reseller_address || '',
         status: dataItem?.status ? 'true' : 'false',
     });
@@ -34,6 +35,7 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
         reseller_name !== initialValues.reseller_name ||
         reseller_phone_no !== initialValues.reseller_phone_no ||
         reseller_email_id !== initialValues.reseller_email_id ||
+        reseller_wallet !== initialValues.reseller_wallet ||
         reseller_address !== initialValues.reseller_address ||
         selectStatus !== initialValues.status
     );
@@ -70,6 +72,7 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
             const updatedReseller = {
                 reseller_id: dataItem?.reseller_id,
                 reseller_name:reseller_name,
+                reseller_wallet,
                 reseller_phone_no: reseller_phone_nos,
                 status: selectStatus === 'true',
                 reseller_address:reseller_address,
@@ -176,14 +179,25 @@ const EditManageReseller = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Wallet</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input type="text" className="form-control" value={reseller_wallet}   onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            const sanitizedValue = value.replace(/[^0-9]/g, '');
+                                                                            setResellerWallet(sanitizedValue);}} required  />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="row">
+                                                           <div className="col-md-6">
+                                                                <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Address</label>
                                                                     <div className="col-sm-9">
                                                                         <textarea type="text" className="form-control" value={reseller_address} maxLength={150} onChange={(e) => setResellerAddress(e.target.value )}required />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Status</label>

@@ -177,6 +177,7 @@ const Profile = ({ userInfo, handleLogout }) => {
                                                                         const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
                                                                         setUpdateUname(sanitizedValue);
                                                                     }}
+                                                                    readOnly
                                                                     required
                                                                 />
                                                             </div>
