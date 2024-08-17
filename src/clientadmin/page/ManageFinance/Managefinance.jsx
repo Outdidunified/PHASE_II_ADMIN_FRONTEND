@@ -128,8 +128,7 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                 <thead style={{ textAlign: 'center', position: 'sticky', tableLayout: 'fixed', top: 0, backgroundColor: 'white', zIndex: 1 }}>
                                                     <tr> 
                                                         <th>Sl.No</th>
-                                                        <th>Client Id</th>
-                                                        <th>Association ID</th>
+                                                        <th>Total Amount</th>
                                                         <th>App Charges</th>
                                                         <th>EB Charges</th>
                                                         <th>Open A EB Charges</th>
@@ -145,8 +144,7 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                         financeDetails.map((finance, index) => (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{finance.client_id ? finance.client_id : '-'}</td>
-                                                                <td>{finance.association_id ? finance.association_id : '-'}</td>
+                                                                <td>{finance.total_amount ? finance.total_amount : '-'}</td>
                                                                 <td>{finance.app_charges ? finance.app_charges : '-'}</td>
                                                                 <td>{finance.eb_charges  ? finance.eb_charges : '-'}</td>
                                                                 <td>{finance.open_a_eb_charges ?  finance.open_a_eb_charges : '-'}</td>
@@ -175,7 +173,7 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="10">No Finance Details Found</td>
+                                                            <td colSpan="9">No Finance Details Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

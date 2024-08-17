@@ -162,6 +162,7 @@ const UpdateUser = ({ userInfo, handleLogout }) => {
                                                                                 const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
                                                                                 setUsername(sanitizedValue.slice(0, 25));
                                                                             }}
+                                                                            readOnly
                                                                             required
                                                                         />
                                                                     </div>

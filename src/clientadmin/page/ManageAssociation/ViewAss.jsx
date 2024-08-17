@@ -11,6 +11,7 @@ const ViewAss = ({ userInfo, handleLogout }) => {
     const [newass, setnewass] = useState({
         association_address: '', association_email_id: '', association_id: '', association_name: '', association_phone_no: '',
         client_id: '', created_by: '', created_date: '', modified_by: '', modified_date: '', reseller_id: '', status: '', client_name: '', reseller_name: '',
+        association_wallet: '',
     });
 
     useEffect(() => {
@@ -24,7 +25,7 @@ const ViewAss = ({ userInfo, handleLogout }) => {
                 created_by: association.created_by || '', created_date: association.created_date || '',
                 modified_by: association.modified_by || '', modified_date: association.modified_date || '',
                 reseller_id: association.reseller_id || '', status: association.status || '', 
-                reseller_name: association.reseller_name || '',  client_name: association.client_name || '',
+                reseller_name: association.reseller_name || '',  client_name: association.client_name || '', association_wallet: association.association_wallet || '',
             });
         // Save to localStorage
         localStorage.setItem('userData', JSON.stringify(association));
@@ -140,11 +141,16 @@ const ViewAss = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Association Address: <span style={{ fontWeight: 'normal' }}>{newass.association_address ? newass.association_address : '-'}</span></div>
+                                                                <div className="col-sm-12">Association Wallet: <span style={{ fontWeight: 'normal' }}>{newass.association_wallet ? newass.association_wallet : '0'}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="row col-12 col-xl-12">
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
+                                                                <div className="col-sm-12">Association Address: <span style={{ fontWeight: 'normal' }}>{newass.association_address ? newass.association_address : '-'}</span></div>
+                                                            </div>
+                                                        </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Created By: <span style={{ fontWeight: 'normal' }}>{newass.created_by ? newass.created_by : '-'}</span></div>
@@ -155,13 +161,13 @@ const ViewAss = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Created Date: <span style={{ fontWeight: 'normal' }}>{newass.created_date ? formatTimestamp(newass.created_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified By: <span style={{ fontWeight: 'normal' }}>{newass.modified_by ? newass.modified_by : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified Date: <span style={{ fontWeight: 'normal' }}>{newass.modified_date ? formatTimestamp(newass.modified_date) : '-'}</span></div>

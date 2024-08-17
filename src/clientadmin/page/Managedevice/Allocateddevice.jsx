@@ -159,10 +159,9 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Model</th>
+                                                        <th>Charger Model</th>
                                                         <th>Charger Type</th>
                                                         <th>Gun Connector</th>
-                                                        <th>Max Current</th>
                                                         <th>Assigned Association</th>
                                                         <th>Status</th>
                                                         <th>Active/DeActive</th>
@@ -176,9 +175,9 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                                 <td>{index + 1}</td>
                                                                 <td>{charger.charger_id ? charger.charger_id : '-'}</td>
                                                                 <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${charger.model ? charger.model : '-'}kw.png`} alt="img" />
+                                                                    <img src={`../../images/dashboard/${charger.charger_model ? charger.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td> 
-                                                                <td>{charger.type ? charger.type : '-'}</td>
+                                                                <td>{charger.charger_type ? charger.charger_type : '-'}</td>
                                                                 <td>
                                                                     {charger.gun_connector === 1
                                                                         ? 'Single phase'
@@ -188,7 +187,6 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                                         ? '3 phase socket'
                                                                     : '-'}
                                                                 </td>     
-                                                                <td>{charger.max_current ? charger.max_current : '-'}</td>
                                                                 <td>{charger.association_name ? charger.association_name : '-'}</td>
                                                                 <td style={{ color: charger.status ? 'green' : 'red' }}>{charger.status ? 'Active' : 'DeActive'}</td>
                                                                 <td>
@@ -211,7 +209,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                         ))
                                                     ) : (
                                                         <tr className="text-center">
-                                                            <td colSpan="10">No Record Found</td>
+                                                            <td colSpan="9">No Record Found</td>
                                                         </tr>
                                                     )}
                                                 </tbody>

@@ -9,7 +9,7 @@ const ViewManageReseller = ({ userInfo, handleLogout }) => {
     const location = useLocation();
     const [newUser, setNewUser] = useState({
         reseller_name: '', reseller_email_id: '', reseller_phone_no: '', reseller_address: '', reseller_id: '',
-        status: '', created_by: '', created_date: '', modified_by: '', modified_date: '', _id: '',
+        status: '', created_by: '', created_date: '', modified_by: '', modified_date: '', reseller_wallet: '',  _id: '',
     });
 
     useEffect(() => {
@@ -26,6 +26,7 @@ const ViewManageReseller = ({ userInfo, handleLogout }) => {
                 created_date: dataItem.created_date || '',
                 modified_by: dataItem.modified_by || '',
                 modified_date: dataItem.modified_date || '',
+                reseller_wallet: dataItem.reseller_wallet || '',
                 _id: dataItem._id || '',
             });
             // Save to localStorage
@@ -127,6 +128,11 @@ const ViewManageReseller = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
+                                                                <div className="col-sm-12">Reseller Wallet: <span style={{ fontWeight: 'normal' }}>{newUser.reseller_wallet ? newUser.reseller_wallet : '0'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
                                                                 <div className="col-sm-12">Address: <span style={{ fontWeight: 'normal' }}>{newUser.reseller_address ? newUser.reseller_address : '-'}</span></div>
                                                             </div>
                                                         </div>
@@ -135,13 +141,13 @@ const ViewManageReseller = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Created By: <span style={{ fontWeight: 'normal' }}>{newUser.created_by ? newUser.created_by : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Created Date: <span style={{ fontWeight: 'normal' }}>{newUser.created_date ? formatTimestamp(newUser.created_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified By: <span style={{ fontWeight: 'normal' }}>{newUser.modified_by ? newUser.modified_by : '-'}</span></div>
@@ -152,6 +158,8 @@ const ViewManageReseller = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Modified Date: <span style={{ fontWeight: 'normal' }}>{newUser.modified_date ? formatTimestamp(newUser.modified_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Status: <span style={{ fontWeight: 'normal' }}>{newUser.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</span></div>
