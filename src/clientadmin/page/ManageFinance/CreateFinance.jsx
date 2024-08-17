@@ -39,6 +39,7 @@ const CreateFinance = ({ userInfo, handleLogout }) => {
                 showConfirmButton: false,
                 timer: 1500
             });
+            goBack();
         } catch (error) {
             console.error('Error creating finance:', error);
             setErrorMessage('Failed to create finance. Please try again.');
