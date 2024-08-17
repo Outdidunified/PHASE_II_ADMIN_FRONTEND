@@ -6,23 +6,12 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const Assignuser = ({ userInfo, handleLogout }) => {
-  const [usersToAssign, setUsersToAssign] = useState([]);
   const [usersToUnassign, setUsersToUnassign] = useState([]);
   const [originalUsersToUnassign, setOriginalUsersToUnassign] = useState([]); // Store original users list
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [email_id, setAssEmail] = useState();
   const [phone_no, setAssPhone] = useState();
-
-  // fetch users to assign data
-  const fetchUsersToAssign = useCallback(async () => {
-    try {
-      const response = await axios.get('/associationadmin/FetchUsersWithSpecificRolesToAssgin');
-      setUsersToAssign(response.data.data); // assuming response.data.data is an array of users
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
 
   // fetch user to unassign data
   const fetchUsersToUnassign = useCallback(async () => {
@@ -40,9 +29,8 @@ const Assignuser = ({ userInfo, handleLogout }) => {
   }, [userInfo.data.association_id]);
 
   useEffect(() => {
-    fetchUsersToAssign();
     fetchUsersToUnassign();
-  }, [fetchUsersToAssign, fetchUsersToUnassign]);
+  }, [fetchUsersToUnassign]);
 
   // Function to handle selecting and removing a user
   const handleSelectRemove = async (userId) => {
@@ -70,62 +58,10 @@ const Assignuser = ({ userInfo, handleLogout }) => {
     }
   };
   
-  const [searchAddEmail, setSearchAddEmail] = useState([]); // Updated state name
-  const [searchInput, setSearchInput] = useState(''); // New state for search input
-  const [selectedUser, setSelectedUser] = useState(null); // Changed to null for better control
-
-  // Search and filter users
-  const handleSearchUserAdd = (e) => {
-    const inputValue = e.target.value.toUpperCase();
-    setSearchInput(inputValue); // Update search input state
-    if (Array.isArray(usersToAssign)) {
-      const filteredEmails = usersToAssign.filter((item) =>
-        item.email_id.toUpperCase().includes(inputValue)
-      );
-      setSearchAddEmail(filteredEmails); // Store the filtered users in the state
-    }
-  };
-
-  // Handle checkbox selection
-  const handleSelectUser = (userId) => {
-    setSelectedUser(userId);
-  };
-
-  // Submit selected users and submit
-  const handleAddUserSubmits = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('/associationadmin/AddUserToAssociation', {
-        association_id: userInfo.data.association_id,
-        user_id: parseInt(selectedUser),
-        modified_by: userInfo.data.email_id
-      });
-      Swal.fire({
-        title: 'Success!',
-        text: 'Users have been added to the association.',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
-      setSearchAddEmail([]);
-      setSearchInput('');
-      setSelectedUser(null);
-      fetchUsersToUnassign();
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'There was a problem adding the users, ' + error,
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
-    }
-  };
 
   // Search assign users name
   const handleSearchInputChange = (e) => {
     const inputValue = e.target.value.toUpperCase();
-    setSearchInput(inputValue);
-
     if (inputValue === '') {
       setUsersToUnassign(originalUsersToUnassign); // Reset to original list if search is cleared
     } else {
@@ -154,8 +90,8 @@ const Assignuser = ({ userInfo, handleLogout }) => {
           icon: 'success',
           confirmButtonText: 'OK'
         });
-        setAssEmail();
-        setAssPhone();
+        setAssEmail('');
+        setAssPhone('');
         fetchUsersToUnassign();
       } else {
         Swal.fire({
@@ -170,7 +106,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
       console.error(error);
       Swal.fire({
         title: 'Error!',
-        text: 'There was a problem adding the users: ' + error.message,
+        text: 'There was a problem assign the users: ' + error.message,
         icon: 'error',
         confirmButtonText: 'OK'
       });
@@ -205,51 +141,6 @@ const Assignuser = ({ userInfo, handleLogout }) => {
                           <div className="col-4 col-xl-8">
                             <h4 className="card-title" style={{paddingTop:'10px'}}>Add Assign user's</h4>  
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-12 grid-margin">
-                      <div className="card">
-                        <div className="card-body">
-                          <form onSubmit={handleAddUserSubmits} className="form-sample">
-                            <div className="row">
-                              <div className="col-md-12">
-                                <div className="form-group row">
-                                  <div className="col-sm-5">
-                                    <div className="input-group">
-                                      <div className="input-group-prepend hover-cursor" id="navbar-search-icon">
-                                        <span className="input-group-text" id="search">
-                                          <i className="icon-search"></i>
-                                        </span>
-                                      </div>
-                                      <input type="text" className="form-control" placeholder="Search for user's" id="searchInput" aria-label="search" aria-describedby="search" onChange={handleSearchUserAdd} autoComplete="off"/>
-                                    </div>
-                                  </div>
-                                  <div className="col-sm-5">
-                                    {searchInput && searchAddEmail.length > 0 ? (
-                                      searchAddEmail.map((user, index) => (
-                                        <div key={user.user_id} className="form-control d-flex align-items-center">
-                                          <button
-                                            type="button"
-                                            className={`btn btn-${selectedUser === user.user_id ? 'success' : 'secondary'} btn-sm`}
-                                            onClick={() => handleSelectUser(user.user_id)}
-                                          >
-                                            {selectedUser === user.user_id ? 'Selected' : 'Select'}
-                                          </button>
-                                          <label style={{ marginLeft: '8px' }}>{user.email_id}</label>
-                                        </div>
-                                      ))
-                                    ) : (
-                                      <p className="form-control">No users found</p>
-                                    )}
-                                  </div>
-                                  <div className="col-sm-2">
-                                    <button type="submit" className="btn btn-primary btn-block" disabled={!selectedUser}>Assign</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
                         </div>
                       </div>
                     </div>

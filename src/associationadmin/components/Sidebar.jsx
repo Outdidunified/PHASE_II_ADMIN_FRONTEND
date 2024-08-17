@@ -19,10 +19,16 @@ const Sidebar = () => {
                         <span className="menu-title">Manage Device</span>
                     </Link>
                 </li>
-                <li className={location.pathname === '/associationadmin/ManageUsers' || location.pathname === '/associationadmin/EditManageUsers' || location.pathname === '/associationadmin/ViewManageUser'? 'nav-item active' : 'nav-item'} key="ManageUsers">
+                <li className={location.pathname === '/associationadmin/ManageUsers' || location.pathname === '/associationadmin/EditManageUsers' || location.pathname === '/associationadmin/ViewManageUser' || location.pathname === '/associationadmin/AssignTagID'? 'nav-item active' : 'nav-item'} key="ManageUsers">
                     <Link className="nav-link" to={{ pathname: "/associationadmin/ManageUsers" }}>
                         <i className="icon-head menu-icon mdi mdi-account-multiple"></i>
                         <span className="menu-title">Manage Users</span>
+                    </Link>
+                </li> 
+                <li className={location.pathname === '/associationadmin/ManageTagID' ? 'nav-item active' : 'nav-item'} key="ManageTagID">
+                    <Link className="nav-link" to={{ pathname: "/associationadmin/ManageTagID" }}>
+                        <i className="icon-head menu-icon mdi mdi-account-multiple"></i>
+                        <span className="menu-title">Manage Tag ID</span>
                     </Link>
                 </li>      
                 <li className={location.pathname === '/associationadmin/Assignuser' ? 'nav-item active' : 'nav-item'} key="Assignuser">
