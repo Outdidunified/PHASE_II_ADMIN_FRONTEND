@@ -195,6 +195,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                         <th>Charger Model</th>
                                                         <th>Charger Type</th>
                                                         <th>Gun Connector</th>
+                                                        <th>Charger Accessibility</th>
                                                         <th>Max Current</th>
                                                         <th>Status</th>
                                                         <th>Active/DeActive</th>
@@ -229,6 +230,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                                         ? '3 phase socket'
                                                                     : '-'}
                                                                 </td>
+                                                                <td>{dataItem.charger_accessibility === 1 ? 'Public' : dataItem.charger_accessibility === 2 ? 'Private' : '-'}</td>
                                                                 <td>{dataItem.max_current ? dataItem.max_current : '-'}</td>
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>

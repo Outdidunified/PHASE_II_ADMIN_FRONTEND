@@ -146,7 +146,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Finance Id</th>
+                                                        <th>Unit Cost</th>
                                                         <th>Client Commission</th>
                                                         <th>Assign Finance</th>
                                                         <th>Session History</th>
