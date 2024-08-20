@@ -31,8 +31,8 @@ const EditFinance = ({ userInfo, handleLogout }) => {
         e.preventDefault();
 
         // Eb Charges validation
-        const ebChargesRegex = /^\d{10}$/;
-        if (!eb_charges || !ebChargesRegex.test(eb_charges)) {
+        const ebChargesRegex = /^\d+$/;
+        if (!ebChargesRegex.test(eb_charges.trim())) {
             setErrorMessage('Eb charges must be a number.');
             return;
         }
@@ -62,7 +62,7 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                goBack();
+                navigate('/clientadmin/ViewFinance');
             } else {
                 const responseData = await response.json();
                 Swal.fire({
