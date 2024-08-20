@@ -12,12 +12,14 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
     const [selectedAssociationId, setSelectedAssociationId] = useState('');
     const [selectedChargers, setSelectedChargers] = useState([]);
     const [commission, setCommission] = useState('0');
+    const [selectedFinanceId, setSelectedFinanceId] = useState('');
+    const [financeOptions, setFinanceOptions] = useState([]);
     const [reloadPage, setReloadPage] = useState(false); // State to trigger page reload
     const [chargersLoading, setChargersLoading] = useState(true); // State to manage loading state
     const [unallocatedChargers, setUnallocatedChargers] = useState([]);
     const [clientsList, setClientsList] = useState([]);
-    const fetchClientsCalled = useRef(false); 
-    const fetchUnallocatedChargersCalled = useRef(false); 
+    const fetchClientsCalled = useRef(false);
+    const fetchUnallocatedChargersCalled = useRef(false);
 
     // fetch associated users
     useEffect(() => {
@@ -60,6 +62,28 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
         }
     }, [userInfo.data.client_id]); // Use userInfo.data.reseller_id as the dependency
 
+    // Fetch finance details
+    useEffect(() => {
+        const fetchFinanceId = async () => {
+            try {
+                const response = await axios.get('/clientadmin/FetchFinanceDetailsForSelection');
+                if (response.data && Array.isArray(response.data.data)) {
+                    const financeIds = response.data.data.map(item => ({
+                        finance_id: item.finance_id,
+                        totalprice: item.totalprice
+                    }));
+                    setFinanceOptions(financeIds);
+                } else {
+                    console.error('Expected an array from API response, received:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching finance details:', error);
+            }
+        };
+
+        fetchFinanceId();
+    }, []);
+
     // select associated changes
     const handleAssociationChange = (e) => {
         const selectedAssociationId = e.target.value;
@@ -80,6 +104,11 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
         // Remove any non-digit characters
         const cleanedValue = value.replace(/[^0-9]/g, '');
         setCommission(cleanedValue);
+    };
+
+    // Handle unit price selection
+    const handleFinanceChange = (e) => {
+        setSelectedFinanceId(e.target.value);
     };
 
     // submit data
@@ -119,6 +148,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                 association_id: parseInt(selectedAssociationId),
                 charger_id: selectedChargers,
                 client_commission: commission,
+                finance_id: selectedFinanceId,
                 modified_by: userInfo.data.email_id,
             });
 
@@ -178,6 +208,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
     const goBack = () => {
         navigate(-1);
     };
+
 
     return (
         <div className='container-scroller'>
@@ -239,6 +270,21 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Commission</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={commission}
+                                                                            onChange={handleCommissionChange}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="row">
+                                                        <div className="col-md-6">
+                                                                <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Select Chargers</label>
                                                                     <div className="col-sm-9">
                                                                         {chargersLoading ? (
@@ -287,21 +333,28 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Commission</label>
+                                                                    <label className="col-sm-3 col-form-label">Select Unit Price</label>
                                                                     <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
+                                                                        <select
                                                                             className="form-control"
-                                                                            value={commission}
-                                                                            onChange={handleCommissionChange}
-                                                                        />
+                                                                            value={selectedFinanceId}
+                                                                            onChange={handleFinanceChange}
+                                                                            style={{ color: 'black' }}
+                                                                        >
+                                                                            <option value="">Select Unit Price</option>
+                                                                            {financeOptions.map((finance) => (
+                                                                                <option key={finance.finance_id} value={finance.finance_id}>
+                                                                                    {`₹${finance.totalprice}`}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Selected Chargers</label>

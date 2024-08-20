@@ -130,48 +130,6 @@ const EditFinance = ({ userInfo, handleLogout }) => {
                                                     <h4 className="card-title">Update Finance Details</h4>
                                                     <form className="form-sample" onSubmit={updateFinanceDetails}>
                                                         <div className="row">
-                                                        <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Finance ID</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            name="finance_id"
-                                                                            value={dataItems.finance_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Association ID</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            name="association_id"
-                                                                            value={dataItems.association_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Client ID</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input
-                                                                            type="text"
-                                                                            className="form-control"
-                                                                            name="client_id"
-                                                                            value={dataItems.client_id}
-                                                                            readOnly
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">EB Charges</label>
