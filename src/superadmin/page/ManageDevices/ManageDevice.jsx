@@ -126,7 +126,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                         <th>Charger ID</th>
                                                         <th>Charger Model</th>
                                                         <th>Charger Type</th>
-                                                        <th>Gun Connector</th>
+                                                        {/* <th>Gun Connector</th> */}
                                                         <th>Max Current</th>
                                                         <th>Status</th>
                                                         <th>Option</th>
@@ -151,7 +151,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                                     <img src={`../../images/dashboard/${dataItem.charger_model ? dataItem.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td>  
                                                                 <td>{dataItem.charger_type ? dataItem.charger_type : '-'}</td>
-                                                                <td>
+                                                                {/* <td>
                                                                     {dataItem.gun_connector === 1
                                                                         ? 'Single phase'
                                                                         : dataItem.gun_connector === 2
@@ -159,7 +159,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                                         : dataItem.gun_connector === 3
                                                                         ? '3 phase socket'
                                                                     : '-'}
-                                                                </td>
+                                                                </td> */}
                                                                 <td>{dataItem.max_current ? dataItem.max_current : '-'}</td>
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>

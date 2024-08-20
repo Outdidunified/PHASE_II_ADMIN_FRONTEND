@@ -109,7 +109,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                     <img src={`../../images/dashboard/${charger.charger_model ? charger.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td> 
                                                                 <td>{charger.charger_type ? charger.charger_type: '-'}</td>
-                                                                <td>
+                                                                {/* <td>
                                                                     {charger.gun_connector === 1
                                                                         ? 'Single phase'
                                                                         : charger.gun_connector === 2
@@ -117,7 +117,8 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                         : charger.gun_connector === 3
                                                                         ? '3 phase socket'
                                                                     : '-'}
-                                                                </td>                                                                <td>{charger.max_current}</td>
+                                                                </td>*/}
+                                                                <td>{charger.max_current}</td> 
                                                                 <td style={{ color: charger.status ? 'green' : 'red' }}>{charger.status ? 'Active' : 'Inactive'}</td>
                                                                 <td>
                                                                     <button type="button" className="btn btn-outline-success btn-icon-text" onClick={() => navigateToViewChargerDetails(charger)} style={{ marginBottom: '10px', marginRight: '10px' }}><i className="mdi mdi-eye btn-icon-prepend"></i>View</button>
