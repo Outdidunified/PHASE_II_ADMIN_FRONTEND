@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Login from '../clientadmin/page/Login';
 import Dashboard from '../clientadmin/page/Dashboard';
@@ -41,15 +41,7 @@ const ClientAdminApp = () => {
   const [userInfo, setUserInfo] = useState(storedUser || {});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (storedUser) {
-      setLoggedIn(true);
-      setUserInfo(storedUser);
-    }else {
-      setLoggedIn(false);
-    }
-  }, [storedUser]);
-
+  // Handle login
   const handleLogin = (data) => {
     const { email, ...rest } = data;
     setUserInfo({ email, ...rest });
@@ -58,6 +50,7 @@ const ClientAdminApp = () => {
     navigate('/clientadmin/Dashboard');
   };
 
+  // Handle logout
   const handleLogout = () => {
     setLoggedIn(false);
     setUserInfo({});
