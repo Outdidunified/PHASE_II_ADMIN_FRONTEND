@@ -154,7 +154,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                         <th>Charger Id</th>
                                                         <th>Charger Model</th>
                                                         <th>Charger Type</th>
-                                                        <th>Gun Connector</th>
+                                                        {/* <th>Gun Connector</th> */}
                                                         <th>Max Current</th>
                                                         <th>Assigned Client</th>
                                                         <th>Status</th>
@@ -172,7 +172,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                                     <img src={`../../images/dashboard/${charger.charger_model ? charger.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td> 
                                                                 <td>{charger.charger_type ? charger.charger_type: '-'}</td>
-                                                                <td>
+                                                                {/* <td>
                                                                     {charger.gun_connector === 1
                                                                         ? 'Single phase'
                                                                         : charger.gun_connector === 2
@@ -180,7 +180,7 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                                                         : charger.gun_connector === 3
                                                                         ? '3 phase socket'
                                                                     : '-'}
-                                                                </td>                                                                
+                                                                </td>*/}
                                                                 <td>{charger.max_current}</td>
                                                                 <td>{charger.client_name}</td>
                                                                 <td style={{ color: charger.status ? 'green' : 'red' }}>{charger.status ? 'Active' : 'DeActive'}</td>

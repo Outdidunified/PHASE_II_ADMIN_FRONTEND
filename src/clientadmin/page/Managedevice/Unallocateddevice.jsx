@@ -99,7 +99,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                         <th>Charger Id</th>
                                                         <th>Charger Model</th>
                                                         <th>Charger Type</th>
-                                                        <th>Gun Connector</th>
+                                                        {/* <th>Gun Connector</th> */}
                                                         <th>Assigned Association</th>
                                                         <th>Status</th>
                                                         <th>Actions</th>
@@ -115,7 +115,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                     <img src={`../../images/dashboard/${charger.charger_model ? charger.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td> 
                                                                 <td>{charger.charger_type ? charger.charger_type : '-'}</td>
-                                                                <td>
+                                                                {/* <td>
                                                                     {charger.gun_connector === 1
                                                                         ? 'Single phase'
                                                                         : charger.gun_connector === 2
@@ -123,7 +123,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                         : charger.gun_connector === 3
                                                                         ? '3 phase socket'
                                                                     : '-'}
-                                                                </td>     
+                                                                </td>      */}
                                                                 <td>{charger.association_name ? charger.association_name : '-'}</td>
                                                                 <td style={{ color: charger.status ? 'green' : 'red' }}>{charger.status ? 'Active' : 'Inactive'}</td>
                                                                 <td>
