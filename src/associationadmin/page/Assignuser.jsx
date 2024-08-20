@@ -81,7 +81,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
         phone_no,
         modified_by: userInfo.data.email_id
       });
-  
+      fetchUsersToUnassign();
       // Check if the response status is 200 (OK)
       if (response.status === 200) {
         Swal.fire({
@@ -92,8 +92,8 @@ const Assignuser = ({ userInfo, handleLogout }) => {
         });
         setAssEmail('');
         setAssPhone('');
-        fetchUsersToUnassign();
       } else {
+        alert();
         Swal.fire({
           title: 'Error!',
           text: 'Unexpected response: ' + response.status,
@@ -103,13 +103,21 @@ const Assignuser = ({ userInfo, handleLogout }) => {
       }
   
     } catch (error) {
-      console.error(error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'There was a problem assign the users: ' + error.message,
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+      if(error.response.status === 404){
+        Swal.fire({
+          title: 'Error!',
+          text: error.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }else{
+        Swal.fire({
+          title: 'Error!',
+          text: 'There was a problem assign the users: ' + error.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
     }
   };  
 

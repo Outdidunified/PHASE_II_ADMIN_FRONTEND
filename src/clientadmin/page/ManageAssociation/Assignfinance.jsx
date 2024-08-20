@@ -28,7 +28,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
             if (response.data && Array.isArray(response.data.data)) {
                 const financeIds = response.data.data.map(item => ({
                     finance_id: item.finance_id,
-                    // Add other properties as needed
+                    totalprice: item.totalprice
                 }));
                 setFinanceOptions(financeIds);
                 // For demo purposes, setting the first finance ID as default
@@ -58,7 +58,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
             const response = await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
 
             // Check the response data or status
-            if (response.status === 200 && response.data.success) {
+            if (response.status === 200) {
                 // Show success alert using SweetAlert
                 Swal.fire({
                     icon: 'success',
@@ -153,16 +153,17 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">Finance ID</label>
                                                                     <div className="col-sm-9">
-                                                                        <select
-                                                                            className="form-control"
-                                                                            value={selectedFinanceId}
-                                                                            onChange={(e) => setSelectedFinanceId(e.target.value)}
-                                                                            required
-                                                                        >
-                                                                            {financeOptions.map((financeItem, index) => (
-                                                                                <option key={index} value={financeItem.finance_id}>{financeItem.finance_id}</option>
-                                                                            ))}
-                                                                        </select>
+                                                                    <select
+                                                                        className="form-control"
+                                                                        value={selectedFinanceId}
+                                                                        onChange={(e) => setSelectedFinanceId(e.target.value)}
+                                                                        required
+                                                                    >
+                                                                        <option value="" selected disabled>Select finance</option>
+                                                                        {financeOptions.map((financeItem, index) => (
+                                                                            <option key={index} value={financeItem.finance_id}>{financeItem.totalprice}</option>
+                                                                        ))}
+                                                                    </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
