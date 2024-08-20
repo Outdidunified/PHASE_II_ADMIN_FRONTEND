@@ -129,8 +129,8 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Total Amount</th>
-                                                        <th>App Charges</th>
                                                         <th>EB Charges</th>
+                                                        <th>App Charges</th>
                                                         <th>Open A EB Charges</th>
                                                         <th>Parking Charges</th>
                                                         <th>Rent Charges</th>
@@ -145,11 +145,11 @@ const Managefinance = ({ userInfo, handleLogout }) => {
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{finance.totalprice ? finance.totalprice : '-'}</td>
-                                                                <td>{finance.app_charges ? finance.app_charges : '-'}</td>
                                                                 <td>{finance.eb_charges  ? finance.eb_charges : '-'}</td>
-                                                                <td>{finance.open_a_eb_charges ?  finance.open_a_eb_charges : '-'}</td>
-                                                                <td>{finance.parking_charges ? finance.parking_charges : '-'}</td>
-                                                                <td>{finance.rent_charges ? finance.rent_charges : '-'}</td>
+                                                                <td>{finance.app_charges ? finance.app_charges +' %' : '-'}</td>
+                                                                <td>{finance.open_a_eb_charges ?  finance.open_a_eb_charges +' %' : '-'}</td>
+                                                                <td>{finance.parking_charges ? finance.parking_charges +' %' : '-'}</td>
+                                                                <td>{finance.rent_charges ? finance.rent_charges +' %' : '-'}</td>
                                                                 <td style={{ color: finance.status ? 'green' : 'red' }}>
                                                                     {finance.status ? 'Active' : 'DeActive'}
                                                                 </td>
