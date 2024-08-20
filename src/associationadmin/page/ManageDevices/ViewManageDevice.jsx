@@ -185,7 +185,7 @@ const ViewManageDevice = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Type: <span style={{fontWeight:'normal'}}>{deviceData.type === 1 ? '1 Socket ' : deviceData.type === 2 ? '2 Sockets' : deviceData.socket_count === 3 ? '3 Sockets' : deviceData.socket_count === 4 ? '4 Sockets' : '-'}</span></div>
+                                                                <div className="col-sm-12">Type: <span style={{fontWeight:'normal'}}>{deviceData.type ?  deviceData.type : '-'}</span></div>
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4">
@@ -229,11 +229,11 @@ const ViewManageDevice = ({ userInfo, handleLogout }) => {
                                                         </div>
                                                     </div>
                                                     <div className="row col-12 col-xl-12">
-                                                        <div className="col-md-4">
+                                                        {/* <div className="col-md-4">
                                                             <div className="form-group row">
-                                                                <div className="col-sm-12">Assigned User: <span style={{fontWeight: 'normal'}}>{deviceData.assigned_user ? deviceData.assigned_user : '-'}</span></div>
+                                                                <div className="col-sm-12">Reseller Commission: <span style={{fontWeight: 'normal'}}>{deviceData.client_commission ? deviceData.client_commission : '-'}</span></div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Wifi Username: <span style={{fontWeight: 'normal'}}>{deviceData.wifi_username ? deviceData.wifi_username : '-'}</span></div>
@@ -244,13 +244,14 @@ const ViewManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Wifi Password: <span style={{fontWeight: 'normal'}}>{deviceData.wifi_password ? deviceData.wifi_password : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Created By: <span style={{fontWeight: 'normal'}}>{deviceData.created_by ? deviceData.created_by : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Created Date: <span style={{fontWeight: 'normal'}}>{deviceData.created_date ? formatTimestamp(deviceData.created_date) : '-'}</span></div>
@@ -261,13 +262,14 @@ const ViewManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Modified By: <span style={{fontWeight: 'normal'}}>{deviceData.modified_by ? deviceData.modified_by : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified Date: <span style={{fontWeight: 'normal'}}>{deviceData.modified_date ? formatTimestamp(deviceData.modified_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                        
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Status: <span style={{fontWeight: 'normal'}}>{deviceData.status ?  <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</span></div>
