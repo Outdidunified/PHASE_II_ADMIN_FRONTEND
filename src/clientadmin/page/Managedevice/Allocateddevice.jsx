@@ -101,9 +101,9 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
 
 
     // View assign client page
-    const handleAssignAssociation = () => {
-        navigate('/clientadmin/AssigntoAssociation');
-    };
+    // const handleAssignAssociation = () => {
+    //     navigate('/clientadmin/AssigntoAssociation');
+    // };
 
     return (
         <div className='container-scroller'>
@@ -120,11 +120,11 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
                                         <h3 className="font-weight-bold">Manage Devices - Allocated</h3>
                                     </div>
-                                    <div className="col-12 col-xl-4">
+                                    {/* <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
                                             <button type="button" className="btn btn-warning" onClick={handleAssignAssociation} style={{marginBottom:'10px', marginRight:'10px'}}>Assign to Association</button>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

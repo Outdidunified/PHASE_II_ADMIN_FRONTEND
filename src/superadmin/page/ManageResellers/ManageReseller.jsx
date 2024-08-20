@@ -167,7 +167,7 @@ const ManageReseller = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                         <tr>
-                                                            <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                            <td colSpan="8" style={{ marginTop: '50px', textAlign: 'center' }}>No Manage Reseller found</td>
                                                         </tr>
                                                         )
                                                     )}

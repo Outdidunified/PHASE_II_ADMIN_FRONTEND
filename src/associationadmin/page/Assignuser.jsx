@@ -252,7 +252,7 @@ const Assignuser = ({ userInfo, handleLogout }) => {
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="7" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                <td colSpan="7" style={{ marginTop: '50px', textAlign: 'center' }}>No Assign user's found</td>
                               </tr>
                             )
                           )}

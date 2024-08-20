@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Login from '../reselleradmin/page/Login';
 import Dashboard from '../reselleradmin/page/Dashboard';
@@ -38,15 +38,7 @@ const ResellerAdminApp = () => {
   const [userInfo, setUserInfo] = useState(storedUser || {});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (storedUser) {
-      setLoggedIn(true);
-      setUserInfo(storedUser);
-    }else {
-      setLoggedIn(false);
-    }
-  }, [storedUser]);
-
+  // Handle login
   const handleLogin = (data) => {
     const { email, ...rest } = data;
     setUserInfo({ email, ...rest });
@@ -55,6 +47,7 @@ const ResellerAdminApp = () => {
     navigate('/reselleradmin/Dashboard');
   };
 
+  // Handle logout
   const handleLogout = () => {
     setLoggedIn(false);
     setUserInfo({});

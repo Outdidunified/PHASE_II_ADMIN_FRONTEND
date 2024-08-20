@@ -206,7 +206,7 @@ const AssigntoAssociation = ({ userInfo, handleLogout }) => {
     }, [reloadPage]);
 
     const goBack = () => {
-        navigate(-1);
+        navigate('/clientadmin/Allocateddevice');
     };
 
 

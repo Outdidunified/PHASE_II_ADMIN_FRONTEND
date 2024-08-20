@@ -227,7 +227,7 @@ const AssignTagID = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                         <tr>
-                                                            <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found</td>
+                                                            <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No Tag ID found</td>
                                                         </tr>
                                                         )
                                                     )}
