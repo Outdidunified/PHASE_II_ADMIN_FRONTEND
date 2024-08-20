@@ -26,10 +26,10 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
         navigate('/reselleradmin/ViewAlloc', { state: { charger } });
     }, [navigate]);
 
-    // View assign client page
-    const handleAssignAssigntoclients = () => {
-        navigate('/reselleradmin/Assigntoclients');
-    };
+    // // View assign client page
+    // const handleAssignAssigntoclients = () => {
+    //     navigate('/reselleradmin/Assigntoclients');
+    // };
 
     // Active and deactive charger
     const deactivateCharger = async (chargerId, status) => {
@@ -119,11 +119,11 @@ const Allocateddevice = ({ userInfo, handleLogout }) => {
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
                                         <h3 className="font-weight-bold">Manage Devices - Allocated</h3>
                                     </div>
-                                    <div className="col-12 col-xl-4">
+                                    {/* <div className="col-12 col-xl-4">
                                         <div className="justify-content-end d-flex">
                                             <button type="button" className="btn btn-warning" onClick={handleAssignAssigntoclients} style={{marginBottom:'10px', marginRight:'10px'}}>Assign to clients</button>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

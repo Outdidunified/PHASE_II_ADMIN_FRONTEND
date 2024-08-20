@@ -27,7 +27,7 @@ const Sidebar = () => {
                 </li> 
                 <li className={location.pathname === '/associationadmin/ManageTagID' ? 'nav-item active' : 'nav-item'} key="ManageTagID">
                     <Link className="nav-link" to={{ pathname: "/associationadmin/ManageTagID" }}>
-                        <i className="icon-head menu-icon mdi mdi-account-multiple"></i>
+                        <i className="icon-head menu-icon mdi mdi-tag"></i>
                         <span className="menu-title">Manage Tag ID</span>
                     </Link>
                 </li>      

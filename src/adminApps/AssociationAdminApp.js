@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Login from '../associationadmin/page/Login';
 import Dashboard from '../associationadmin/page/Dashboard';
@@ -21,15 +21,7 @@ const AssociationAdminApp = () => {
   const [userInfo, setUserInfo] = useState(storedUser || {});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (storedUser) {
-      setLoggedIn(true);
-      setUserInfo(storedUser);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [storedUser]);
-
+  // Handle login
   const handleLogin = (data) => {
     setUserInfo(data);
     setLoggedIn(true);
@@ -37,6 +29,7 @@ const AssociationAdminApp = () => {
     navigate('/associationadmin/Dashboard');
   };
 
+  // Handle logout
   const handleLogout = () => {
     setLoggedIn(false);
     setUserInfo({});

@@ -34,10 +34,10 @@ const Dashboard = ({ userInfo, handleLogout }) => {
     }, []);
 
     // Faulty data onclick show box data
-    const [isBoxVisible, setIsBoxVisible] = useState(false);
-    const toggleBoxVisibility = () => {
-      setIsBoxVisible(!isBoxVisible);
-    };
+    // const [isBoxVisible, setIsBoxVisible] = useState(false);
+    // const toggleBoxVisibility = () => {
+    //   setIsBoxVisible(!isBoxVisible);
+    // };
     
     // Search data 
     const handleSearchInputChange = (e) => {
@@ -65,7 +65,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
     // Online, Offline and Faulty charger lengths 
     const onlineChargers = data.filter((post) => post.status === true || post.status === 'true');
     const offlineChargers = data.filter((post) => post.status === false || post.status === 'false');
-    const faultyChargers = data.filter((post) => post.status === 'Faulted');
+    // const faultyChargers = data.filter((post) => post.status === 'Faulted');
 
     // Total chargers count
     const totalChargers = data.length;
@@ -73,7 +73,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
     const totalPercentage = (data.length / totalChargers) * 10;
     const onlinePercentage = (onlineChargers.length / totalChargers) * 10;
     const offlinePercentage = (offlineChargers.length / totalChargers) * 10;
-    const faultyPercentage = (faultyChargers.length / totalChargers) * 10;
+    // const faultyPercentage = (faultyChargers.length / totalChargers) * 10;
     
    // Chart data 
    useEffect(() => {
@@ -244,7 +244,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                                     </td>
                                                                                     <td><h5 className="font-weight-bold mb-0">{offlineChargers.length}</h5></td>
                                                                                 </tr>
-                                                                                <tr onClick={toggleBoxVisibility} className="custom-hover">
+                                                                                {/* <tr onClick={toggleBoxVisibility} className="custom-hover">
                                                                                     <td className="text-muted"><h5>Faulty</h5>Not live</td>
                                                                                     <td className="w-100 px-0">
                                                                                         <div className="progress progress-md mx-4">
@@ -252,7 +252,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                                         </div>
                                                                                     </td>
                                                                                     <td><h5 className="font-weight-bold mb-0">{faultyChargers.length}</h5></td>
-                                                                                </tr>
+                                                                                </tr> */}
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
@@ -352,7 +352,6 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                         <th>Charger ID</th>
                                                         <th>Charger Model</th>
                                                         <th>Charger Type</th>
-                                                        <th>Gun Connector</th>
                                                         <th>Max Current</th>
                                                         <th>Status</th>
                                                     </tr>
@@ -392,15 +391,6 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                                         <span>-</span> 
                                                                     )}
                                                                 </td>
-                                                                <td>
-                                                                    {dataItem.gun_connector === 1
-                                                                        ? 'Single phase'
-                                                                        : dataItem.gun_connector === 2
-                                                                        ? 'CSS Type 2'
-                                                                        : dataItem.gun_connector === 3
-                                                                        ? '3 phase socket'
-                                                                    : '-'}
-                                                                </td>
                                                                 <td>{dataItem.max_current ? (
                                                                     <span>{dataItem.max_current}</span>
                                                                     ) : (
@@ -419,7 +409,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                                         ))
                                                         ) : (
                                                         <tr>
-                                                            <td colSpan="9" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found.</td>
+                                                            <td colSpan="6" style={{ marginTop: '50px', textAlign: 'center' }}>No devices found.</td>
                                                         </tr>
                                                         )
                                                     )}
