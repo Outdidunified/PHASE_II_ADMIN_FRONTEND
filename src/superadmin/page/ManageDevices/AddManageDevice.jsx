@@ -10,13 +10,10 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
     const navigate = useNavigate();
 
     const [charger_id, setChargerID] = useState('');
-    const [tag_id, setTagID] = useState('');
-    const [model, setModel] = useState('');
+    const [charger_model, setModel] = useState('');
     const [vendor, setVendor] = useState('');
-    const [gunConnector, setGunConnector] = useState('');
     const [maxCurrent, setMaxCurrent] = useState('');
     const [maxPower, setMaxPower] = useState('');
-    const [socketCount, setSocketCount] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectChargerType, setSelectedChargerType] = useState('');
     const [data, setData] = useState([]);
@@ -44,12 +41,10 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
     const handleClone = (cloneModel) => {
         const selectedModelData = data.find(item => item.model === cloneModel);
         if (selectedModelData) {
-            setModel(selectedModelData.model);
+            setModel(selectedModelData.charger_model);
             setVendor(selectedModelData.vendor);
-            setGunConnector(selectedModelData.gun_connector);
             setMaxCurrent(selectedModelData.max_current);
             setMaxPower(selectedModelData.max_power);
-            setSocketCount(selectedModelData.socket_count);
             setSelectedChargerType(selectedModelData.type);
         }
     };
@@ -62,16 +57,6 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
     // Select model 
     const handleModel = (e) => {
         setModel(e.target.value);
-    };
-
-    // Select socket
-    const handleSocket = (e) => {
-        setSocketCount(e.target.value);
-    };
-
-    // Select Gunconnector
-    const handleGunconnector = (e) => {
-        setGunConnector(e.target.value);
     };
 
     // Select charger type
@@ -94,17 +79,6 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
             return;
         }
 
-        // Validate tagid
-        const tagIDRegex = /^[a-zA-Z0-9]{1,12}$/;
-        if (!tag_id) {
-            setErrorMessage("Tag ID can't be empty.");
-            return;
-        }
-        if (!tagIDRegex.test(tag_id)) {
-            setErrorMessage('Oops! Tag ID must be a maximum of 12 characters.');
-            return;
-        }
-
         // Validate vendor
         const vendorRegex = /^[a-zA-Z0-9 ]{1,20}$/;
         if (!vendor) {
@@ -119,15 +93,13 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
         try {
             const max_current = parseInt(maxCurrent);
             const max_power = parseInt(maxPower);
-            const gun_connector = parseInt(gunConnector);
-            const socket_count = parseInt(socketCount);
 
             const response = await fetch('/superadmin/CreateCharger', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ charger_id, tag_id, model, type: selectChargerType, vendor, gun_connector, max_current, max_power, socket_count, created_by: userInfo.data.email_id }),
+                body: JSON.stringify({ charger_id, charger_model, charger_type: selectChargerType, vendor, max_current, max_power, created_by: userInfo.data.email_id }),
             });
 
             if (response.ok) {
@@ -136,14 +108,11 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                     icon: "success"
                 });
                 setChargerID('');
-                setTagID('');
                 setModel('');
                 setSelectedChargerType('');
                 setVendor('');
-                setGunConnector('');
                 setMaxCurrent('');
                 setMaxPower('');
-                setSocketCount('');
                 backManageDevice();
             } else {
                 const responseData = await response.json();
@@ -231,9 +200,9 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Tag ID</label>
+                                                                    <label className="col-sm-3 col-form-label">Vendor</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Tag ID" value={tag_id} maxLength={12} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, ''); setTagID(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" placeholder="Vendor" value={vendor} min={1} maxLength={20} onChange={(e) => {const value = e.target.value; let sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setVendor(sanitizedValue); }} required/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -241,9 +210,9 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                         <div className="row">
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Model</label>
+                                                                    <label className="col-sm-3 col-form-label">Charger Model</label>
                                                                     <div className="col-sm-9">
-                                                                        <select className="form-control" value={model} onChange={handleModel} required>
+                                                                        <select className="form-control" value={charger_model} onChange={handleModel} required>
                                                                             <option value="">Select model</option>
                                                                             <option value="3.5">3.5 KW</option>
                                                                             <option value="7.4">7.4 KW</option>
@@ -262,29 +231,6 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                             <option value="AC">AC</option>
                                                                             <option value="DC">DC</option>
                                                                         </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Vendor</label>
-                                                                    <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" placeholder="Vendor" value={vendor} min={1} maxLength={20} onChange={(e) => {const value = e.target.value; let sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setVendor(sanitizedValue); }} required/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Gun Connector</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select className="form-control" value={gunConnector} onChange={handleGunconnector} required>
-                                                                            <option value="">Select Gun connector</option>
-                                                                            <option value="3">3 phase socket </option>
-                                                                            <option value="2">CSS Type 2</option>
-                                                                            <option value="1">Single phase socket</option>
-                                                                        </select>                                                                     
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -341,22 +287,6 @@ const AddManageDevice = ({ userInfo, handleLogout }) => {
                                                                         }} 
                                                                          required/> 
                                                                          {errorMessagePower && <div className="text-danger">{errorMessagePower}</div>}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="row">
-                                                            <div className="col-md-6">
-                                                                <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Socket Count</label>
-                                                                    <div className="col-sm-9">
-                                                                        <select className="form-control" value={socketCount} onChange={handleSocket} required>
-                                                                            <option value="">Select socket</option>
-                                                                            <option value="1">1 Socket</option>
-                                                                            <option value="2">2 Sockets</option>
-                                                                            <option value="3">3 Sockets</option>
-                                                                            <option value="4">4 Sockets</option>
-                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>

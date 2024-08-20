@@ -233,8 +233,8 @@ const Assigneddevicesclient = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Reseller Commission</th>
-                                                        <th>Actions</th>
+                                                        <th>Assigned Reseller Commission %</th>
+                                                        <th>Commission %</th>
                                                         <th>Session History</th>
                                                     </tr>
                                                 </thead>

@@ -12,28 +12,34 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
     const [chargerId, setChargerId] = useState('');
     const [financeOptions, setFinanceOptions] = useState([]);
     const [selectedFinanceId, setSelectedFinanceId] = useState('');
-   
+    // const [totalPrice, setTotalPrice] = useState('');
+
     useEffect(() => {
-        const { charger_id } = location.state || {};
+        const { charger_id, finance_id } = location.state || {};
         if (charger_id) {
             setChargerId(charger_id);
         }
-        fetchFinanceId();
+        fetchFinanceId(finance_id);
     }, [location]);
 
-    // fetch finance details for selected
-    const fetchFinanceId = async () => {
+    // Fetch finance details
+    const fetchFinanceId = async (finance_id) => {
         try {
             const response = await axios.get('/clientadmin/FetchFinanceDetailsForSelection');
             if (response.data && Array.isArray(response.data.data)) {
                 const financeIds = response.data.data.map(item => ({
                     finance_id: item.finance_id,
-                    // Add other properties as needed
+                    totalprice: item.totalprice
                 }));
                 setFinanceOptions(financeIds);
-                // For demo purposes, setting the first finance ID as default
-                if (financeIds.length > 0) {
-                    setSelectedFinanceId(financeIds[0].finance_id); // Ensure to set the correct value here
+
+                // If finance_id is provided, select the corresponding total price
+                if (finance_id) {
+                    const selectedFinance = financeIds.find(item => item.finance_id === finance_id);
+                    if (selectedFinance) {
+                        setSelectedFinanceId(selectedFinance.finance_id);
+                        // setTotalPrice(selectedFinance.totalprice);
+                    }
                 }
             } else {
                 console.error('Expected an array from API response, received:', response.data);
@@ -43,7 +49,18 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
-    // submit data
+    // Handle selection change
+    const handleFinanceChange = (e) => {
+        const selectedId = e.target.value;
+        setSelectedFinanceId(selectedId);
+
+        const selectedFinance = financeOptions.find(item => item.finance_id === selectedId);
+        if (selectedFinance) {
+            // setTotalPrice(selectedFinance.totalprice);
+        }
+    };
+
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -52,36 +69,28 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                 charger_id: chargerId,
                 finance_id: parseInt(selectedFinanceId),
                 modified_by: userInfo.data.email_id,
-                // Add other fields as needed for submission
             };
-            // await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
+
             const response = await axios.post('/clientadmin/AssignFinanceToCharger', formattedData);
 
-            // Check the response data or status
-            if (response.status === 200 && response.data.success) {
-                // Show success alert using SweetAlert
+            if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
                     text: 'Finance has been assigned successfully.',
                     confirmButtonText: 'OK',
-                }).then((result) => {
-                    // Redirect to previous page or handle navigation as needed
-                    navigate(-1); // Navigate back one step
+                }).then(() => {
+                    navigate(-1);
                 });
             } else {
-                // Handle unexpected response or non-success status
-                const responseData = await response.json();
                 Swal.fire({
                     icon: 'warning',
                     title: 'Unexpected Response!',
-                    text: 'Please check the details and try again,' + responseData.message,
+                    text: 'Please check the details and try again.',
                     confirmButtonText: 'OK',
                 });
             }
         } catch (error) {
-            console.error('Error assigning finance details:', error);
-            // Handle error state or show error message
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
@@ -91,21 +100,19 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
         }
     };
 
-    // back page
+    // Handle navigation back
     const goBack = () => {
         navigate(-1);
     };
 
     return (
         <div className='container-scroller'>
-            {/* Header */}
             <Header userInfo={userInfo} handleLogout={handleLogout} />
             <div className="container-fluid page-body-wrapper">
-                {/* Sidebar */}
                 <Sidebar />
                 <div className="main-panel">
                     <div className="content-wrapper">
-                    <div className="row">
+                        <div className="row">
                             <div className="col-md-12 grid-margin">
                                 <div className="row">
                                     <div className="col-12 col-xl-8 mb-4 mb-xl-0">
@@ -119,7 +126,7 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                                                 onClick={goBack}
                                                 style={{ marginRight: '10px' }}
                                             >
-                                               Back
+                                                Back
                                             </button>
                                         </div>
                                     </div>
@@ -151,16 +158,17 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="form-group row">
-                                                                    <label className="col-sm-3 col-form-label">Finance ID</label>
+                                                                    <label className="col-sm-3 col-form-label">Unit Price</label>
                                                                     <div className="col-sm-9">
                                                                         <select
                                                                             className="form-control"
                                                                             value={selectedFinanceId}
-                                                                            onChange={(e) => setSelectedFinanceId(e.target.value)}
+                                                                            onChange={handleFinanceChange}
                                                                             required
                                                                         >
+                                                                            <option value="" disabled>Select Unit Price</option>
                                                                             {financeOptions.map((financeItem, index) => (
-                                                                                <option key={index} value={financeItem.finance_id}>{financeItem.finance_id}</option>
+                                                                                <option key={index} value={financeItem.finance_id}>{`₹${financeItem.totalprice}`}</option>
                                                                             ))}
                                                                         </select>
                                                                     </div>
@@ -179,7 +187,6 @@ const Assignfinance = ({ userInfo, handleLogout }) => {
                             </div>
                         </div>
                     </div>
-                    {/* Footer */}
                     <Footer />
                 </div>
             </div>

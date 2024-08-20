@@ -14,6 +14,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
     const [client_name, setClientName] = useState(dataItems?.client_name || '');
     const [client_phone_no, setClientPhoneNo] = useState(dataItems?.client_phone_no || '');
     const [client_address, setClientAddress] = useState(dataItems?.client_address || '');
+    const [client_wallet, setClientWallet] = useState(dataItems?.client_wallet || '0');
     const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -21,6 +22,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
     const [initialValues, setInitialValues] = useState({
         client_name: dataItems?.client_name || '',
         client_phone_no: dataItems?.client_phone_no || '',
+        client_wallet: dataItems?.client_wallet || '',
         client_address: dataItems?.client_address || '',
         status: dataItems?.status ? 'true' : 'false',
     });
@@ -29,6 +31,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
     const isModified = (
         client_name !== initialValues.client_name ||
         client_phone_no !== initialValues.client_phone_no ||
+        client_wallet !== initialValues.client_wallet ||
         client_address !== initialValues.client_address ||
         status !== initialValues.status
     );
@@ -53,6 +56,7 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
             const formattedUserData = {
                 client_id: dataItems?.client_id,
                 client_name: client_name,
+                client_wallet,
                 client_phone_no: parseInt(client_phone_no),
                 client_address: client_address,
                 modified_by: userInfo.data.email_id,
@@ -188,6 +192,21 @@ const UpdateClient = ({ userInfo, handleLogout }) => {
                                                                             value={dataItems.client_email_id}
                                                                             readOnly
                                                                         />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Wallet</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={client_wallet}
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const sanitizedValue = value.replace(/[^0-9]/g, '');
+                                                                                setClientWallet(sanitizedValue);}} required  />
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -13,6 +13,7 @@ const Editass = ({ userInfo, handleLogout }) => {
     localStorage.setItem('editDeviceData', JSON.stringify(dataItems));
     const [association_name, setAssociationName] = useState(dataItems?.association_name || '');
     const [association_phone_no, setAssociationPhoneNo] = useState(dataItems?.association_phone_no || '');
+    const [association_wallet, setAssociationWallet] = useState(dataItems?.association_wallet || '0');
     const [association_address, setAssociationAddress] = useState(dataItems?.association_address || '');
     const [status, setStatus] = useState(dataItems?.status ? 'true' : 'false');
     const [errorMessage, setErrorMessage] = useState('');
@@ -21,6 +22,7 @@ const Editass = ({ userInfo, handleLogout }) => {
     const [initialValues, setInitialValues] = useState({
         association_name: dataItems?.association_name || '',
         association_phone_no: dataItems?.association_phone_no || '',
+        association_wallet: dataItems?.association_wallet || '',
         association_address: dataItems?.association_address || '',
         status: dataItems?.status ? 'true' : 'false'
     });
@@ -29,6 +31,7 @@ const Editass = ({ userInfo, handleLogout }) => {
     const isModified = (
         association_name !== initialValues.association_name ||
         association_phone_no !== initialValues.association_phone_no ||
+        association_wallet !== initialValues.association_wallet ||
         association_address !== initialValues.association_address ||
         status !== initialValues.status
     );
@@ -51,6 +54,7 @@ const Editass = ({ userInfo, handleLogout }) => {
             const formattedAssData = {
                 association_address: association_address,
                 association_email_id: dataItems.association_email_id,
+                association_wallet: dataItems.association_wallet,
                 association_id: dataItems.association_id,
                 association_name: association_name,
                 association_phone_no: parseInt(association_phone_no),
@@ -210,6 +214,21 @@ const Editass = ({ userInfo, handleLogout }) => {
                                                                             value={dataItems.association_email_id}
                                                                             readOnly
                                                                         />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="form-group row">
+                                                                    <label className="col-sm-3 col-form-label">Association  Wallet</label>
+                                                                    <div className="col-sm-9">
+                                                                        <input
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                            value={association_wallet}
+                                                                            onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            const sanitizedValue = value.replace(/[^0-9]/g, '');
+                                                                            setAssociationWallet(sanitizedValue);}} required  />
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -79,8 +79,8 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
     };
 
     // view assign finance page
-    const navtoassignfinance = (charger_id) => {
-        navigate('/clientadmin/assignfinance', { state: { charger_id } }); // Navigate to assignfinance page with charger_id
+    const navtoassignfinance = (charger_id, finance_id) => {
+        navigate('/clientadmin/assignfinance', { state: { charger_id, finance_id} }); // Navigate to assignfinance page with charger_id
     };
 
     return (
@@ -146,7 +146,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Finance Id</th>
+                                                        <th>Unit Cost</th>
                                                         <th>Client Commission</th>
                                                         <th>Assign Finance</th>
                                                         <th>Session History</th>
@@ -158,10 +158,18 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                             <tr key={index} style={{ textAlign: 'center' }}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{item.charger_id ? item.charger_id : '-'}</td>
-                                                                <td>{item.finance_id ? item.finance_id : <span style={{ color: 'red' }}>Not yet Assigned</span>}</td>
+                                                                <td>{item.total_price ? '₹'+item.total_price : '-'}</td>
                                                                 <td>{item.client_commission ? `${item.client_commission}%` : '-'}</td>
                                                                 <td>
                                                                     <button
+                                                                        type="button"
+                                                                        className='btn btn-outline-primary btn-icon-text'
+                                                                        onClick={() => navtoassignfinance(item.charger_id,item.finance_id )}
+                                                                        style={{ marginBottom: '10px', marginRight: '10px' }}
+                                                                    >
+                                                                        <i className="mdi mdi-pencil btn-icon-prepend"></i>Edit
+                                                                    </button>
+                                                                    {/* <button
                                                                         type="button"
                                                                         className={`btn btn-outline-warning btn-icon-text ${item.finance_id ? 'disabled' : ''}`}
                                                                         // className='btn btn-outline-warning btn-icon-text'
@@ -170,7 +178,7 @@ const Assigneddevass = ({ userInfo, handleLogout }) => {
                                                                         disabled={item.finance_id}
                                                                     >
                                                                         <i className="mdi mdi-check btn-icon-prepend"></i>Assign
-                                                                    </button>
+                                                                    </button> */}
                                                                 </td>
                                                                 <td>
                                                                     <button

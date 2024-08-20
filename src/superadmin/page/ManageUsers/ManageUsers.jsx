@@ -311,7 +311,7 @@ const ManageUsers = ({ userInfo, handleLogout }) => {
                                                                     </select>                                                               
                                                                 </div>
 
-                                                                {role.role_name === 'reselleradmin' && (
+                                                                {role.role_id === '2' && (
                                                                 <div className="input-group" style={{paddingRight:'1px'}}>
                                                                     <div className="input-group-prepend">
                                                                         <span className="input-group-text" style={{color:'black', width:'125px'}}>Reseller Name</span>

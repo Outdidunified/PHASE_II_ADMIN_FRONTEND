@@ -158,7 +158,7 @@ const EditManageUsers = ({ userInfo, handleLogout }) => {
                                                                 <div className="form-group row">
                                                                     <label className="col-sm-3 col-form-label">User Name</label>
                                                                     <div className="col-sm-9">
-                                                                        <input type="text" className="form-control" value={username} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUsername(sanitizedValue);}} required/>
+                                                                        <input type="text" className="form-control" value={username} maxLength={25} onChange={(e) => {const value = e.target.value; const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, ''); setUsername(sanitizedValue);}} readOnly required/>
                                                                     </div>
                                                                 </div>
                                                             </div>

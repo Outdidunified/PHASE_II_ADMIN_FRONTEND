@@ -192,9 +192,10 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger ID</th>
-                                                        <th>Model</th>
+                                                        <th>Charger Model</th>
                                                         <th>Charger Type</th>
                                                         <th>Gun Connector</th>
+                                                        <th>Charger Accessibility</th>
                                                         <th>Max Current</th>
                                                         <th>Status</th>
                                                         <th>Active/DeActive</th>
@@ -217,9 +218,9 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                                 <td>{index + 1}</td>
                                                                 <td>{dataItem.charger_id ? dataItem.charger_id : '-'}</td>
                                                                 <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${dataItem.model ? dataItem.model : '-'}kw.png`} alt="img" />
+                                                                    <img src={`../../images/dashboard/${dataItem.charger_model ? dataItem.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td>
-                                                                <td>{dataItem.type ?  dataItem.type : '-'}</td>
+                                                                <td>{dataItem.charger_type ?  dataItem.charger_type : '-'}</td>
                                                                 <td>
                                                                     {dataItem.gun_connector === 1
                                                                         ? 'Single phase'
@@ -229,6 +230,7 @@ const ManageDevice = ({ userInfo, handleLogout }) => {
                                                                         ? '3 phase socket'
                                                                     : '-'}
                                                                 </td>
+                                                                <td>{dataItem.charger_accessibility === 1 ? 'Public' : dataItem.charger_accessibility === 2 ? 'Private' : '-'}</td>
                                                                 <td>{dataItem.max_current ? dataItem.max_current : '-'}</td>
                                                                 <td>{dataItem.status===true ? <span className="text-success">Active</span> : <span className="text-danger">DeActive</span>}</td>
                                                                 <td>

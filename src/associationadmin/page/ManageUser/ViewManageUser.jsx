@@ -11,7 +11,7 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
     const [newUser, setNewUser] = useState({
         username: '', email_id: '', password: '', phone_no: '', wallet_bal: '', role_id: '', user_id: '', status: '',
         client_id: '', reseller_id: '', association_id:'', created_by:'', created_date:'', modified_by:'', modified_date:'', 
-        role_name: '', client_name: '', reseller_name: '', association_name: '', _id: '',
+        role_name: '', client_name: '', reseller_name: '', association_name: '', _id: '', tag_id: '',
     });
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
                 reseller_id: dataItem.reseller_id || '', association_id: dataItem.association_id || '', created_by: dataItem.created_by || '',
                 created_date: dataItem.created_date || '', modified_by: dataItem.modified_by || '', modified_date: dataItem.modified_date || '',
                 role_name: dataItem.role_name || '', client_name: dataItem.client_name || '', reseller_name: dataItem.reseller_name || '',
-                association_name: dataItem.association_name || '', _id: dataItem._id || '',
+                association_name: dataItem.association_name || '', _id: dataItem._id || '', tag_id: dataItem.tag_id || '',
             });
         // Save to localStorage
         localStorage.setItem('userData', JSON.stringify(dataItem));
@@ -157,6 +157,11 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
                                                     <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
+                                                                <div className="col-sm-12">Tag ID: <span style={{fontWeight:'normal'}}>{newUser.tag_id ? newUser.tag_id :'-'}</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group row">
                                                                 <div className="col-sm-12">Created By: <span style={{fontWeight:'normal'}}>{newUser.created_by ? newUser.created_by : '-'}</span></div> 
                                                             </div>
                                                         </div>
@@ -165,13 +170,13 @@ const ViewManageUser = ({ userInfo, handleLogout }) => {
                                                                 <div className="col-sm-12">Created Date: <span style={{fontWeight:'normal'}}>{newUser.created_date ? formatTimestamp(newUser.created_date) : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-md-4">
+                                                    </div>
+                                                    <div className="row col-12 col-xl-12">
+                                                    <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified By: <span style={{fontWeight:'normal'}}>{newUser.modified_by ? newUser.modified_by : '-'}</span></div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="row col-12 col-xl-12">
                                                         <div className="col-md-4">
                                                             <div className="form-group row">
                                                                 <div className="col-sm-12">Modified Date: <span style={{fontWeight:'normal'}}>{newUser.modified_date ? formatTimestamp(newUser.modified_date) : '-'}</span></div>

@@ -91,7 +91,7 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                     <tr> 
                                                         <th>Sl.No</th>
                                                         <th>Charger Id</th>
-                                                        <th>Model</th>
+                                                        <th>Charger Model</th>
                                                         <th>Charger Type</th>
                                                         <th>Gun Connector</th>
                                                         <th>Max Current</th>
@@ -106,9 +106,9 @@ const Unallocateddevice = ({ userInfo, handleLogout }) => {
                                                                 <td>{index + 1}</td>
                                                                 <td>{charger.charger_id}</td>
                                                                 <td className="py-1">
-                                                                    <img src={`../../images/dashboard/${charger.model ? charger.model : '-'}kw.png`} alt="img" />
+                                                                    <img src={`../../images/dashboard/${charger.charger_model ? charger.charger_model : '-'}kw.png`} alt="img" />
                                                                 </td> 
-                                                                <td>{charger.type}</td>
+                                                                <td>{charger.charger_type ? charger.charger_type: '-'}</td>
                                                                 <td>
                                                                     {charger.gun_connector === 1
                                                                         ? 'Single phase'
