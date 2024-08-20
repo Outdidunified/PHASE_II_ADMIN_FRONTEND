@@ -157,7 +157,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="col-md-6 grid-margin stretch-card">
                                 <div className="card tale-bg">
                                     <div className="card-people mt-auto">
@@ -206,7 +206,7 @@ const Dashboard = ({ userInfo, handleLogout }) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="row">
                             <div className="col-md-12 grid-margin stretch-card">
                                 <div className="card position-relative">
